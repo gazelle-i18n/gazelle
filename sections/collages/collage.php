@@ -17,9 +17,9 @@ if($Data) {
 	$Data = unserialize($Data);
 	list($K, list($Name, $Description, $CollageDataList, $TorrentList, $CommentList, $Deleted, $CollageCategoryID, $CreatorID)) = each($Data);
 } else {
-	$DB->query("SELECT Name, Description, UserID, Deleted, CategoryID FROM collages WHERE ID='$CollageID'");
+	$DB->query("SELECT Name, Description, UserID, Deleted, CategoryID, Locked, MaxGroups, MaxGroupsPerUser FROM collages WHERE ID='$CollageID'");
 	if($DB->record_count() > 0) {
-		list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID) = $DB->next_record();
+		list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $DB->next_record();
 		$TorrentList='';
 		$CollageList='';
 	} else {
@@ -458,5 +458,5 @@ if(!$LoggedUser['HideCollage']) { ?>
 <?
 show_footer();
 
-$Cache->cache_value('collage_'.$CollageID, serialize(array(array($Name, $Description, $CollageDataList, $TorrentList, $CommentList, $Deleted, $CollageCategoryID, $CreatorID))), 3600);
+$Cache->cache_value('collage_'.$CollageID, serialize(array(array($Name, $Description, $CollageDataList, $TorrentList, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser))), 3600);
 ?>

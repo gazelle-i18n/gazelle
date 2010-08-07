@@ -29,7 +29,6 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		m.Title,
 		m.torrent_pass,
 		m.Enabled,
-		m.Cursed,
 		m.Paranoia,
 		m.Invites,
 		m.can_leech,
@@ -68,7 +67,7 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		header("Location: log.php?search=User+".$UserID);
 	}
 
-	list($Username,	$Email,	$LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Cursed, $Paranoia, $Invites, $DisableLeech, $Visible, $JoinDate, $Info, $Avatar, $Country, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableIRC) = $DB->next_record(MYSQLI_NUM, array(8));
+	list($Username,	$Email,	$LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $JoinDate, $Info, $Avatar, $Country, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableIRC) = $DB->next_record(MYSQLI_NUM, array(8));
 } else { // Person viewing is a normal user
 	$DB->query("SELECT
 		m.Username,

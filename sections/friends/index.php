@@ -11,9 +11,11 @@ if(!empty($_REQUEST['action'])) {
 			include(SERVER_ROOT.'/sections/friends/add.php');
 			break;
 		case 'Defriend':
+			authorize();
 			include(SERVER_ROOT.'/sections/friends/remove.php');
-		break;
+			break;
 		case 'Update':
+			authorize();
 			include(SERVER_ROOT.'/sections/friends/comment.php');
 			break;
 		case 'whois':

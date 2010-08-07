@@ -367,6 +367,13 @@ ul.thin li { margin:0px 0px; padding:0px; }
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
+#artistcomplete li {
+	float: none;
+	background: url('images/content.png');
+	border-left: 1px solid #EEE;
+	border-right: 1px solid #EEE;
+}
+
 #searchbars input:active,
 #searchbars input:focus {
 	background: url('images/content.png');
@@ -394,7 +401,7 @@ ul.thin li { margin:0px 0px; padding:0px; }
 
 #alerts {
 	width: 230px;
-	margin: 65px 0px 0px 310px;
+	margin: 65px 0px 0px 338px;
 	position: absolute;
 	text-align: center;
 	color: #FFF;

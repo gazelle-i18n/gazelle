@@ -473,7 +473,7 @@ function enforce_login() {
 function authorize() {
 	global $LoggedUser;
 	if(empty($_REQUEST['auth']) || $_REQUEST['auth'] != $LoggedUser['AuthKey']) {
-		send_irc("PRIVMSG #what.cd-laboratory :".$LoggedUser['Username']." just failed authorize on ".$_SERVER['REQUEST_URI']." coming from ".$_SERVER['HTTP_REFERER']);
+		send_irc("PRIVMSG ".LAB_CHAN." :".$LoggedUser['Username']." just failed authorize on ".$_SERVER['REQUEST_URI']." coming from ".$_SERVER['HTTP_REFERER']);
 		error('Invalid authorization key. Go back, refresh, and try again.');
 	}
 }
@@ -1130,18 +1130,6 @@ function warn_user($UserID, $Duration, $Reason) {
 			AdminComment=CONCAT(\''.db_string($AdminComment).'\',AdminComment)
 			WHERE UserID=\''.db_string($UserID).'\'');
 	}
-}
-
-function json($Array) {
-	$Return = array();
-	foreach($Array as $Key => $Value){
-		if (is_array($Value)) {
-			$Return[] = '"'.$Key.'":['.json($Value).']';
-		} else {
-			$Return[] = '"'.$Key.'":"'.$Value.'"';
-		}
-	}
-	return '{'.implode(',',$Return).'}';
 }
 
 /*-- update_hash function -----------------------------------------------*/

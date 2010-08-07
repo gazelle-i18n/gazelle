@@ -39,6 +39,4 @@ $Array[0] = $ReportType['resolve_options']['delete'];
 $Array[1] = $ReportType['resolve_options']['upload'];
 $Array[2] = $ReportType['resolve_options']['warn'];
 
-$Return = json($Array);
-echo $Return;
-?>
+echo json_encode($Array);

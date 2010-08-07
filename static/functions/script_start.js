@@ -20,6 +20,19 @@ function function_exists(function_name) {
 	return (typeof this.window[function_name] === 'function');
 }
 
+function offset(e) {
+	var x = 0, y = 0;
+	if (e.offsetParent !== null) {
+		var p = e.offsetParent;
+		x += p.offsetTop+p.offsetHeight;
+		y += p.offsetLeft;
+	}
+	
+	x += e.offsetTop;
+	y += e.offsetLeft;
+	return [x,y];
+}
+
 function get_size(size) {
 	steps = 0;
 	while(size>=1024) {

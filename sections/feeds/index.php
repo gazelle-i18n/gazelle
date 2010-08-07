@@ -64,7 +64,7 @@ switch($_GET['feed']) {
 				FROM news
 				ORDER BY Time DESC
 				LIMIT 10");
-			$News = $DB->to_array();
+			$News = $DB->to_array(false,MYSQLI_NUM,false);
 			$Cache->cache_value('news',$News,1209600);
 		}
 		$Count = 0;

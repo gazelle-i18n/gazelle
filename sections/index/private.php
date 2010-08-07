@@ -311,12 +311,12 @@ if (!$News = $Cache->get_value('news')) {
 		FROM news
 		ORDER BY Time DESC
 		LIMIT 5");
-	$News = $DB->to_array(false,MYSQLI_ASSOC,false);
+	$News = $DB->to_array(false,MYSQLI_NUM,false);
 	$Cache->cache_value('news',$News,3600*24*30);
 }
 $Count = 0;
 foreach ($News as $NewsItem) {
-	list($NewsID,$Title,$Body,$NewsTime) = array_values($NewsItem);
+	list($NewsID,$Title,$Body,$NewsTime) = $NewsItem;
 	if (strtotime($NewsTime) >= time()) {
 		continue;
 	}

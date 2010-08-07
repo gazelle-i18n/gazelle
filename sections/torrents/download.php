@@ -63,15 +63,6 @@ if($CategoryID == '1' && $Image != "") {
 	$Cache->cache_value('recent_snatches_'.$UserID, $RecentSnatches, 0);
 }
 
-// Fucking btjunkie piece of shit
-if(strpos($_SERVER['HTTP_REFERER'], 'btjunkie.org')) {
-	$DB->query("UPDATE users_main SET Cursed='1' WHERE ID='$UserID'");
-	$DB->query("UPDATE users_info SET AdminComment=CONCAT('".sqltime()." - Account cursed at $LoggedUser[BytesDownloaded] bytes downloaded for accessing the site from ".db_string($_SERVER['HTTP_REFERER'])."
-
-', AdminComment) WHERE UserID='$LoggedUser[ID]'");
-
-}
-
 $DB->query("INSERT INTO users_downloads (UserID, TorrentID, Time) VALUES ('$UserID', '$TorrentID', '".sqltime()."') ON DUPLICATE KEY UPDATE Time=VALUES(Time)");
 
 

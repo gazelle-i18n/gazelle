@@ -657,12 +657,15 @@ foreach($Results as $GroupID=>$Data) {
 					$Pass = true;
 				}
 			}
+			
 			if(!empty($_GET['format'])) {
 				$Filter = true;
 				if($Data['Format']==$_GET['format']) {
 					$Pass = true;
 				}
 			}
+			
+			
 			if(!empty($_GET['media'])) {
 				$Filter = true;
 				if($Data['Media']==$_GET['media']) {

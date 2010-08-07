@@ -266,7 +266,7 @@ class TORRENT_FORM {
 <? } ?>
 						<br /><br />
 <? if(!empty($GroupRemasters)) { ?>
-						<input type="hidden" id="json_remasters" value='<?=json($GroupRemasters)?>' /> 
+						<input type="hidden" id="json_remasters" value='<?=json_encode($GroupRemasters)?>' /> 
 						<select id="groupremasters" name="groupremasters" onchange="GroupRemaster()"<? if($UnknownRelease){ echo " disabled";}?>>
 							<option value="">-------</option>
 <?
@@ -329,7 +329,7 @@ class TORRENT_FORM {
 				<td class="label">Bitrate</td>
 				<td>
 					<select id="bitrate" name="bitrate" onchange="Bitrate()">
-						<option>---</option>
+						<option value="">---</option>
 <?		if($Torrent['Bitrate'] && !in_array($Torrent['Bitrate'], $this->Bitrates)){
 			$OtherBitrate = true;
 			if(substr($Torrent['Bitrate'], strlen($Torrent['Bitrate']) - strlen(" (VBR)")) == " (VBR)") {

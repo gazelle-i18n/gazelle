@@ -4,7 +4,6 @@ require(SERVER_ROOT.'/classes/class_cache.php'); //Require the caching class
 require(SERVER_ROOT.'/classes/class_encrypt.php'); //Require the caching class
 $Cache = NEW CACHE; //Load the caching class
 $Enc = NEW CRYPT; //Load the encryption class
-date_default_timezone_set('UTC');
 
 $SSL = ($_SERVER['SERVER_PORT'] === '443');
 

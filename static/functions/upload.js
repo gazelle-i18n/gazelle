@@ -280,9 +280,9 @@ function GroupRemaster() {
 	
 	var index = $('#groupremasters').raw().options[$('#groupremasters').raw().selectedIndex].value;
 	if(index != "") {
-		$('#remaster_year').raw().value = remasters[index][0][1];
-		$('#remaster_title').raw().value = remasters[index][0][2];
-		$('#remaster_record_label').raw().value = remasters[index][0][3];
-		$('#remaster_catalogue_number').raw().value = remasters[index][0][4];
+		$('#remaster_year').raw().value = remasters[index][1];
+		$('#remaster_title').raw().value = remasters[index][2];
+		$('#remaster_record_label').raw().value = remasters[index][3];
+		$('#remaster_catalogue_number').raw().value = remasters[index][4];
 	}
 }

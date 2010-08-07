@@ -90,7 +90,11 @@ if(!empty($_GET['userid']) && is_number($_GET['userid'])) {
 	if(!empty($_GET['contrib'])) {
 		$DB->query("SELECT DISTINCT CollageID FROM collages_torrents WHERE UserID = $UserID");
 		$CollageIDs = $DB->collect('CollageID');
-		$SQL .= " AND c.ID IN(".db_string(implode(',', $CollageIDs)).")";
+		if(empty($CollageIDs)) {
+			$SQL .= " AND 0";
+		} else {
+			$SQL .= " AND c.ID IN(".db_string(implode(',', $CollageIDs)).")";
+		}
 	} else {
 		$SQL .= " AND UserID='".$_GET['userid']."'";
 	}
@@ -222,7 +226,7 @@ foreach ($Collages as $Collage) {
 				<?=$Tags?>
 			</div>
 		</td>
-		<td><?=$NumTorrents?></td>
+		<td><?=(int)$NumTorrents?></td>
 		<td><?=format_username($UserID, $Username)?></td>
 	</tr>
 <? } ?>
