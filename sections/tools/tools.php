@@ -66,7 +66,7 @@ if (check_perms('admin_update_geoip')) { ?>
 <? } if (check_perms('users_view_ips')) { ?>
 			<tr><td><a href="tools.php?action=dupe_ips">Duplicate IPs</a></td><tr>
 
-<? } if (check_perms('site_debug') || check_perms('users_mod')) { ?>
+<? } if (check_perms('site_debug')) { ?>
 			<tr><td><a href="tools.php?action=sandbox1">Sandbox (1)</a></td><tr>
 			<tr><td><a href="tools.php?action=sandbox2">Sandbox (2)</a></td><tr>
 			<tr><td><a href="tools.php?action=sandbox3">Sandbox (3)</a></td><tr>
@@ -75,9 +75,10 @@ if (check_perms('admin_update_geoip')) { ?>
 			<tr><td><a href="tools.php?action=sandbox6">Sandbox (6)</a></td><tr>
 			<tr><td><a href="tools.php?action=sandbox7">Sandbox (7)</a></td><tr>
 			<tr><td><a href="tools.php?action=sandbox8">Sandbox (8)</a></td><tr>
-			<tr><td><strong><a href="tools.php?action=public_sandbox">Public Sandbox</a></strong></td><tr>
 			<tr><td><a href="schedule.php?auth=<?=$LoggedUser['AuthKey']?>">Schedule</a></td><tr>
-<? } ?>	
+<? }?>	
+			<tr><td><strong><a href="tools.php?action=public_sandbox">Public Sandbox</a></strong></td><tr>
+			<tr><td><strong><a href="tools.php?action=mod_sandbox">Mod level Sandbox</a></strong></td><tr>
 		</table>
 	</div>
 </div>

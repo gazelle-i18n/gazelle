@@ -575,7 +575,7 @@ if(count($Reports) == 0) {
 							<td colspan="4" style="text-align: center;">
 								<input type="button" value="Invalid Report" onclick="Dismiss(<?=$ReportID?>);" />
 								<input type="button" value="Report resolved manually" onclick="ManualResolve(<?=$ReportID?>);" />
-			<?		if($View == "staff" && $LoggedUser['ID'] == $ID) { ?>
+			<?		if($Status == "InProgress" && $LoggedUser['ID'] == $ResolverID) { ?>
 								| <input type="button" value="Give back" onclick="GiveBack(<?=$ReportID?>);" />
 			<? 		} else { ?>
 								| <input id="grab<?=$ReportID?>" type="button" value="Grab!" onclick="Grab(<?=$ReportID?>);" />

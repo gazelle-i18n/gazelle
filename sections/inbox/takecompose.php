@@ -4,7 +4,7 @@ authorize();
 
 if(!isset($_POST['toid']) || !is_number($_POST['toid'])) { error(404); }
 
-if(!empty($LoggedUser['DisablePM']) && !in_array($_POST['toid'], $StaffIDs)) {
+if(!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$_POST['toid']])) {
 	error(403);
 }
 

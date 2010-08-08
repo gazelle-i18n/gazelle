@@ -45,7 +45,6 @@ $Debug->cache_table();
 <? } ?>
 
 </div>
-<ul id="autocomplete" style="visibility: hidden; position: absolute; top: 0; left: 0;"></ul>
 <div id="lightbox" class="lightbox hidden"></div>
 <div id="curtain" class="curtain hidden"></div>
 

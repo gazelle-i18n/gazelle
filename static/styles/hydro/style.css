@@ -229,9 +229,33 @@ ul.thin li { margin:0px 0px; padding:0px; }
 	position: relative;
 }
 
+#searchbars ul {
+	display: block;
+}
+
 #searchbars ul li {
 	margin: 0px;
 	display: inline;
+	list-style: none;
+	position: relative;
+}
+
+#searchbars ul li ul {
+		display: block;
+        position: absolute;
+        top: 1em;
+		left: 0;
+        z-index: 1000;
+        border : 1px solid #000;
+        width: 12em;
+        margin-top: 12px;
+}
+
+#searchbars ul li ul li {
+        margin: 0 0 0 0;
+        padding: 0;
+        display: block;
+        width: 100%;
 }
 
 li.searchbars {

@@ -1110,7 +1110,6 @@ CREATE TABLE `users_main` (
   `fid_end` int(11) NOT NULL COMMENT 'useless column',
   `name` char(8) NOT NULL COMMENT 'useless column',
   `OldPassHash` char(32) DEFAULT NULL,
-  `Cursed` enum('1','0') NOT NULL DEFAULT '0',
   `CookieID` varchar(32) DEFAULT NULL,
   `RequiredRatio` double(10,8) NOT NULL DEFAULT '0.00000000',
   `RequiredRatioWork` double(10,8) NOT NULL DEFAULT '0.00000000',
@@ -1125,7 +1124,6 @@ CREATE TABLE `users_main` (
   KEY `Downloaded` (`Downloaded`),
   KEY `Enabled` (`Enabled`),
   KEY `Invites` (`Invites`),
-  KEY `Cursed` (`Cursed`),
   KEY `torrent_pass` (`torrent_pass`),
   KEY `RequiredRatio` (`RequiredRatio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -254,22 +254,14 @@ if($Rippy) { ?>
 			<li>
 				<span class="hidden">Artist: </span>
 				<form action="artist.php" method="get">
-<? if (check_perms('users_mod')) { ?>
-<script type="text/javascript" src="static/functions/autosuggest.js"></script>
-					<input id="artistsearch" onkeyup="autocomplete.key('artist',event);"
-						accesskey="a" spellcheck="false" autocomplete="off"
-						onfocus="if (this.value == 'Artists') this.value=''; autocomplete.focus();"
-						onblur="if (this.value == '') this.value='Artists'; autocomplete.blur();"
-						value="Artists" type="text" name="artistname" size="17"
-					/>
-<? } else { ?>
+					
 					<input id="artistsearch"
 						accesskey="a" spellcheck="false" autocomplete="off"
 						onfocus="if (this.value == 'Artists') this.value='';"
 						onblur="if (this.value == '') this.value='Artists';"
 						value="Artists" type="text" name="artistname" size="17"
 					/>
-<? } ?>
+					
 				</form>
 			</li>
 			<li>

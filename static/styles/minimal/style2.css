@@ -126,10 +126,27 @@ textarea#quickpost{margin:0; padding:0}
 /* searchbars */
 #searchbars{margin:10px 210px 0 0px}
 #searchbars input{background-repeat:no-repeat; background-position:0 -129px; border:1px solid #333; width:82px; margin:0; padding:2px 4px; color:#777}
-#searchbars ul{padding:0; margin:0; list-style:none}
-#searchbars ul li{display:inline; margin-right:10px}
+#searchbars ul{padding:0; margin:0; list-style:none;display:block;text-align:center}
+#searchbars ul li{display:inline; margin-right:10px;list-style:none;position:relative}
 #searchbars form{display:inline}
+#searchbars ul li ul {
+		display: block;
+        position: absolute;
+        top: 1em;
+		left: 0;
+        z-index: 1000;
+        border : 1px solid #000;
+        width: 12em;
+        margin-top: 12px;
+}
 
+#searchbars ul li ul li {
+        margin: 0 0 0 0;
+        padding: 0;
+        display: block;
+        width: 100%;
+        text-align: center;
+}
 /* TABLE BORDERS */
 table tr td{border:1px solid #757575}
 #user table tr td{border:0}

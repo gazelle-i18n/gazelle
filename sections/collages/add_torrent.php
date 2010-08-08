@@ -7,9 +7,18 @@ $Val = new VALIDATE;
 $CollageID = $_POST['collageid'];
 if(!is_number($CollageID)) { error(404); }
 
-$DB->query("SELECT UserID, CategoryID FROM collages WHERE ID='$CollageID'");
-list($UserID, $CategoryID) = $DB->next_record();
+$DB->query("SELECT UserID, CategoryID, Locked, NumTorrents, MaxGroups, MaxGroupsPerUser FROM collages WHERE ID='$CollageID'");
+list($UserID, $CategoryID, $Locked, $NumTorrents, $MaxGroups, $MaxGroupsPerUser) = $DB->next_record();
 if($CategoryID == 0 && $UserID!=$LoggedUser['ID'] && !check_perms('site_collages_delete')) { error(403); }
+if($Locked) { error(403); }
+if($MaxGroups>0 && $NumTorrents>=$MaxGroups) { error(403); }
+if($MaxGroupsPerUser>0) {
+	$DB->query("SELECT COUNT(ID) FROM collages_torrents WHERE CollageID='$CollageID' AND UserID='$LoggedUser[ID]'");
+	if($DB->record_count()>=$MaxGroupsPerUser) {
+		error(403);
+	}
+}
+
 
 $URLRegex = '/^https?:\/\/(www\.|ssl\.)?'.NONSSL_SITE_URL.'\/torrents\.php\?(page=[0-9]+&)?id=([0-9]+)/i';
 $Val->SetFields('url', '1','regex','The URL must be a link to a torrent on the site.',array('regex'=>$URLRegex));

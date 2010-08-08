@@ -28,7 +28,7 @@ if(!isset($_REQUEST['action'])) {
 }
 
 if (substr($_REQUEST['action'],0,7) == 'sandbox' && !isset($argv[1])) {
-	if (!check_perms('site_debug') && !check_perms('users_mod')) {
+	if (!check_perms('site_debug')) {
 		error(403);
 	}
 }
@@ -311,6 +311,14 @@ switch ($_REQUEST['action']){
 		
 	case 'public_sandbox':
 		include('misc/public_sandbox.php');
+		break;
+
+	case 'mod_sandbox':
+		if(check_perms('users_mod')) {
+			include('misc/mod_sandbox.php');
+		} else {
+			error(403);
+		}
 		break;
 
 	default:

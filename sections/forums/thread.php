@@ -27,18 +27,6 @@ if (isset($LoggedUser['PostsPerPage'])) {
 	$PerPage = POSTS_PER_PAGE;
 }
 
-//Post links utilize the catalogue & key params to prevent issues with custom posts per page
-if (isset($_GET['post']) && is_number($_GET['post'])) {
-	$CatalogueID = floor(($_GET['post']-1)/THREAD_CATALOGUE);
-	$RequestKey = ($_GET['post']-1)%THREAD_CATALOGUE;
-	$Page = ceil((($CatalogueID*THREAD_CATALOGUE)+($RequestKey+1))/$PerPage);
-	$CatalogueLimit=$CatalogueID*THREAD_CATALOGUE . ', ' . THREAD_CATALOGUE;
-} else {
-	list($Page,$Limit) = page_limit(TOPICS_PER_PAGE);
-	list($CatalogueID,$CatalogueLimit) = catalogue_limit($Page,$PerPage,THREAD_CATALOGUE);
-}
-
-
 //---------- Get some data to start processing
 
 // Thread information, constant across all pages
@@ -66,6 +54,20 @@ $ForumID = $ThreadInfo['ForumID'];
 
 // Make sure they're allowed to look at the page
 if($Forums[$ForumID]['MinClassRead'] > $LoggedUser['Class']) { error(403); }
+
+//Post links utilize the catalogue & key params to prevent issues with custom posts per page
+if (isset($_GET['post']) && is_number($_GET['post'])) {
+	$CatalogueID = floor(($_GET['post']-1)/THREAD_CATALOGUE);
+	$RequestKey = ($_GET['post']-1)%THREAD_CATALOGUE;
+	$Page = ceil((($CatalogueID*THREAD_CATALOGUE)+($RequestKey+1))/$PerPage);
+	$CatalogueLimit=$CatalogueID*THREAD_CATALOGUE . ', ' . THREAD_CATALOGUE;
+} else {
+	if($ThreadInfo['Posts'] <= $PerPage) {
+		$_GET['page'] = 1;
+	}
+	list($Page,$Limit) = page_limit(TOPICS_PER_PAGE);
+	list($CatalogueID,$CatalogueLimit) = catalogue_limit($Page,$PerPage,THREAD_CATALOGUE);
+}
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
 if(!$Catalogue = $Cache->get_value('thread_'.$ThreadID.'_catalogue_'.$CatalogueID)) {

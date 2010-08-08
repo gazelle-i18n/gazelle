@@ -177,7 +177,7 @@ $Results = $DB->to_array();
 				GROUP BY r.ResolverID");
 	$Staff = $DB->to_array();
 ?>
-		<strong>Currently assigned reports by staff member.</strong>
+		<strong>Currently assigned reports by staff member</strong>
 		<table>
 			<tr>
 				<td class="colhead">Staff member</td>
@@ -198,7 +198,6 @@ $Results = $DB->to_array();
 		</table>
 		<br />
 		<h3>Different view modes by report type</h3>
-		<br />
 <?
 	$DB->query("SELECT 	r.Type,
 						COUNT(r.ID) AS Count

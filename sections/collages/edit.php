@@ -2,8 +2,8 @@
 $CollageID = $_GET['collageid'];
 if(!is_number($CollageID)) { error(0); }
 
-$DB->query("SELECT Name, Description, TagList, UserID, CategoryID FROM collages WHERE ID='$CollageID'");
-list($Name, $Description, $TagList, $UserID, $CategoryID) = $DB->next_record();
+$DB->query("SELECT Name, Description, TagList, UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser FROM collages WHERE ID='$CollageID'");
+list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $DB->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
 if($CategoryID == 0 && $UserID!=$LoggedUser['ID'] && !check_perms('site_collages_delete')) { error(403); }
@@ -47,6 +47,21 @@ show_header('Edit collage');
 				<td class="label">Tags</td>
 				<td><input type="text" name="tags" size="60" value="<?=$TagList?>" /></td>
 			</tr>
+<? if(check_perms('site_collages_delete')) { ?>
+			<tr>
+				<td class="label">Locked</td>
+				<td><input type="checkbox" name="locked" <?if($Locked) { ?>checked="checked" <? }?>/></td>
+			</tr>
+			<tr>
+				<td class="label">Max groups</td>
+				<td><input type="text" name="maxgroups" size="5" value="<?=$MaxGroups?>" /></td>
+			</tr>
+			<tr>
+				<td class="label">Max groups per user</td>
+				<td><input type="text" name="maxgroupsperuser" size="5" value="<?=$MaxGroupsPerUser?>" /></td>
+			</tr>
+			
+<? } ?>
 			<tr>
 				<td colspan="2" class="center"><input type="submit" value="Edit collage" /></td>
 			</tr>

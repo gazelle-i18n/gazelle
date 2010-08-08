@@ -32,7 +32,6 @@ if($Deleted == '1') {
 	die();
 }
 
-$Locked = false;
 if($CollageCategoryID == 0 && !check_perms('site_collages_delete')) {
 	if(!check_perms('site_collages_personal') || $CreatorID!=$LoggedUser['ID']) {
 		$Locked = true;
@@ -71,6 +70,7 @@ $Collage = array();
 $TorrentTable = '';
 
 $NumGroups = 0;
+$NumGroupsByUser = 0;
 $Artists = array();
 $Tags = array();
 $Users = array();
@@ -83,6 +83,9 @@ foreach ($TorrentList as $GroupID=>$Group) {
 	// Handle stats and stuff
 	$Number++;
 	$NumGroups++;
+	if($UserID == $LoggedUser['ID']) {
+		$NumGroupsByUser++;
+	}
 	
 	if($GroupArtists) {
 		foreach($GroupArtists as $Artist) {
@@ -254,6 +257,10 @@ foreach ($TorrentList as $GroupID=>$Group) {
 <?
 	$Collage[]=ob_get_clean();
 	
+}
+
+if(($MaxGroups>0 && $NumGroups>=$MaxGroups)  || ($MaxGroupsPerUser>0 && $NumGroupsByUser>=$MaxGroupsPerUser)) {
+	$Locked = true;
 }
 
 ?>

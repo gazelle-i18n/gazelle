@@ -367,11 +367,10 @@ ul.thin li { margin:0px 0px; padding:0px; }
 	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-#artistcomplete li {
-	float: none;
+#autocomplete {
 	background: url('images/content.png');
-	border-left: 1px solid #EEE;
-	border-right: 1px solid #EEE;
+	border: 1px solid #EEE;
+	list-style: none;
 }
 
 #searchbars input:active,
@@ -384,6 +383,8 @@ ul.thin li { margin:0px 0px; padding:0px; }
 	margin: 0;
 	padding: 0;
 	list-style: none;
+	display: block;
+	
 }
 
 #searchbars ul li {
@@ -392,7 +393,29 @@ ul.thin li { margin:0px 0px; padding:0px; }
 	width: 148px;
 	margin: 0;
 	padding-left: 4px;
+	position: relative;
+	list-style: none;
 }
+
+#searchbars ul li ul {
+		display: block;
+        position: absolute;
+        top: 1em;
+		left: 0;
+        z-index: 1000;
+        border : 1px solid #EEE;
+		background: url('images/content.png');
+        width: 12em;
+        margin-top: 12px;
+}
+
+#searchbars ul li ul li {
+        margin: 1px 0 1px 4px;
+        padding: 0;
+        display: block;
+        width: 100%;
+}
+
 
 #searchbars ul li form {
 	display: inline;

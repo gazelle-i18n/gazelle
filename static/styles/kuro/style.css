@@ -329,11 +329,33 @@ ul.thin li {
 
 #searchbars ul {
 	margin: 0 auto;
+	display: block;
 }
 
 #searchbars ul li {
 	display: inline;
 	margin: 0px 1px;
+	list-style: none;
+	position: relative;
+}
+
+#searchbars ul li ul {
+		display: block;
+        position: absolute;
+        top: 1em;
+		left: 0;
+        z-index: 1000;
+        border : 1px solid #EEE;
+		background: url('images/content.png');
+        width: 12em;
+        margin-top: 12px;
+}
+
+#searchbars ul li ul li {
+        margin: 1px 0 1px 4px;
+        padding: 0;
+        display: block;
+        width: 100%;
 }
 
 #searchbars ul li form {

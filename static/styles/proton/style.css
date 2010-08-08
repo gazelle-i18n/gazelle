@@ -415,10 +415,31 @@ ul#userinfo_username {
 	padding: 20px 0 0 0;
 	margin: 0;
 	list-style: none;
+	display: block;
 }
 
 #searchbars ul li {
 	display: inline;
+	position: relative;
+	list-style: none;
+}
+
+#searchbars ul li ul {
+		display: block;
+        position: absolute;
+        top: 1em;
+		left: 0;
+        z-index: 1000;
+        border : 1px solid #000;
+        width: 12em;
+        margin-top: 12px;
+}
+
+#searchbars ul li ul li {
+        margin: 0 0 0 0;
+        padding: 0;
+        display: block;
+        width: 100%;
 }
 
 #searchbars form {

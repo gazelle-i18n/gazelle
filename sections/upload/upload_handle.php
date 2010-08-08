@@ -557,7 +557,7 @@ $Tags = explode(',', $Properties['TagList']);
 foreach($Tags as $Tag) {
 	$Tag = sanitize_tag($Tag);
 	if(!$Properties['GroupID']) {
-		if($Tag != "''") {
+		if(!empty($Tag)) {
 			$DB->query("INSERT INTO tags
 				(Name, UserID) VALUES
 				('".$Tag."', $LoggedUser[ID])

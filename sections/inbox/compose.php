@@ -10,7 +10,7 @@ if(empty($Return)) {
 
 if(!$ToID || !is_number($ToID)) { error(404); }
 
-if(!empty($LoggedUser['DisablePM']) && !in_array($ToID, $StaffIDs)) {
+if(!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$ToID])) {
 	error(403);
 }
 
