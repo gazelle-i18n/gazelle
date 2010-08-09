@@ -14,15 +14,6 @@ function js_pages($Action, $TorrentID, $NumResults, $CurrentPage) {
 	return implode(' | ',$PageLinks);
 }
 
-//Check if a givin string van be validated as a torrenthash
-function is_valid_torrenthash($Str) {
-	//6C19FF4C 6C1DD265 3B25832C 0F6228B2 52D743D5
-	$Str = str_replace(' ', '', $Str);
-	if(preg_match('/[0-9a-fA-F]{40}/', $Str))
-		return $Str;
-	return false;
-}
-
 if(!empty($_REQUEST['action'])) {
 	switch($_REQUEST['action']){
 		case 'edit':

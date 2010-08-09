@@ -1,5 +1,7 @@
 <?
 
+include(SERVER_ROOT.'/sections/torrents/functions.php');
+
 
 // The "order by x" links on columns headers
 function header_link($SortKey,$DefaultWay="desc") {
@@ -246,6 +248,8 @@ if(!empty($Results['notfound'])) {
 }
 
 $Results = $Results['matches'];
+
+
 
 show_header('Browse Torrents','browse');
 

@@ -97,12 +97,13 @@ if($_POST['fromyear'] && is_number($_POST['fromyear'])){
 }
 
 if(!$HasFilter){
-	$_SESSION['error'] = 'You must add at least one criterion to filter by';
+	$Err = 'You must add at least one criterion to filter by';
 } elseif(!$_POST['label'] && !$_POST['id']) {
-	$_SESSION['error'] = 'You must add a label for the filter set';
+	$Err = 'You must add a label for the filter set';
 }
 
-if($_SESSION['error']){
+if($Err){
+	error_message($Err);
 	header('Location: user.php?action=notify');
 	die();
 }

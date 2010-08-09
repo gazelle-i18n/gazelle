@@ -490,6 +490,25 @@ $LogName .= $Properties['Title'];
 
 //For notifications--take note now whether it's a new group
 $IsNewGroup = !$GroupID;
+if(!$IsNewGroup) {
+	include(SERVER_ROOT.'/sections/torrents/functions.php');
+	$GroupInfo = get_group_info($GroupID);
+
+	$UsedFormats = array();
+	$UsedBitrates = array();
+	$UsedMedia = array();
+
+	foreach($GroupInfo[1] as $TorrentInfo) {
+		$UsedFormats[] = $TorrentInfo['Format'];
+		$UsedBitrates[] = $TorrentInfo['Encoding'];
+		$UsedMedia[] = $TorrentInfo['Media'];
+	}
+
+	$NewFormat = !in_array($Properties['Format'], $UsedFormats);
+	$NewBitrate = !in_array($Properties['Encoding'], $UsedBitrates);
+	$NewMedia = !in_array($Properties['Media'], $UsedMedia);
+
+}
 
 //----- Start inserts
 if(!$GroupID && $Type == 'Music') {
@@ -746,22 +765,84 @@ if($Properties['ReleaseType']) {
 	$SQL.=" AND (ReleaseTypes='') ";
 }
 
-if($Properties['Format']) {
-	$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
-} else {
-	$SQL.=" AND (Formats='') ";
-}
+/*
+	Notify based on the following:
+		1. It's a new group, everyone get's notified.
+		2. It's not a new group, but they aren't looking for 'NewGroupsOnly'.
+		3. It's not a new group AND it's the first thing that matches this filter in that group.
+*/
 
-if($_POST['bitrate']) {
-	$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='') ";
-} else {
-	$SQL.=" AND (Encodings='') ";
-}
+if($IsNewGroup) {
+	//1. It's a new group, everyone get's notified.
 
-if($Properties['Media']) {
-	$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
+	if($Properties['Format']) {
+		$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
+	} else {
+		$SQL.=" AND (Formats='') ";
+	}
+
+	if($_POST['bitrate']) {
+		$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='') ";
+	} else {
+		$SQL.=" AND (Encodings='') ";
+	}
+
+	if($Properties['Media']) {
+		$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
+	} else {
+		$SQL.=" AND (Media='') ";
+	}
 } else {
-	$SQL.=" AND (Media='') ";
+	//2. It's not a new group, but they aren't looking for 'NewGroupsOnly'.
+
+	$SQL .= "AND ((NewGroupsOnly = '0' ";
+
+	if($Properties['Format']) {
+		$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
+	} else {
+		$SQL.=" AND (Formats='') ";
+	}
+
+	if($_POST['bitrate']) {
+		$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='') ";
+	} else {
+		$SQL.=" AND (Encodings='') ";
+	}
+
+	if($Properties['Media']) {
+		$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
+	} else {
+		$SQL.=" AND (Media='') ";
+	}
+	
+	//3. It's not a new group AND it's the first thing that matches this filter in that group.
+	$SQL .= ") OR ( NewGroupsOnly = '1' ";
+	
+	if($Properties['Format']) {
+		if ($NewFormat) {
+			$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
+		} else {
+			$SQL.=" AND (Formats NOT LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
+		}
+	}
+
+	if($_POST['bitrate']) {
+		if($NewBitrate) {
+			$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='')";
+		} else {
+			$SQL.=" AND (Encodings NOT LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='')";
+		}
+	}
+
+	if($Properties['Media']) {
+		if($NewMedia) {
+			$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
+		} else {
+			$SQL.=" AND (Media NOT LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
+		}
+	}
+
+	$SQL .= "))";
 }
 
 if($Properties['Year'] && $Properties['RemasterYear']) {
@@ -775,11 +856,7 @@ if($Properties['Year'] && $Properties['RemasterYear']) {
 	$SQL.=" AND (FromYear=0 AND ToYear=0) ";
 }
 
-if(!$IsNewGroup) {
-	$SQL.=" AND (NewGroupsOnly='0') ";
-}
-
-$SQL.=" AND UserID!='$LoggedUser[ID]' ";
+$SQL.=" AND UserID != '".$LoggedUser['ID']."' ";
 
 $DB->query($SQL);
 

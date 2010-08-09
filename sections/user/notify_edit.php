@@ -1,14 +1,9 @@
 <?
 if(!check_perms('site_torrents_notify')){ error(403); }
 show_header('Manage notifications');
+show_message();
 ?>
 <div class="thin">
-<?
-if(isset($_SESSION['error'])) {
-	echo '<div class="error_message">'.$_SESSION['error'].'</div>';
-	unset($_SESSION['error']);
-}
-?>
 	<h2>Notify me of all new torrents with...<a href="torrents.php?action=notify">(View)</a></h2>
 <?
 $DB->query("SELECT ID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear FROM users_notify_filters WHERE UserID='$LoggedUser[ID]' UNION ALL SELECT NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL");
