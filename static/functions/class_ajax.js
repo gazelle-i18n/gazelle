@@ -31,9 +31,11 @@ var json = {
 		}
 	},
 	decode: function (string) {
-		try {
+		if (typeof JSON.parse === 'function') {
+			try {
 			return JSON.parse(string);
-		} catch (err) {
+			}catch(e){ alert('Err: '+e.name+' - '+e.message);}
+		} else {
 			return eval("(" + string + ")");
 			//return (new Function("return " + data))();
 		}
