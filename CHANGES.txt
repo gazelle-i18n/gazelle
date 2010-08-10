@@ -1,4 +1,7 @@
 CHANGELOG
+2010-08-10
+-Added check for CustomPerms IP protection on login
+
 2010-07-30
 -Add collage stats to user profiles
 

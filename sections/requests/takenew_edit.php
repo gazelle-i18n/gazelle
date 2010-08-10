@@ -387,39 +387,72 @@ if($CategoryName == "Music") {
 	
 	//End Music only
 	
-} else if($CategoryName == "Audiobooks" || $CategoryName == "Comedy") {
-	//These types require a year field.
-	if($NewRequest) {
-		$DB->query("INSERT INTO requests (     
-						UserID, TimeAdded, LastVote, CategoryID, Title, Year, Image, Description, Visible)
-					VALUES
-						(".$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."', ".$CategoryID.", '".db_string($Title)."', ".$Year.", '".db_string($Image)."', '".db_string($Description)."', '1')");
-		
-		$RequestID = $DB->inserted_id();
-	} else {
-		$DB->query("UPDATE requests 
-			SET CategoryID = ".$CategoryID.",
-				Title = '".db_string($Title)."', 
-				Year = ".$Year.", 
-				Image = '".db_string($Image)."',
-				Description = '".db_string($Description)."'
-			WHERE ID = ".$RequestID);
-	}
 } else {
-	if($NewRequest) {
-		$DB->query("INSERT INTO requests (     
-						UserID, TimeAdded, LastVote, CategoryID, Title, Image, Description, Visible)
-					VALUES
-						(".$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."',  ".$CategoryID.", '".db_string($Title)."', '".db_string($Image)."', '".db_string($Description)."', '1')");
+	//Not a music request anymore, delete music only fields.
+	if(!$NewRequest) {
+		$DB->query("SELECT ArtistID FROM requests_artists WHERE RequestID = ".$RequestID);
+		$OldArtists = $DB->collect('ArtistID');
+		foreach($OldArtists as $ArtistID) {
+			if(empty($ArtistID)) { continue; }
+			//Get a count of how many groups or requests use the artist ID
+			$DB->query("SELECT COUNT(ag.ArtistID)
+						FROM artists_group as ag 
+							LEFT JOIN requests_artists AS ra ON ag.ArtistID=ra.ArtistID 
+						WHERE ra.ArtistID IS NOT NULL
+							AND ag.ArtistID = '$ArtistID'");
+			list($ReqCount) = $DB->next_record();
+			$DB->query("SELECT COUNT(ag.ArtistID)
+						FROM artists_group as ag 
+							LEFT JOIN torrents_artists AS ta ON ag.ArtistID=ta.ArtistID 
+						WHERE ta.ArtistID IS NOT NULL
+							AND ag.ArtistID = '$ArtistID'");
+			list($GroupCount) = $DB->next_record();
+			if(($ReqCount + $GroupCount) == 0) {
+				//The only group to use this artist
+				delete_artist($ArtistID);
+			} else {
+				//Not the only group, still need to clear cache
+				$Cache->delete_value('artist_'.$ArtistID);
+				$Cache->delete_value('artists_requests_'.$ArtistID);
+			}
+		}
+		$DB->query("DELETE FROM requests_artists WHERE RequestID = ".$RequestID);
+	}
+
+	if($CategoryName == "Audiobooks" || $CategoryName == "Comedy") {
+		//These types require a year field.
+		if($NewRequest) {
+			$DB->query("INSERT INTO requests (     
+							UserID, TimeAdded, LastVote, CategoryID, Title, Year, Image, Description, Visible)
+						VALUES
+							(".$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."', ".$CategoryID.", '".db_string($Title)."', ".$Year.", '".db_string($Image)."', '".db_string($Description)."', '1')");
 			
-		$RequestID = $DB->inserted_id();
-	} else {
+			$RequestID = $DB->inserted_id();
+		} else {
 			$DB->query("UPDATE requests 
-			SET CategoryID = ".$CategoryID.",
-				Title = '".db_string($Title)."', 
-				Image = '".db_string($Image)."',
-				Description = '".db_string($Description)."'
-			WHERE ID = ".$RequestID);
+				SET CategoryID = ".$CategoryID.",
+					Title = '".db_string($Title)."', 
+					Year = ".$Year.", 
+					Image = '".db_string($Image)."',
+					Description = '".db_string($Description)."'
+				WHERE ID = ".$RequestID);
+		}
+	} else {
+		if($NewRequest) {
+			$DB->query("INSERT INTO requests (     
+							UserID, TimeAdded, LastVote, CategoryID, Title, Image, Description, Visible)
+						VALUES
+							(".$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."',  ".$CategoryID.", '".db_string($Title)."', '".db_string($Image)."', '".db_string($Description)."', '1')");
+				
+			$RequestID = $DB->inserted_id();
+		} else {
+				$DB->query("UPDATE requests 
+				SET CategoryID = ".$CategoryID.",
+					Title = '".db_string($Title)."', 
+					Image = '".db_string($Image)."',
+					Description = '".db_string($Description)."'
+				WHERE ID = ".$RequestID);
+		}
 	}
 }
 
