@@ -224,13 +224,12 @@ else {
 			$DB->query("SELECT
 				ID,
 				PermissionID,
-				CustomPermissions,
 				PassHash,
 				Secret,
 				Enabled
 				FROM users_main WHERE Username='".db_string($_POST['username'])."' 
 				AND Username<>''");
-			list($UserID,$PermissionID,$CustomPermissions,$PassHash,$Secret,$Enabled)=$DB->next_record();
+			list($UserID,$PermissionID,$PassHash,$Secret,$Enabled)=$DB->next_record();
 			if (strtotime($BannedUntil)<time()) {
 				if ($UserID && $PassHash==make_hash($_POST['password'],$Secret)) {
 					if ($Enabled == 1) {
@@ -245,20 +244,9 @@ else {
 							setcookie('session', $Cookie,0,'/','',false);
 						}
 						
-						if(is_array($LoggedUser['CustomPermissions'])) {
-							$CustomPerms = $LoggedUser['CustomPermissions'];
-						} else {
-							$CustomPerms = array();
-						}
-						
-						//TODO: another tracker might enable this for donors, I think it's too stupid to bother adding that
 						// Because we <3 our staff
 						$Permissions = get_permissions($PermissionID);
-						$CustomPermissions = unserialize($CustomPermissions);
-						if (
-							isset($Permissions['Permissions']['site_disable_ip_history']) || 
-							isset($CustomPermissions['Permissions']['site_disable_ip_history'])
-						) { $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; }
+						if (isset($Permissions['Permissions']['site_disable_ip_history'])) { $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; }
 						
 						
 						
@@ -324,3 +312,4 @@ else {
 	}
 	require("sections/login/login.php");
 }
+?>

@@ -125,14 +125,14 @@ if($_GET['mode'] == 'bbb'){
 if (!$TorrentName) { $TorrentName="No Name"; }
 
 if($DownloadAlt) {
-	header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.txt"');
 	header('Content-Type: text/plain');
+	header('Content-Disposition: inline; filename="'.file_string($TorrentName).'.txt"');
 	//header('Content-Length: '.strlen($Tor->enc()));
 	echo $Tor->enc();
 	
 } elseif(!$DownloadAlt || $Failed) {
-	header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.torrent"');
 	header('Content-Type: application/x-bittorrent');
+	header('Content-Disposition: inline; filename="'.file_string($TorrentName).'.torrent"');
 	//header('Content-Length: '.strlen($Tor->enc()));
 	echo $Tor->enc();
 }
