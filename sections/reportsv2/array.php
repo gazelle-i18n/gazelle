@@ -122,6 +122,23 @@ $Types = array(
 					'pm' => '2.3.12. Properly tag your music files. Certain meta tags (e.g. ID3, Vorbis) are required on all music uploads. Make sure to use the proper format tags for your files (e.g. no ID3 tags for FLAC). ID3v2 tags for files are highly recommended over ID3v1. If you upload an album missing one or more of these tags, then another user may add the tags, re-upload, and report yours for deletion.'
 				)
 			),
+			'folder_trump' => array (
+				'priority' => '704',
+				'title' => 'Folder Trump',
+				'report_messages' => array(
+					'Please list the folder name and what is wrong with it',
+					'Please make sure you are reporting the torrent <strong>which has been trumped</strong> and should be deleted, not the torrent that you think should remain on site.'
+				),
+				'report_fields' => array(
+					'sitelink' => '1'
+				),
+				'resolve_options' => array(
+					'upload' => '0',
+					'warn' => '0',
+					'delete' => '1',
+					'pm' => 'Name your directories with meaningful titles, such as "Artist - Album (Year) - Format."  We advise that directory names in your uploads should at least be "Artist - Album (Year) - Format". The minimum acceptable is "Album", although it is preferable to include more information. If the directory name does not include this minimum then another user can rename the directory, re-upload and report yours for deletion. Avoid creating unnecessary nested folders (such as an extra folder for the actual album) inside your properly named directory. Nested folders make it less likely that downloaders leave the torrent unchanged in order to stay seeding.'
+				)
+			),
 			'tracks_missing' => array(
 				'priority' => '730',
 				'title' => 'Track(s) Missing',

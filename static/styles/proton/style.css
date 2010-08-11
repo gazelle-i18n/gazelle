@@ -430,16 +430,22 @@ ul#userinfo_username {
         top: 1em;
 		left: 0;
         z-index: 1000;
-        border : 1px solid #000;
-        width: 12em;
+	background-color: #F0F0F0;
+	border: 1px solid #CCC !important;
         margin-top: 12px;
+        padding: 0;
 }
 
 #searchbars ul li ul li {
-        margin: 0 0 0 0;
-        padding: 0;
+        margin: 0;
+        padding: 3px;
         display: block;
         width: 100%;
+}
+
+#searchbars ul li ul li.highlight {
+	background-color: #007DC6;
+	color: #fff;
 }
 
 #searchbars form {

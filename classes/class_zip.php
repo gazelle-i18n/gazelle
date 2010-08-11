@@ -99,7 +99,7 @@ class ZIP {
 	
 	public function __construct ($ArchiveName='Archive') {
 		header("Content-type: application/octet-stream"); //Stream download
-		header("Content-disposition: inline; filename=\"".$ArchiveName.".zip\""); //Name the archive
+		header("Content-disposition: attachment; filename=\"".urlencode($ArchiveName).".zip\""); //Name the archive
 	}
 	
 	public static function unlimit () {

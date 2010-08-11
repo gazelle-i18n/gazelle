@@ -7,6 +7,7 @@ show_header('Clear a cache key');
 
 //Make sure the form was sent
 if(!empty($_GET['key']) && $_GET['type'] == "clear") {
+	
 	$Cache->delete_value($_GET['key']);
 	echo '<div class="save_message">Key '.display_str($_GET['key']).' cleared!</div>';
 
@@ -28,28 +29,14 @@ if(!empty($_GET['key']) && $_GET['type'] == "clear") {
 					<input type="submit" value="key" class="submit" />
 				</td>
 			</tr>
+<? if(!empty($_GET['key']) && $_GET['type'] == "view") { ?>
+			<tr>
+				<td colspan="2">
+					<pre><? var_dump($Cache->get_value($_GET['key'])); ?></pre>
+				</td>
+			</tr>
+<? } ?>
 		</table>
 	</form>
 <?
-
-if(!empty($_GET['key']) && $_GET['type'] == "view") {
-	$Value = $Cache->get_value($_GET['key']);
-	if(is_array($Value)) {
-?>
-	<div><?print_r(display_array($Value))?></div>
-<?
-	} else if(!empty($Value)) {
-?>
-	<div><?=display_str($Value)?></div>
-<?
-	} else {
-?>
-	<div>Empty key or not found!</div>
-<?
-	}
-}
-
-//Show the footer
 show_footer();
-
-?>

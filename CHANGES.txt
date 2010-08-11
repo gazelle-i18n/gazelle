@@ -1,4 +1,7 @@
 CHANGELOG
+2010-08-11
+-Fixed long standing IE Bug. Turns out that IE fails to handle unicode data in the Content-disposition header so this value is now urlencoded ensuring compatibility.
+
 2010-08-10
 -Added check for CustomPerms IP protection on login
 

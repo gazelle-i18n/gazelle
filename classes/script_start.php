@@ -1380,8 +1380,7 @@ function get_artists($GroupIDs, $Escape = array()) {
 		$Artists = $Cache->get_value('groups_artists_'.$GroupID);
 		if(is_array($Artists)) {
 			$Results[$GroupID] = $Artists;
-		}
-		else {
+		} else {
 			$DBs[] = $GroupID;
 		}
 	}
@@ -1391,7 +1390,7 @@ function get_artists($GroupIDs, $Escape = array()) {
 			$IDs = "null";
 		}
 		$DB->query("SELECT ta.GroupID,ta.ArtistID,aa.Name,ta.Importance FROM torrents_artists AS ta JOIN artists_alias AS aa ON ta.AliasID = aa.AliasID WHERE ta.GroupID IN ($IDs) ORDER BY ta.GroupID ASC,ta.Importance ASC, aa.Name ASC;");
-		while(list($GroupID,$ArtistID,$ArtistName,$ArtistImportance) = $DB->next_record(MYSQLI_BOTH, $Escape)) {
+		while(list($GroupID,$ArtistID,$ArtistName,$ArtistImportance) = $DB->next_record(MYSQLI_BOTH, false)) {
 			$Results[$GroupID][$ArtistImportance][] = array('id' => $ArtistID, 'name' => $ArtistName);
 			$New[$GroupID][$ArtistImportance][] = array('id' => $ArtistID, 'name' => $ArtistName);
 		}
@@ -1405,6 +1404,7 @@ function get_artists($GroupIDs, $Escape = array()) {
 		}
 	}
 	return $Results;
+	return display_array($Results,$Escape);
 }
 
 /**
@@ -1426,7 +1426,7 @@ function display_artists($Artists, $makelink = true, $IncludeHyphen = true) {
 				$link = display_artist($Artists[1][0], $makelink);
 				break;
 			case 2:
-				$link = display_artist($Artists[1][0], $makelink).' and '.display_artist($Artists[1][1], $makelink);
+				$link = display_artist($Artists[1][0], $makelink).' & '.display_artist($Artists[1][1], $makelink);
 				break;
 			default:
 				$link = 'Various Artists';
@@ -1437,7 +1437,7 @@ function display_artists($Artists, $makelink = true, $IncludeHyphen = true) {
 					$link .= ' with '.display_artist($Artists[2][0], $makelink);
 					break;
 				case 2:
-					$link .= ' with '.display_artist($Artists[2][0], $makelink).' and '.display_artist($Artists[2][1], $makelink);
+					$link .= ' with '.display_artist($Artists[2][0], $makelink).' & '.display_artist($Artists[2][1], $makelink);
 					break;
 			}
 		}

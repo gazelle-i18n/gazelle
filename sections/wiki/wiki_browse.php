@@ -46,6 +46,7 @@ if($Letter) {
 		<p>Search the wiki for user created tutorials and information.</p>
 		<form action="wiki.php" method="get">
 			<input type="hidden" name="action" value="search">
+			<input type="hidden" name="nojump" value="1" />
 			<input type="text" name="search" size="80" />
 			<input value="Search" type="submit" class="hidden" />
 		</form>

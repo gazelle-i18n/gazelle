@@ -14,7 +14,7 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
 			WHERE m.torrent_pass='".db_string($_REQUEST['torrent_pass'])."' 
 			AND m.Enabled='1'");
 		$UserInfo = $DB->next_record();
-		$Cache->cache_value('user_'.$_REQUEST['torrent_pass'], $UserInfo, 0);
+		$Cache->cache_value('user_'.$_REQUEST['torrent_pass'], $UserInfo, 3600);
 	}
 	$UserInfo = array($UserInfo);
 	list($UserID,$DownloadAlt)=array_shift($UserInfo);
@@ -34,7 +34,7 @@ if(!is_array($Info)) {
 		t.Format,
 		t.Encoding,
 		IF(t.RemasterYear=0,tg.Year,t.RemasterYear),
-		tg.ID,
+		tg.ID AS GroupID,
 		tg.Name,
 		tg.WikiImage,
 		tg.CategoryID
@@ -46,7 +46,7 @@ if(!is_array($Info)) {
 		die();
 	}
 	$Info = array($DB->next_record(MYSQLI_NUM, array(4,5,6)));
-	$Info['Artists'] = display_artists(get_artist($Info[0][4]), false, true);
+	$Info['Artists'] = display_artists(get_artist($Info[0][4],false), false, true);
 	$Cache->cache_value('torrent_download_'.$TorrentID, $Info, 0);
 }
 if(!is_array($Info[0])) {
@@ -55,50 +55,43 @@ if(!is_array($Info[0])) {
 list($Media,$Format,$Encoding,$Year,$GroupID,$Name,$Image, $CategoryID) = array_shift($Info); // used for generating the filename
 $Artists = $Info['Artists'];
 
-//Recent Snatches On User Page
+//Stupid Recent Snatches On User Page
 if($CategoryID == '1' && $Image != "") {
 	$RecentSnatches = $Cache->get_value('recent_snatches_'.$UserID);
-	array_pop($RecentSnatches);
-	array_unshift($RecentSnatches, array('ID'=>$GroupID,'Name'=>$Name,'Artist'=>$Artists,'WikiImage'=>$Image));
-	$Cache->cache_value('recent_snatches_'.$UserID, $RecentSnatches, 0);
+	if(!empty($RecentSnatches)) {
+		$Snatch = array('ID'=>$GroupID,'Name'=>$Name,'Artist'=>$Artists,'WikiImage'=>$Image);
+		if(!in_array($Snatch, $RecentSnatches)) {
+			if(count($RecentSnatches) == 5) {
+				array_pop($RecentSnatches);
+			}
+			array_unshift($RecentSnatches, $Snatch);
+		} elseif(!is_array($RecentSnatches)) {
+			$RecentSnatches = array($Snatch);
+		}
+		$Cache->cache_value('recent_snatches_'.$UserID, $RecentSnatches, 0);
+	}
 }
 
 $DB->query("INSERT INTO users_downloads (UserID, TorrentID, Time) VALUES ('$UserID', '$TorrentID', '".sqltime()."') ON DUPLICATE KEY UPDATE Time=VALUES(Time)");
 
 
 
-/*
-// Where is the .torrent file?
-$File = TORRENTS_DIRECTORY.'/'.$TorrentID.'.torrent';
-
-// Make sure file exists
-if (!is_file($File) || !is_readable($File)) { error(404); }
-
-// Open torrent file into $Torrent array
-$File = fopen($File, 'rb'); // open file for reading
-$Contents = fread($File, 10000000);
-*/
 $DB->query("SELECT File FROM torrents_files WHERE TorrentID='$TorrentID'");
 list($Contents) = $DB->next_record(MYSQLI_NUM, array(0));
-//echo $Contents;
 $Contents = unserialize(base64_decode($Contents));
 $Tor = new TORRENT($Contents, true); // New TORRENT object
-//$Tor->dump();
 // Set torrent announce URL
 $Tor->set_announce_url(ANNOUNCE_URL.'/'.$TorrentPass.'/announce');
-//$Tor->dump();
 // Remove multiple trackers from torrent
 unset($Tor->Val['announce-list']);
 // Remove web seeds (put here for old torrents not caught by previous commit
 unset($Tor->Val['url-list']);
-//die();
 // Torrent name takes the format of Artist - Album - YYYY (Media - Format - Encoding)
 
 $TorrentName='';
+$TorrentInfo='';
 
-if ($Artist != '') {
-	$TorrentName = $Artist;
-}
+$TorrentName = $Artists;
 
 $TorrentName.=$Name;
 
@@ -118,22 +111,29 @@ if ($Encoding!='') {
 
 if ($TorrentInfo!='') { $TorrentName.=' ('.$TorrentInfo.')'; }
 
-if($_GET['mode'] == 'bbb'){
+if(!empty($_GET['mode']) && $_GET['mode'] == 'bbb'){
 	$TorrentName = $Artists.' -- '.$Name;
 }
 
 if (!$TorrentName) { $TorrentName="No Name"; }
 
 if($DownloadAlt) {
-	header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.txt"');
-	header('Content-Type: text/plain');
+	header('Content-Type: text/plain; charset=utf-8');
+	if ($Browser == 'Internet Explorer') {
+		header('Content-disposition: attachment; filename="'.urlencode(file_string($TorrentName)).'.txt"');
+	} else {
+		header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.txt"');
+	}
 	//header('Content-Length: '.strlen($Tor->enc()));
 	echo $Tor->enc();
 	
 } elseif(!$DownloadAlt || $Failed) {
-	header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.torrent"');
-	header('Content-Type: application/x-bittorrent');
+	header('Content-Type: application/x-bittorrent; charset=utf-8');
+	if ($Browser == 'Internet Explorer') {
+		header('Content-disposition: attachement; filename="'.urlencode(file_string($TorrentName)).'.torrent"');
+	} else {
+		header('Content-disposition: attachement; filename="'.file_string($TorrentName).'.torrent"');
+	}
 	//header('Content-Length: '.strlen($Tor->enc()));
 	echo $Tor->enc();
 }
-?>

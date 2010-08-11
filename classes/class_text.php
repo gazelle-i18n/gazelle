@@ -129,7 +129,7 @@ class TEXT {
 			if(!empty($URLInfo['fragment'])) {
 				$URL.='#'.$URLInfo['fragment'];
 			}
-			return $URL;
+			return substr($URL,1);
 		} else {
 			return false;
 		}

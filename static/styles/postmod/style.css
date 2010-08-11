@@ -414,8 +414,12 @@ ul.thin li { margin:0px 0px; padding:0px; }
         padding: 0;
         display: block;
         width: 100%;
+    cursor: pointer;
 }
 
+#searchbars ul li ul li.highlight {
+	color: #4FD1FF;
+}
 
 #searchbars ul li form {
 	display: inline;

@@ -34,7 +34,7 @@ var json = {
 		if (typeof JSON.parse === 'function') {
 			try {
 			return JSON.parse(string);
-			}catch(e){ alert('Err: '+e.name+' - '+e.message);}
+			} catch(e) { alert('Err: '+e.name+' - '+e.message); }
 		} else {
 			return eval("(" + string + ")");
 			//return (new Function("return " + data))();
