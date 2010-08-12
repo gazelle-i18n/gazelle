@@ -8,8 +8,13 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 	<title><?=display_str($PageTitle)?></title>
 	<meta http-equiv="X-UA-Compatible" content="chrome=1;IE=edge" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/> 
 	<link rel="shortcut icon" href="favicon.ico" />
+<? if (isset($_GET['alt'])) { ?>
+	<link href="http://192.168.1.100/" rel="stylesheet" type="text/css" />
+<? } else { ?>
 	<link href="<?=STATIC_SERVER ?>styles/public/style.css?rev=4" rel="stylesheet" type="text/css" />
+<? } ?>
 	<script src="<?=STATIC_SERVER?>functions/sizzle.js" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/script_start.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/script_start.js')?>" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/class_ajax.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/class_ajax.js')?>" type="text/javascript" async="async"></script>

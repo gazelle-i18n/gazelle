@@ -187,11 +187,11 @@ function AddPollOption(id) {
 	var item = document.createElement("li");
 		var form = document.createElement("form");
 		form.method = "POST";
-			var action = document.createElement("input");
-			action.type = "hidden";
-			action.name = "authkey";
-			action.value = authkey;
-			form.appendChild(action);
+			var auth = document.createElement("input");
+			auth.type = "hidden";
+			auth.name = "auth";
+			auth.value = authkey;
+			form.appendChild(auth);
 		
 			var action = document.createElement("input");
 			action.type = "hidden";

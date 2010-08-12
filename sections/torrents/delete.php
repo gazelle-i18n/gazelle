@@ -57,9 +57,8 @@ if(check_perms('admin_reports')) {
 ?>
 <div id="all_reports" class="center" style="width: 80%; margin-left: auto; margin-right: auto">
 <?
-	include(SERVER_ROOT.'/sections/reportsv2/array.php');
-	
-	include(SERVER_ROOT.'/classes/class_text.php');
+	require(SERVER_ROOT.'/sections/reportsv2/array.php');
+	require(SERVER_ROOT.'/classes/class_text.php');
 	$Text = NEW TEXT;
 	$ReportID = 0;
 	$DB->query("SELECT
@@ -102,6 +101,7 @@ if(check_perms('admin_reports')) {
 	list($GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time, $Remastered, $RemasterTitle, 
 		$RemasterYear, $Media, $Format, $Encoding, $Size, $HasLog, $LogScore, $UploaderID, $UploaderName) = $DB->next_record();
 	
+	$Type = 'dupe'; //hardcoded default
 	
 	if (array_key_exists($Type, $Types[$CategoryID])) {
 		$ReportType = $Types[$CategoryID][$Type];
@@ -221,31 +221,27 @@ foreach ($TypeList as $Key => $Value) {
 }
 array_multisort($Priorities, SORT_ASC, $TypeList);
 
-foreach($TypeList as $Type => $Data) {
+foreach($TypeList as $IType => $Data) {
 ?>
-					<option value="<?=$Type?>"><?=$Data['title']?></option>
+					<option value="<?=$IType?>"<?=(($Type == $IType)?' selected="selected"':'')?>><?=$Data['title']?></option>
 <? } ?>
 						</select>
 						<span id="options<?=$ReportID?>">
 							<span title="Delete Torrent?">	
 								<strong>Delete</strong>
-								<input type="checkbox" name="delete" id="delete<?=$ReportID?>">
+								<input type="checkbox" name="delete" id="delete<?=$ReportID?>"<?=($ReportType['resolve_options']['delete']?' checked="checked"':'')?>>
 							</span>
 							<span title="Warning length in weeks">
 								<strong>Warning</strong>
 								<select name="warning" id="warning<?=$ReportID?>">
-<?
-for($i = 0; $i < 9; $i++) {
-?>
-								<option value="<?=$i?>"><?=$i?></option>
-<?
-}
-?>
+<? for($i = 0; $i < 9; $i++) { ?>
+								<option value="<?=$i?>"<?=(($ReportType['resolve_options']['warn'] == $i)?' selected="selected"':'')?>><?=$i?></option>
+<? } ?>
 								</select>
 							</span>
 							<span title="Remove upload privileges?">
 								<strong>Upload</strong>
-								<input type="checkbox" name="upload" id="upload<?=$ReportID?>">
+								<input type="checkbox" name="upload" id="upload<?=$ReportID?>"<?=($ReportType['resolve_options']['upload']?' checked="checked"':'')?>>
 							</span>
 						</span>
 						</td>

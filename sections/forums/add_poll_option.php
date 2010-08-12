@@ -17,11 +17,12 @@ if($DB->record_count() < 1) {
 	error(404);
 }
 
-list($Answers) = $DB->next_record(MYSQL_NUM, false);
+list($Answers) = $DB->next_record(MYSQLI_NUM, false);
 $Answers = unserialize($Answers);
 $Answers[] = $NewOption;
 $Answers = serialize($Answers);
 
 $DB->query("UPDATE forums_polls SET Answers = '".$Answers."' WHERE TopicID = ".$ThreadID);
+$Cache->delete_value('polls_'.$ThreadID);
 
 header("Location: forums.php?action=viewthread&threadid=".$ThreadID);

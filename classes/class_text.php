@@ -1,7 +1,7 @@
 <?
 class TEXT {
 	// tag=>max number of attributes
-	private $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, 'artist'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'tex'=>0
+	private $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'tex'=>0
 	);
 	private $Smileys = array(
 		':angry:'			=> 'angry.gif',
@@ -353,6 +353,9 @@ EXPLANATION OF PARSER LOGIC
 					}
 					$Array[$ArrayPos] = array('Type'=>'aud', 'Val'=>$Block);
 					break;
+				case 'user':
+					$Array[$ArrayPos] = array('Type'=>'user', 'Val'=>$Block);
+					break;
 				case 'artist':
 					$Array[$ArrayPos] = array('Type'=>'artist', 'Val'=>$Block);
 					break;
@@ -419,6 +422,9 @@ EXPLANATION OF PARSER LOGIC
 					break;
 				case 's':
 					$Str.='<span style="text-decoration: line-through">'.$this->to_html($Block['Val']).'</span>';
+					break;
+				case 'user':
+					$Str.='<a href="user.php?action=search&search='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
 					break;
 				case 'artist':
 					$Str.='<a href="artist.php?artistname='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
@@ -573,6 +579,7 @@ EXPLANATION OF PARSER LOGIC
 				case 'tex': //since this will never strip cleanly, just remove it
 					break;
 				case 'artist':
+				case 'user':
 				case 'wiki':
 				case 'pre':
 				case 'aud':

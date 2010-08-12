@@ -22,7 +22,7 @@ if (isset($_POST['Username'])) {
 		$torrent_pass=make_secret();
 
 		//Create the account
-		$DB->query("INSERT INTO users_main (Username,Email,PassHash,Secret,torrent_pass,Enabled,PermissionID) VALUES ('".db_string($Username)."','".db_string($Email)."','".db_string(make_hash($Password, $Secret))."','".db_string($Secret)."','".db_string($torrent_pass)."','1','".USER."')");
+		$DB->query("INSERT INTO users_main (Username,Email,PassHash,Secret,torrent_pass,Enabled,PermissionID, Language) VALUES ('".db_string($Username)."','".db_string($Email)."','".db_string(make_hash($Password, $Secret))."','".db_string($Secret)."','".db_string($torrent_pass)."','1','".USER."', 'en')");
 		
 		//Increment site user count
 		$Cache->increment('stats_user_count');
@@ -74,8 +74,8 @@ if (isset($_POST['Username'])) {
 	?>
 	<h2>Create a User</h2>
 	
-	<form method="post" action="" name="user_create">
-		<input type="hidden" name="action" value="user_create" />
+	<form method="post" action="" name="create_user">
+		<input type="hidden" name="action" value="create_user" />
 		<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 		<table cellpadding="2" cellspacing="1" border="0" align="center">
 		<tr valign="top">

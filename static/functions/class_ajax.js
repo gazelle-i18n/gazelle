@@ -21,7 +21,6 @@
 	
 */
 "use strict";
-
 var json = {
 	encode: function (object) {
 		try {
@@ -31,10 +30,8 @@ var json = {
 		}
 	},
 	decode: function (string) {
-		if (typeof JSON.parse === 'function') {
-			try {
+		if (window.JSON && JSON.parse) {
 			return JSON.parse(string);
-			} catch(e) { alert('Err: '+e.name+' - '+e.message); }
 		} else {
 			return eval("(" + string + ")");
 			//return (new Function("return " + data))();

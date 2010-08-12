@@ -11,8 +11,12 @@ if(!empty($_GET['e']) && in_array($_GET['e'],$Errors)) {
 	include($_GET['e'].'.php');
 }
 
-if(!empty($Error)) {
-	switch ($Error) {
+if(!empty($_GET['e'])) {
+	switch ($_GET['e']) {
+		case 'js':
+			send_irc("PRIVMSG #what.cd-laboratory :JS error \"'".$_GET['report']."\" by ".(!empty($LoggedUser['ID']) ? "http://".NONSSL_SITE_URL."/user.php?id=".$LoggedUser['ID'] ." (".$LoggedUser['Username'].")" : $_SERVER['REMOTE_ADDR']." (".geoip($_SERVER['REMOTE_ADDR']).")")." accessing http://".NONSSL_SITE_URL."".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER'])? " from ".$_SERVER['HTTP_REFERER'] : ''));
+			die();
+			break;
 		case '403':
 			$Title = "Error 403";
 			$Description = "You just tried to go to a page that you don't have enough permission to view.";
@@ -31,9 +35,6 @@ if(!empty($Error)) {
 			$Title = "Unexpected Error";
 			$Description = "You have encountered an unexpected error.";
 			break;
-		default:
-			$Title = 'Error';
-			$Description = $Error;
 	}
 
 	if(empty($Ajax)) {

@@ -440,7 +440,7 @@ ul#userinfo_username {
         margin: 0;
         padding: 3px;
         display: block;
-        width: 100%;
+	cursor: pointer;
 }
 
 #searchbars ul li ul li.highlight {

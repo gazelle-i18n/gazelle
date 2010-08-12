@@ -345,6 +345,7 @@ show_message();
 			</table>
 		</form>
 		<script type="text/javascript" >ToggleLogCue(); <?=$NewRequest ? "Calculate();" : '' ?></script>
+		<script type="text/javascript">Categories();</script>
 	</div>
 </div>
 <?
