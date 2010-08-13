@@ -21,6 +21,11 @@ https://www.what.cd/ -> https://ssl.what.cd/
 http://ssl.what.cd/ -> https://ssl.what.cd/
 https://what.cd/ -> http://what.cd/ */
 
+require(SERVER_ROOT.'/classes/class_proxies.php');
+if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && in_array($_SERVER['REMOTE_ADDR'],$AllowedProxies,true)) {
+	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
+
 $SSL = ($_SERVER['SERVER_PORT'] == 443);
 
 if (!isset($argv) && !empty($_SERVER['HTTP_HOST'])) { //Skip this block if running from cli or if the browser is old and shitty

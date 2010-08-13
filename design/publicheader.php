@@ -11,9 +11,9 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/> 
 	<link rel="shortcut icon" href="favicon.ico" />
 <? if (isset($_GET['alt'])) { ?>
-	<link href="http://192.168.1.100/" rel="stylesheet" type="text/css" />
+	<link href="<?=STATIC_SERVER ?>styles/iphone.css" rel="stylesheet" type="text/css" />
 <? } else { ?>
-	<link href="<?=STATIC_SERVER ?>styles/public/style.css?rev=4" rel="stylesheet" type="text/css" />
+	<link href="<?=STATIC_SERVER ?>styles/public/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public/style.css')?>" rel="stylesheet" type="text/css" />
 <? } ?>
 	<script src="<?=STATIC_SERVER?>functions/sizzle.js" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/script_start.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/script_start.js')?>" type="text/javascript"></script>
@@ -30,11 +30,11 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 	<tr>
 		<td align="center" valign="middle">
 			<div id="logo">
-				<a href="index.php">Home</a>
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="login.php">Login</a>
+				<ul>
+					<li><a href="index.php">Home</a></li>
+					<li><a href="login.php">Login</a></li>
 <? if (OPEN_REGISTRATION) { ?> 
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<a href="register.php">Register</a>
+					<li><a href="register.php">Register</a></li>
+				</ul>
 <? } ?> 
 			</div>

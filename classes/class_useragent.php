@@ -131,6 +131,9 @@ class USER_AGENT {
 				break;
 			}
 		}
+		if ($Return == 'Opera' && isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR']) {
+			send_irc('PRIVMSG #what.cd-laboratory :Possible Opera Turbo IP '.$_SERVER['REMOTE_ADDR']);
+		}
 		if (strpos($UserAgentString, 'Mobile') || strpos($UserAgentString, 'Device') || strpos($UserAgentString, 'Mobi') || strpos($UserAgentString, 'Mini')) {
 			$Return .= ' Mobile';
 		}

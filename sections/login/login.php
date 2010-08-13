@@ -31,7 +31,7 @@ if(strtotime($BannedUntil)<time() && !$BanID) {
 			<td></td>
 			<td>
 				<input type="checkbox" id="keeplogged" name="keeplogged" value="1"<? if(isset($_REQUEST['keeplogged']) && $_REQUEST['keeplogged']) { ?> checked="checked"<? } ?> />
-				<label for="keeplogged">Keep me logged in.</label>
+				<label for="keeplogged">Remember me</label>
 			</td>
 			<td><input type="submit" name="login" value="Login" class="submit" /></td>
 		</tr>

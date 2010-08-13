@@ -77,6 +77,27 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 	background-repeat: no-repeat;
 	background-position: top left;
 	padding: 50px 0px 0px 0px;
+	text-align: center;
+}
+
+#logo ul {
+		float: left;
+		left: 50%;
+		margin: 0 auto;
+		position: relative;
+}
+
+#logo ul li {
+		float: left;
+		position: relative;
+		right: 50%;
+	margin: 0 1em 0 0;
+	list-style: none;
+}
+
+.poetry {
+	width: 320px; 
+	text-align: justify;
 }
 
 .hidden {
