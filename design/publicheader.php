@@ -39,10 +39,10 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 		<td align="center" valign="middle">
 			<div id="logo">
 				<ul>
-					<li><a href="index.php<?=($Lang != DEFAULT_LOCALE ? '?lang='.$Lang : '')?>">e</a></li>
-					<li><a href="login.php<?=($Lang != DEFAULT_LOCALE ? '?lang='.$Lang : '')?>">e</a></li>
+					<li><a href="index.php<?=($Lang != DEFAULT_LOCALE ? '?lang='.$Lang : '')?>">Home</a></li>
+					<li><a href="login.php<?=($Lang != DEFAULT_LOCALE ? '?lang='.$Lang : '')?>">Login</a></li>
 <? if (OPEN_REGISTRATION) { ?> 
-					<li><a href="register.php<?=($Lang != DEFAULT_LOCALE ? '?lang='.$Lang : '')?>">e</a></li>
+					<li><a href="register.php<?=($Lang != DEFAULT_LOCALE ? '?lang='.$Lang : '')?>">Register</a></li>
 				</ul>
 <? } ?> 
 			</div>
