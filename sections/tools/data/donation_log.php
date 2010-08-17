@@ -11,6 +11,7 @@ $sql = "SELECT
 	SQL_CALC_FOUND_ROWS
 	d.UserID, 
 	d.Amount, 
+	d.Currency, 
 	d.Email, 
 	m.Username,
 	m.PermissionID,
@@ -88,11 +89,11 @@ if (empty($_GET['search']) && !isset($_GET['page'])) {
 	</tr>
 <?
 	foreach($Donations as $Donation) {
-		list($UserID, $Amount, $Email, $Username, $PermissionID, $Enabled, $Donor, $Warned, $DonationTime) = $Donation;
+		list($UserID, $Amount, $Currency, $Email, $Username, $PermissionID, $Enabled, $Donor, $Warned, $DonationTime) = $Donation;
 ?>
 	<tr>
 		<td><?=format_username($UserID, $Username, $Donor, $Warned, $Enabled, $PermissionID)?></td>
-		<td><?=PAYPAL_SYMBOL?> <?=display_str($Amount)?></td>
+		<td><?=display_str($Amount)?> <?=$Currency?></td>
 		<td><?=display_str($Email)?></td>
 		<td><?=time_diff($DonationTime)?></td>
 	</tr>

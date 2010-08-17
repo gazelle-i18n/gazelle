@@ -73,13 +73,13 @@ show_header('Forums > '. $Forums[$ForumID]['Name']);
 		[<a href="forums.php?action=new&amp;forumid=<?=$ForumID?>">New Thread</a>]
 	</div>
 <? } ?>
-	<div class="linkbox">
+	<div class="linkbox pager">
 <?
 $Pages=get_pages($Page,$Forums[$ForumID]['NumTopics'],TOPICS_PER_PAGE,9);
 echo $Pages;
 ?>
 	</div>
-	<table width="100%">
+	<table class="forum_list" width="100%">
 		<tr class="colhead">
 			<td style="width:2%;"></td>
 			<td>Latest</td>
@@ -154,7 +154,7 @@ if (count($Forum) == 0) {
 	<tr class="row<?=$Row?>">
 		<td class="<?=$Read?>" title="<?=ucwords(str_replace('_',' ',$Read))?>"></td>
 		<td>
-			<span style="float:left;">
+			<span style="float:left;" class="last_topic">
 <?
 		$TopicLength=75-(2*count($PageLinks));
 		unset($PageLinks);
@@ -169,7 +169,7 @@ if (count($Forum) == 0) {
 				<a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;page=<?=$LastRead[$TopicID]['Page']?>#post<?=$LastRead[$TopicID]['PostID']?>"></a>
 			</span>
 <?		} ?>
-			<span style="float:right;">
+			<span style="float:right;" class="last_poster">
 				by <?=format_username($LastAuthorID, $LastAuthorName)?> <?=time_diff($LastTime,1)?>
 			</span>
 		</td>
@@ -179,7 +179,7 @@ if (count($Forum) == 0) {
 <?	}
 } ?>
 </table>
-	<div class="linkbox">
+	<div class="linkbox pager">
 		<?=$Pages?>
 	</div>
 	<div class="linkbox">[<a href="forums.php?action=catchup&amp;forumid=<?=$ForumID?>&amp;auth=<?=$LoggedUser['AuthKey']?>">Catch up</a>]</div>

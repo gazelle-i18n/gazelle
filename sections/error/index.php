@@ -8,11 +8,11 @@ function notify ($Channel, $Message) {
 $Errors = array('403','404','413','504');
 
 if(!empty($_GET['e']) && in_array($_GET['e'],$Errors)) {
+	//Webserver error i.e. http://sitename/madeupdocument.php
 	include($_GET['e'].'.php');
-}
-
-if(!empty($_GET['e'])) {
-	switch ($_GET['e']) {
+} else {
+	//Gazelle error (Come from the error() function)
+	switch ($Error) {
 		case 'js':
 			send_irc("PRIVMSG #what.cd-laboratory :JS error \"'".$_GET['report']."\" by ".(!empty($LoggedUser['ID']) ? "http://".NONSSL_SITE_URL."/user.php?id=".$LoggedUser['ID'] ." (".$LoggedUser['Username'].")" : $_SERVER['REMOTE_ADDR']." (".geoip($_SERVER['REMOTE_ADDR']).")")." accessing http://".NONSSL_SITE_URL."".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER'])? " from ".$_SERVER['HTTP_REFERER'] : ''));
 			die();
@@ -32,9 +32,14 @@ if(!empty($_GET['e'])) {
 			notify(STATUS_CHAN,'PHP-0');
 			break;
 		case '-1':
-			$Title = "Unexpected Error";
-			$Description = "You have encountered an unexpected error.";
-			break;
+		default:
+			if(!empty($Error)) {
+				$Title = 'Error';
+				$Description = $Error;
+			} else {
+				$Title = "Unexpected Error";
+				$Description = "You have encountered an unexpected error.";
+			}
 	}
 
 	if(empty($Ajax)) {

@@ -105,12 +105,8 @@ function Delete(post) {
 
 function Quick_Preview() {
 	var quickreplybuttons;
-	if(window.location.pathname.indexOf('forums.php') == -1) {
-		quickreplybuttons = $('#quickreplybuttons');
-	} else {
-		quickreplybuttons = $('#quickreplybuttonstoggle');
-	}
-	quickreplybuttons.raw().innerHTML = "<input type=\"button\" value=\"Editor\" onclick=\"Quick_Edit();\" /><input type=\"submit\" value=\"Submit\" />";
+	$('#post_preview').raw().value = "Make changes";
+	$('#post_preview').raw().preview = true;
 	ajax.post("ajax.php?action=preview","quickpostform", function(response){
 		$('#quickreplypreview').show();
 		$('#contentpreview').raw().innerHTML = response;
@@ -120,12 +116,8 @@ function Quick_Preview() {
 
 function Quick_Edit() {
 	var quickreplybuttons;
-	if(window.location.pathname.indexOf('forums.php') == -1) {
-		quickreplybuttons = $('#quickreplybuttons');
-	} else {
-		quickreplybuttons = $('#quickreplybuttonstoggle');
-	}
-	quickreplybuttons.raw().innerHTML = "<input type=\"button\" value=\"Preview\" onclick=\"Quick_Preview();\" /><input type=\"submit\" value=\"Submit\" />";
+	$('#post_preview').raw().value = "Preview";
+	$('#post_preview').raw().preview = false;
 	$('#quickreplypreview').hide();
 	$('#quickreplytext').show();
 }

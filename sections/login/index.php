@@ -1,4 +1,5 @@
 <?
+
 /*-- TODO ---------------------------//
 Add the javascript validation into the display page using the class
 //-----------------------------------*/
@@ -276,11 +277,14 @@ else {
 								));
 						$Cache->commit_transaction(0);
 						
-						$DB->query("UPDATE users_main 
+						$Sql = "UPDATE users_main 
 							SET 
-							LastLogin='".sqltime()."',
-							LastAccess='".sqltime()."' 
-							WHERE ID='".db_string($UserID)."'");
+								LastLogin='".sqltime()."',
+								LastAccess='".sqltime()."'";
+						
+						$Sql .= "	WHERE ID='".db_string($UserID)."'";
+
+						$DB->query($Sql);
 						
 						if($Attempts > 0) {
 							$DB->query("DELETE FROM login_attempts WHERE ID='".db_string($AttemptID)."'");

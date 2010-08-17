@@ -5,7 +5,7 @@ show_header('Uploading Rules');
 <!-- Uploading Rules -->
 <div class="thin">
 <!-- Uploading Rules Index Links -->
-		<h2 id="Index">Index</h2>
+		<h4 id="Index">Index</h4>
 	
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul> 
@@ -82,16 +82,16 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 <!-- Actual Uploading Rules -->	
-	<h2 id="Intro"><a href="#Introk"><strong>&uarr;</strong></a> Introduction</h2>
+	<h4 id="Intro"><a href="#Introk"><strong>&uarr;</strong></a> Introduction</h4>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<p>The upload rules below appear overwhelmingly long and detailed at first glance. However, the length is for explaining the rules clearly and thoroughly. A summary of each rule is in <strong>bold text</strong> before the actual rule for easier reading. You may also find the corresponding rule sections in the <a href="#Index">Index</a>. The corresponding <a href="#"><strong>&uarr;</strong></a> (move one level up) and <a href="#Index">rule section links</a> (move down into the document) help provide quick navigation.</p>		
 		<p>If you are still unsure of what a rule means before uploading something, PLEASE ask at any of the following forms of site user support: <a href="staff.php">First-Line Support</a>, <a href="forums.php?action=viewforum&amp;forumid=8">The Help Forum</a>, <a href="wiki.php?action=article&amp;name=IRC">#what.cd-help on IRC</a>. Privately message a <a href="staff.php">moderator</a> on the site if other support has directed you to a moderator for resolution or support has been unhelpful in your case. If you find any dead links in the upload rules, let a <a href="staff.php">staff member</a> know so it can be promptly fixed.</p>
 
 	</div>
 	
-	<h2 id="h1"><a href="#h1k"><strong>&uarr;</strong></a> <a href="#h1">1.</a> Uploading Rules</h2>
+	<h4 id="h1"><a href="#h1k"><strong>&uarr;</strong></a> <a href="#h1">1.</a> Uploading Rules</h4>
 	
-	<h3 id="h1.1"><a href="#h1.1k"><strong>&uarr;</strong></a> <a href="#h1.1">1.1.</a> General</h3>
+	<h5 id="h1.1"><a href="#h1.1k"><strong>&uarr;</strong></a> <a href="#h1.1">1.1.</a> General</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r1.1.1"><a href="#h1.1"><strong>&uarr;_</strong></a> <a href="#r1.1.1">1.1.1.</a> <strong>Only music, applications, comic books, eBooks, comedy (audio), audiobooks, and eLearning videos are allowed here.</strong>
@@ -118,7 +118,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h1.2"><a href="#h1.2k"><strong>&uarr;</strong></a> <a href="#h1.2">1.2.</a> Specifically Banned</h3>
+	<h5 id="h1.2"><a href="#h1.2k"><strong>&uarr;</strong></a> <a href="#h1.2">1.2.</a> Specifically Banned</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r1.2.1"><a href="#h1.2"><strong>&uarr;_</strong></a> <a href="#r1.2.1">1.2.1.</a> <strong>Anything not specifically allowed below.</strong> If you have any doubts, ask before uploading.
@@ -143,7 +143,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h1.3"><a href="#h1.3k"><strong>&uarr;</strong></a> <a href="#h1.3">1.3.</a> Scene Uploads</h3>
+	<h5 id="h1.3"><a href="#h1.3k"><strong>&uarr;</strong></a> <a href="#h1.3">1.3.</a> Scene Uploads</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 
 		<ul>
@@ -168,9 +168,9 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h2 id="h2"><a href="#h2k"><strong>&uarr;</strong></a> <a href="#h2">2.</a> Music</h2>
+	<h4 id="h2"><a href="#h2k"><strong>&uarr;</strong></a> <a href="#h2">2.</a> Music</h4>
 	
-	<h3 id="h2.1"><a href="#h2.1k"><strong>&uarr;</strong></a> <a href="#h2.1">2.1.</a> General</h3>
+	<h5 id="h2.1"><a href="#h2.1k"><strong>&uarr;</strong></a> <a href="#h2.1">2.1.</a> General</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r2.1.1"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.1">2.1.1.</a> <strong>The only formats allowed for music are those listed below:</strong>
@@ -251,7 +251,7 @@ show_header('Uploading Rules');
 
 	</div>
 	
-	<h3 id="h2.2"><a href="#h2.2k"><strong>&uarr;</strong></a> <a href="#h2.2">2.2.</a> Duplicates &amp; Trumping</h3>
+	<h5 id="h2.2"><a href="#h2.2k"><strong>&uarr;</strong></a> <a href="#h2.2">2.2.</a> Duplicates &amp; Trumping</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r2.2.0"> <a href="#r2.2.0">2.2.0.</a> <strong>Overview</strong>
@@ -363,7 +363,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h2.3"><a href="#h2.3k"><strong>&uarr;</strong></a> <a href="#h2.3">2.3.</a> Formatting</h3>
+	<h5 id="h2.3"><a href="#h2.3k"><strong>&uarr;</strong></a> <a href="#h2.3">2.3.</a> Formatting</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r2.3.1"><a href="#h2.3"><strong>&uarr;_</strong></a> <a href="#r2.3.1">2.3.1.</a> <strong>Music releases must be in a directory containing the music.</strong> No music contained in an archive (e.g. .rar, .zip, .tar, .iso). Scene archives of music must be unpacked and not labeled as "scene." <u>Exceptions</u>: There is no need for a directory for a torrent that consists of a single file (and is not an archive!).
@@ -414,10 +414,10 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h2 id="h3"><a href="#h3k"><strong>&uarr;</strong></a> <a href="#h3">3.</a> Applications</h2>
+	<h4 id="h3"><a href="#h3k"><strong>&uarr;</strong></a> <a href="#h3">3.</a> Applications</h4>
 
 	
-	<h3 id="h3.1"><a href="#h3.1k"><strong>&uarr;</strong></a> <a href="#h3.1">3.1.</a> General</h3>
+	<h5 id="h3.1"><a href="#h3.1k"><strong>&uarr;</strong></a> <a href="#h3.1">3.1.</a> General</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r3.1.1"><a href="#h3.1"><strong>&uarr;_</strong></a> <a href="#r3.1.1">3.1.1.</a> <strong>App releases can be either a torrent of a directory or an archive.</strong> <u>Exceptions:</u> Only scene released applications may be archived and must not be password protected. If archives were originally password protected and had the protection removed, they cannot be represented as official scene releases. The file hashes between protected and unprotected archives are different, so it counts as a modification.
@@ -454,7 +454,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h3.2"><a href="#h3.2k"><strong>&uarr;</strong></a> <a href="#h3.2">3.2.</a> Duplicates &amp; Trumping</h3>
+	<h5 id="h3.2"><a href="#h3.2k"><strong>&uarr;</strong></a> <a href="#h3.2">3.2.</a> Duplicates &amp; Trumping</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r3.2.1"><a href="#h3.2"><strong>&uarr;_</strong></a> <a href="#r3.2.1">3.2.1.</a> <strong>Applications of the same version numbers are dupes.</strong> An application may have older versions than those already uploaded. Those are not dupes. Only identical versions are duplicates.
@@ -470,9 +470,9 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h2 id="h4"><a href="#h4k"><strong>&uarr;</strong></a> <a href="#h4">4.</a> Comic Books</h2>
+	<h4 id="h4"><a href="#h4k"><strong>&uarr;</strong></a> <a href="#h4">4.</a> Comic Books</h4>
 
-	<h3 id="h4.1"><a href="#h4.1k"><strong>&uarr;</strong></a> <a href="#h4.1">4.1.</a> General</h3>
+	<h5 id="h4.1"><a href="#h4.1k"><strong>&uarr;</strong></a> <a href="#h4.1">4.1.</a> General</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 
@@ -495,7 +495,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h4.2"><a href="#h4.2k"><strong>&uarr;</strong></a> <a href="#h4.2">4.2.</a> Multi-comic</h3>
+	<h5 id="h4.2"><a href="#h4.2k"><strong>&uarr;</strong></a> <a href="#h4.2">4.2.</a> Multi-comic</h5>
 
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
@@ -519,7 +519,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h4.3"><a href="#h4.3k"><strong>&uarr;</strong></a> <a href="#h4.3">4.3.</a> Duplicates &amp; Trumping</h3>
+	<h5 id="h4.3"><a href="#h4.3k"><strong>&uarr;</strong></a> <a href="#h4.3">4.3.</a> Duplicates &amp; Trumping</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r4.3.1"><a href="#h4.3"><strong>&uarr;_</strong></a> <a href="#r4.3.1">4.3.1.</a> <strong>A dupe of a single comic is defined as two scans of the same book by the same scanner, where the same pages have been scanned.</strong> <u>Exceptions:</u> The following examples are NOT dupes: 
@@ -547,7 +547,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h3 id="h4.4"><a href="#h4.4k"><strong>&uarr;</strong></a> <a href="#h4.4">4.4.</a> Formatting</h3>
+	<h5 id="h4.4"><a href="#h4.4k"><strong>&uarr;</strong></a> <a href="#h4.4">4.4.</a> Formatting</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 
 		<ul>
@@ -562,7 +562,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 
-	<h2 id="h5"><a href="#h5k"><strong>&uarr;</strong></a> <a href="#h5">5.</a> eBooks, eLearning Books &amp; Sheet Music</h2>
+	<h4 id="h5"><a href="#h5k"><strong>&uarr;</strong></a> <a href="#h5">5.</a> eBooks, eLearning Books &amp; Sheet Music</h4>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 
@@ -583,7 +583,7 @@ show_header('Uploading Rules');
 		</ul>
 	</div>
 	
-	<h2 id="h6"><a href="#h6k"><strong>&uarr;</strong></a> <a href="#h6">6.</a> Comedy (Audio) &amp; Audio Books</h2>
+	<h4 id="h6"><a href="#h6k"><strong>&uarr;</strong></a> <a href="#h6">6.</a> Comedy (Audio) &amp; Audio Books</h4>
 
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
@@ -621,7 +621,7 @@ show_header('Uploading Rules');
 	</div>
 
 	
-	<h2 id="h7"><a href="#h7k"><strong>&uarr;</strong></a> <a href="#h7">7.</a> eLearning Videos</h2>
+	<h4 id="h7"><a href="#h7k"><strong>&uarr;</strong></a> <a href="#h7">7.</a> eLearning Videos</h4>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
 			<li id="r7.1"><a href="#h7"><strong>&uarr;_</strong></a> <a href="#r7.1">7.1.</a> <strong>The eLearning Videos category is for tutorial videos of specific topics only.</strong> Any video clips mentioned in <a href="#h1.2">Section 1.2.</a> cannot be uploaded to the eLearning Videos category. 

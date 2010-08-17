@@ -210,7 +210,10 @@ if($DownloadAlt != $LoggedUser['DownloadAlt']) {
 }
 
 $Cache->begin_transaction('user_info_'.$UserID);
-$Cache->update_row(false, array('Avatar'=>$_POST['avatar']));
+$Cache->update_row(false, array(
+		'Avatar'=>$_POST['avatar']
+
+));
 $Cache->commit_transaction(0);
 
 $Cache->begin_transaction('user_info_heavy_'.$UserID);
@@ -233,8 +236,9 @@ $SQL="UPDATE users_main AS m JOIN users_info AS i ON m.ID=i.UserID SET
 	i.Info='".db_string($_POST['info'])."',
 	i.DownloadAlt='$DownloadAlt',
 	m.Email='".db_string($_POST['email'])."',
-	m.IRCKey='".db_string($_POST['irckey'])."',
-	m.Paranoia='".db_string($_POST['paranoia'])."'";
+	m.IRCKey='".db_string($_POST['irckey'])."',";
+
+$SQL .=	"m.Paranoia='".db_string($_POST['paranoia'])."'";
 
 if ($ResetPassword) {
 	$Secret=make_secret();

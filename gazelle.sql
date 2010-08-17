@@ -1113,6 +1113,7 @@ CREATE TABLE `users_main` (
   `CookieID` varchar(32) DEFAULT NULL,
   `RequiredRatio` double(10,8) NOT NULL DEFAULT '0.00000000',
   `RequiredRatioWork` double(10,8) NOT NULL DEFAULT '0.00000000',
+  `Language` char(2) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Username` (`Username`),
   KEY `Email` (`Email`),

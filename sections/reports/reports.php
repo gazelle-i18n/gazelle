@@ -2,7 +2,7 @@
 /************************************************************************
 
  ************************************************************************/
-if(!check_perms('admin_reports')) {
+if(!check_perms('admin_reports') && !check_perms('project_team')) {
 	error(404);
 }
 
@@ -18,7 +18,36 @@ include(SERVER_ROOT.'/sections/reports/array.php');
 // Header
 show_header('Reports');
 
-$Reports = $DB->query("SELECT SQL_CALC_FOUND_ROWS r.ID, r.UserID, um.Username, r.ThingID, r.Type, r.ReportedTime, r.Reason FROM reports AS r JOIN users_main AS um ON r.UserID=um.ID WHERE Status='New' ORDER BY ReportedTime DESC LIMIT ".$Limit);
+if(empty($_GET['view'])) {
+	$Where = "Status='New'";
+} else {
+	switch($_GET['view']) {
+		case 'old' :
+			$Where = "Status='Resolved'";
+			break;
+		default : 
+			error(404);
+			break;
+	}
+}
+
+if(!check_perms('admin_reports')) {
+	$Where .= " AND Type = 'request_update'";
+}
+
+$Reports = $DB->query("SELECT SQL_CALC_FOUND_ROWS 
+		r.ID, 
+		r.UserID,
+		um.Username, 
+		r.ThingID, 
+		r.Type, 
+		r.ReportedTime, 
+		r.Reason 
+	FROM reports AS r 
+		JOIN users_main AS um ON r.UserID=um.ID 
+	WHERE ".$Where." 
+	ORDER BY ReportedTime 
+	DESC LIMIT ".$Limit);
 
 // Number of results (for pagination)
 $DB->query('SELECT FOUND_ROWS()');
@@ -33,6 +62,7 @@ $DB->set_query_id($Reports);
 <h2>Active Reports</h2>
 <div class="linkbox">
 	<a href="reports.php">New</a> |
+	<a href="reports.php?view=old">Old</a> |
 	<a href="reports.php?action=stats">Stats</a>
 </div>
 <div class="linkbox">
@@ -76,6 +106,7 @@ while(list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $
 			}
 			break;
 		case "request" :
+		case "request_update" :
 			$DB->query("SELECT Title FROM requests WHERE ID=".$ThingID);
 			if($DB->record_count() < 1) {
 				echo "No request with the reported ID found";

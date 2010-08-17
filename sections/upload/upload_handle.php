@@ -11,6 +11,7 @@ require(SERVER_ROOT.'/classes/class_torrent.php');
 include(SERVER_ROOT.'/classes/class_validate.php');
 include(SERVER_ROOT.'/classes/class_feed.php');
 include(SERVER_ROOT.'/classes/class_text.php');
+include(SERVER_ROOT.'/sections/torrents/functions.php');
 
 enforce_login();
 authorize();
@@ -490,25 +491,6 @@ $LogName .= $Properties['Title'];
 
 //For notifications--take note now whether it's a new group
 $IsNewGroup = !$GroupID;
-if(!$IsNewGroup) {
-	include(SERVER_ROOT.'/sections/torrents/functions.php');
-	$GroupInfo = get_group_info($GroupID);
-
-	$UsedFormats = array();
-	$UsedBitrates = array();
-	$UsedMedia = array();
-
-	foreach($GroupInfo[1] as $TorrentInfo) {
-		$UsedFormats[] = $TorrentInfo['Format'];
-		$UsedBitrates[] = $TorrentInfo['Encoding'];
-		$UsedMedia[] = $TorrentInfo['Media'];
-	}
-
-	$NewFormat = !in_array($Properties['Format'], $UsedFormats);
-	$NewBitrate = !in_array($Properties['Encoding'], $UsedBitrates);
-	$NewMedia = !in_array($Properties['Media'], $UsedMedia);
-
-}
 
 //----- Start inserts
 if(!$GroupID && $Type == 'Music') {
@@ -708,6 +690,24 @@ send_irc('PRIVMSG #'.NONSSL_SITE_URL.'-announce-ssl :'.$AnnounceSSL);
 //send_irc('PRIVMSG #'.NONSSL_SITE_URL.'-announce :'.html_entity_decode($Announce));
 
 // Manage notifications
+$UsedFormatBitrates = array();
+
+if(!$IsNewGroup) {
+	// maybe there are torrents in the same release as the new torrent. Let's find out (for notifications)
+	$GroupInfo = get_group_info($GroupID);
+
+	foreach($GroupInfo[1] as $TorrentInfo) {
+		if (($TorrentInfo['Media'] == $Properties['Media'])
+		    && ($TorrentInfo['Remastered'] == $Properties['Remastered'])
+		    && ($TorrentInfo['RemasterYear'] == $Properties['RemasterYear'])
+		    && ($TorrentInfo['RemasterTitle'] == $Properties['RemasterTitle'])
+		    && ($TorrentInfo['RemasterRecordLabel'] == $Properties['RemasterRecordLabel'])
+		    && ($TorrentInfo['RemasterCatalogueNumber'] == $Properties['RemasterCatalogueNumber'])) {
+			$UsedFormatBitrates[] = array('format' => $TorrentInfo['Format'], 'bitrate' => $TorrentInfo['Encoding']);
+		}
+	}
+}
+
 
 // For RSS
 $Item = $Feed->item($Title, $Text->strip_bbcode($Body), 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID, $LoggedUser['Username'], 'torrents.php?id='.$GroupID, trim($Properties['TagList']));
@@ -767,83 +767,37 @@ if($Properties['ReleaseType']) {
 
 /*
 	Notify based on the following:
-		1. It's a new group, everyone get's notified.
-		2. It's not a new group, but they aren't looking for 'NewGroupsOnly'.
-		3. It's not a new group AND it's the first thing that matches this filter in that group.
+		1. The torrent must match the formatbitrate filter on the notification
+		2. If they set NewGroupsOnly to 1, it must also be the first torrent in the group to match the formatbitrate filter on the notification
 */
 
-if($IsNewGroup) {
-	//1. It's a new group, everyone get's notified.
 
-	if($Properties['Format']) {
-		$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
-	} else {
-		$SQL.=" AND (Formats='') ";
-	}
-
-	if($_POST['bitrate']) {
-		$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='') ";
-	} else {
-		$SQL.=" AND (Encodings='') ";
-	}
-
-	if($Properties['Media']) {
-		$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
-	} else {
-		$SQL.=" AND (Media='') ";
-	}
+if($Properties['Format']) {
+       $SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
 } else {
-	//2. It's not a new group, but they aren't looking for 'NewGroupsOnly'.
-
-	$SQL .= "AND ((NewGroupsOnly = '0' ";
-
-	if($Properties['Format']) {
-		$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
-	} else {
-		$SQL.=" AND (Formats='') ";
-	}
-
-	if($_POST['bitrate']) {
-		$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='') ";
-	} else {
-		$SQL.=" AND (Encodings='') ";
-	}
-
-	if($Properties['Media']) {
-		$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
-	} else {
-		$SQL.=" AND (Media='') ";
-	}
-	
-	//3. It's not a new group AND it's the first thing that matches this filter in that group.
-	$SQL .= ") OR ( NewGroupsOnly = '1' ";
-	
-	if($Properties['Format']) {
-		if ($NewFormat) {
-			$SQL.=" AND (Formats LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
-		} else {
-			$SQL.=" AND (Formats NOT LIKE '%|".db_string(trim($Properties['Format']))."|%' OR Formats='') ";
-		}
-	}
-
-	if($_POST['bitrate']) {
-		if($NewBitrate) {
-			$SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='')";
-		} else {
-			$SQL.=" AND (Encodings NOT LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='')";
-		}
-	}
-
-	if($Properties['Media']) {
-		if($NewMedia) {
-			$SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
-		} else {
-			$SQL.=" AND (Media NOT LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
-		}
-	}
-
-	$SQL .= "))";
+       $SQL.=" AND (Formats='') ";
 }
+
+if($_POST['bitrate']) {
+       $SQL.=" AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings='') ";
+} else {
+       $SQL.=" AND (Encodings='') ";
+}
+
+// Either they aren't using NewGroupsOnly
+$SQL .= "AND ((NewGroupsOnly = '0' ";
+// Or this is the first torrent in the group to match the formatbitrate filter
+$SQL .= ") OR ( NewGroupsOnly = '1' ";
+
+// Test the filter doesn't match any previous formatbitrate in the group
+foreach ($UsedFormatBitrates as $UsedFormatBitrate) {
+	$FormatReq = "(Formats LIKE '%|".db_string($UsedFormatBitrate['format'])."|%' OR Formats = '') ";
+	$BitrateReq = "(Encodings LIKE '%|".db_string($UsedFormatBitrate['bitrate'])."|%' OR Encodings = '') ";
+	$SQL .= "AND (NOT($FormatReq AND $BitrateReq)) ";
+}
+ 
+$SQL .= "))";
+
 
 if($Properties['Year'] && $Properties['RemasterYear']) {
 	$SQL.=" AND (('".db_string(trim($Properties['Year']))."' BETWEEN FromYear AND ToYear)

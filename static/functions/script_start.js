@@ -5,6 +5,16 @@ String.prototype.trim = function () {
 	return this.replace(/^\s+|\s+$/g, '');	
 };
 
+var listener = {
+	set: function (el,type,callback) {
+		if (document.addEventListener) {
+			el.addEventListener(type, callback, false);
+		} else {
+			el.attachEvent('on'+type, callback);
+		}
+	}
+};
+
 /* Site wide functions */
 
 //PHP ports

@@ -36,7 +36,7 @@ if (!$Support = $Cache->get_value('staff')) {
 	<div class="box pad" style="padding:0px 10px 10px 10px;">
 		<h3>First-line Support</h3>
 		<p><strong>These users are not official staff members</strong> - they're users who have volunteered their time to help people in need. Please treat them with respect and read <a href="wiki.php?action=article&amp;id=260">this</a> before contacting them. </p>
-		<table width="100%">
+		<table class="staff" width="100%">
 			<tr class="colhead">
 				<td style="width:130px;">Username</td>
 				<td style="width:130px;">Last seen</td>
@@ -80,7 +80,7 @@ if (!$Support = $Cache->get_value('staff')) {
 			$CloseTable = true;
 			echo '<h3>'.$ClassName.'s</h3>';
 ?>
-		<table width="100%">
+		<table class="staff" width="100%">
 			<tr class="colhead">
 				<td style="width:130px;">Username</td>
 				<td style="width:130px;">Last seen</td>

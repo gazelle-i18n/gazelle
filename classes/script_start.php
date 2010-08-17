@@ -22,7 +22,7 @@ http://ssl.what.cd/ -> https://ssl.what.cd/
 https://what.cd/ -> http://what.cd/ */
 
 require(SERVER_ROOT.'/classes/class_proxies.php');
-if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && in_array($_SERVER['REMOTE_ADDR'],$AllowedProxies,true)) {
+if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && proxyCheck($_SERVER['REMOTE_ADDR'])) {
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
 }
 
@@ -79,6 +79,14 @@ define('TORRENT_GROUP_REGEX', SITELINK_REGEX.'\/torrents.php\?id=\d{1,10}\&(torr
 
 $Browser = $UA->browser($_SERVER['HTTP_USER_AGENT']);
 $OperatingSystem = $UA->operating_system($_SERVER['HTTP_USER_AGENT']);
+//$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
+$Mobile = false;
+
+/*
+if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR']) {
+	send_irc('PRIVMSG #what.cd-laboratory :Proxy: '.$_SERVER['REMOTE_ADDR'].' for '.$_SERVER['HTTP_X_FORWARDED_FOR']);
+}
+*/
 
 $Debug->set_flag('start user handling');
 session_start();
@@ -113,7 +121,7 @@ if(isset($LoginCookie)) {
 	if (!$LoggedUser['ID'] || !$SessionID) {
 		logout();
 	}
-
+	
 	$UserSessions = $Cache->get_value('users_sessions_'.$UserID);
 	if(!is_array($UserSessions)) {
 		$DB->query("SELECT
@@ -200,6 +208,12 @@ if(isset($LoginCookie)) {
 	// Because we <3 our staff
 	if (check_perms('site_disable_ip_history')) { $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; }
 
+	//Dik-dik temporary access
+	if (check_perms('users_mod')|| $LoggedUser['ID'] == 236) {
+		$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
+	}
+
+
 	// Update LastUpdate every 10 minutes
 	if(strtotime($UserSessions[$SessionID]['LastUpdate'])+600<time()) {
 		$DB->query("UPDATE users_main SET LastAccess='".sqltime()."' WHERE ID='$LoggedUser[ID]'");
@@ -280,11 +294,32 @@ if(isset($LoginCookie)) {
 $Debug->set_flag('end user handling');
 
 $Debug->set_flag('start function definitions');
+
 // Get cached user info, is used for the user loading the page and usernames all over the site
 function user_info($UserID) {
 	global $DB, $Cache;
 	$UserInfo = $Cache->get_value('user_info_'.$UserID);
 	if(empty($UserInfo) || empty($UserInfo['ID'])) {
+		$DB->query("SELECT
+			m.ID,
+			m.Username,
+			m.PermissionID,
+			i.Artist,
+			i.Donor,
+			i.Warned,
+			i.Avatar,
+			m.Enabled,
+			m.Title,
+			i.CatchupTime,
+			m.Visible,
+			m.Language
+			FROM users_main AS m
+			INNER JOIN users_info AS i ON i.UserID=m.ID
+			WHERE m.ID='$UserID'");
+		if($DB->record_count() == 0) { // Deleted user, maybe?
+			$UserInfo = array('ID'=>'','Username'=>'','PermissionID'=>0,'Artist'=>false,'Donor'=>false,'Warned'=>'0000-00-00 00:00:00','Avatar'=>'','Enabled'=>0,'Title'=>'', 'CatchupTime'=>0, 'Visible'=>'1', 'Language'=>DEFAULT_LOCALE);
+//</strip>
+
 		$DB->query("SELECT
 			m.ID,
 			m.Username,
@@ -302,6 +337,7 @@ function user_info($UserID) {
 			WHERE m.ID='$UserID'");
 		if($DB->record_count() == 0) { // Deleted user, maybe?
 			$UserInfo = array('ID'=>'','Username'=>'','PermissionID'=>0,'Artist'=>false,'Donor'=>false,'Warned'=>'0000-00-00 00:00:00','Avatar'=>'','Enabled'=>0,'Title'=>'', 'CatchupTime'=>0, 'Visible'=>'1');
+
 		} else {
 			$UserInfo = $DB->next_record(MYSQLI_ASSOC, array('Title'));
 			$UserInfo['CatchupTime']=strtotime($UserInfo['CatchupTime']);
@@ -489,13 +525,16 @@ function authorize() {
 // ex: 'somefile,somdire/somefile'
 
 function show_header($PageTitle='',$JSIncludes='') {
-	global $Document, $Cache, $DB, $LoggedUser;
+	global $Document, $Cache, $DB, $LoggedUser, $Mobile;
 
 	if($PageTitle!='') { $PageTitle.=' :: '; }
 	$PageTitle .= SITE_NAME;
 
-	if (!is_array($LoggedUser)) { require(SERVER_ROOT.'/design/publicheader.php'); }
-	else { require(SERVER_ROOT.'/design/privateheader.php'); }
+	if(!is_array($LoggedUser)) {
+		require(SERVER_ROOT.'/design/publicheader.php');
+	} else {
+		require(SERVER_ROOT.'/design/privateheader.php');
+	}
 }
 
 /*-- show_footer function ------------------------------------------------*/
@@ -697,7 +736,7 @@ function get_pages($StartPage,$TotalRecords,$ItemsPerPage,$ShowPages=11,$Anchor=
 
 		if ($StartPage>1) {
 			$Pages.='<a href="'.$Location.'?page=1'.$QueryString.$Anchor.'"><strong>&lt;&lt; First</strong></a> ';
-			$Pages.='<a href="'.$Location.'?page='.($StartPage-1).$QueryString.$Anchor.'"><strong>&lt; Prev</strong></a> | ';
+			$Pages.='<a href="'.$Location.'?page='.($StartPage-1).$QueryString.$Anchor.'" class="pager_prev"><strong>&lt; Prev</strong></a> | ';
 		}
 		//End change
 
@@ -717,7 +756,7 @@ function get_pages($StartPage,$TotalRecords,$ItemsPerPage,$ShowPages=11,$Anchor=
 		}
 
 		if ($StartPage<$TotalPages) {
-			$Pages.=' | <a href="'.$Location.'?page='.($StartPage+1).$QueryString.$Anchor.'"><strong>Next &gt;</strong></a> ';
+			$Pages.=' | <a href="'.$Location.'?page='.($StartPage+1).$QueryString.$Anchor.'" class="pager_next"><strong>Next &gt;</strong></a> ';
 			$Pages.='<a href="'.$Location.'?page='.$TotalPages.$QueryString.$Anchor.'"><strong> Last &gt;&gt;</strong></a>';
 		}
 		
@@ -1699,7 +1738,9 @@ function selected($Name, $Value, $Attribute='selected', $Array = array()) {
 
 
 function error($Error, $Ajax=false) {
+	global $Debug;
 	require(SERVER_ROOT.'/sections/error/index.php');
+	$Debug->profile();
 	die();
 }
 
@@ -1710,6 +1751,8 @@ $Debug->set_flag('ending function definitions');
 //Include /sections/*/index.php
 $Document = basename(parse_url($_SERVER['SCRIPT_FILENAME'], PHP_URL_PATH), '.php');
 if(!preg_match('/^[a-z0-9]+$/i', $Document)) { error(404); }
+
+
 
 require(SERVER_ROOT.'/sections/'.$Document.'/index.php');
 $Debug->set_flag('completed module execution');

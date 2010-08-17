@@ -102,10 +102,17 @@ if(($UserSubscriptions = $Cache->get_value('subscriptions_user_'.$LoggedUser['ID
 	$UserSubscriptions = $DB->collect(0);
 	$Cache->cache_value('subscriptions_user_'.$LoggedUser['ID'],$UserSubscriptions,0);
 }
+
 if(empty($UserSubscriptions)) {
 	$UserSubscriptions = array();
 }
 
+//<strip>
+/*PARTY
+if(in_array($ThreadID, $UserSubscriptions)) {
+	$Cache->delete_value('subscriptions_user_new_'.$LoggedUser['ID']);
+}
+*/
 // Start printing
 show_header('Forums > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
 show_message();
@@ -320,8 +327,8 @@ foreach($Thread as $Key => $Post){
 <table class="forum_post box vertical_margin<? if (((!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) && $PostID>$LastRead && strtotime($AddedTime)>$LoggedUser['CatchupTime']) || (isset($RequestKey) && $Key==$RequestKey)) { echo ' forum_unread'; } ?>" id="post<?=$PostID?>">
 	<tr class="colhead_dark">
 		<td colspan="2">
-			<span style="float:left;"><a href='forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;post=<?=($CatalogueID*THREAD_CATALOGUE)+($Key+1)?>#post<?=$PostID?>'>#<?=$PostID?></a>
-				by <strong><?=format_username($AuthorID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $PermissionID)?></strong> <?=!empty($UserTitle) ? '('.$UserTitle.')' : '' ?>
+			<span style="float:left;"><a class="post_id" href='forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;post=<?=($CatalogueID*THREAD_CATALOGUE)+($Key+1)?>#post<?=$PostID?>'>#<?=$PostID?></a>
+				<strong><?=format_username($AuthorID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $PermissionID)?></strong> <span class="user_title"><?=!empty($UserTitle) ? '('.$UserTitle.')' : '' ?></span>
 			<?=time_diff($AddedTime,2)?>
 <? if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')){ ?>				- <a href="#quickpost" onclick="Quote('<?=$PostID?>','<?=$Username?>');">[Quote]</a><? }
 if (((!$ThreadInfo['IsLocked'] && $LoggedUser['Class'] >= $Forums[$ForumID]['MinClassWrite']) && ($AuthorID == $LoggedUser['ID']) || check_perms('site_moderate_forums'))) { ?>				- <a href="#post<?=$PostID?>" onclick="Edit_Form('<?=$PostID?>','<?=$Key?>');">[Edit]</a><? }
@@ -330,7 +337,7 @@ if (check_perms('site_moderate_forums') && $ThreadInfo['Posts'] > 1){ ?>				- <a
 
 			</span>
 			<span id="bar<?=$PostID?>" style="float:right;">
-				<a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>">[Report Post]</a>
+				<a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>">[Report]</a>
 				&nbsp;
 				<a href="#">&uarr;</a>
 			</span>
@@ -416,21 +423,19 @@ if(!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 					<div id="quickreplytext">
 						<textarea id="quickpost" style="width: 95%;" tabindex="1" onkeyup="resize('quickpost');" name="body" cols="90" rows="8"></textarea> <br />
 					</div>
-					<div id="quickreplybuttons">
+					<div>
 <? if(!in_array($ThreadID, $UserSubscriptions)) { ?>
-						<input id="subscribebox" type="checkbox" name="subscribe"<?=!empty($HeavyInfo['AutoSubscribe'])?' checked="checked"':''?> tabindex="4" />
-						<label for="subscribebox">Subscribe to topic</label>
+						<input id="subscribebox" type="checkbox" name="subscribe"<?=!empty($HeavyInfo['AutoSubscribe'])?' checked="checked"':''?> tabindex="2" />
+						<label for="subscribebox">Subscribe</label>
 <?
 }
 	if($ThreadInfo['LastPostAuthorID']==$LoggedUser['ID'] && check_perms('site_forums_double_post')) {
 ?>
-						<input id="mergebox" type="checkbox" name="merge" checked="checked" />
+						<input id="mergebox" type="checkbox" name="merge" checked="checked" tabindex="2" />
 						<label for="mergebox">Merge</label>
 <? } ?>
-						<div id="quickreplybuttonstoggle" style="display:inline;">
-							<input type="button" value="Preview" tabindex="2" onclick="Quick_Preview();" />
-							<input type="submit" value="Submit reply" tabindex="3" />
-						</div>
+						<input id="post_preview" type="button" value="Preview" tabindex="1" onclick="if(this.preview){Quick_Edit();}else{Quick_Preview();}" />
+						<input type="submit" value="Post reply" tabindex="1" />
 					</div>
 				</form>
 			</div>
@@ -454,25 +459,25 @@ if(check_perms('site_moderate_forums')) {
 			<tr>
 				<td class="label">Sticky</td>
 				<td>
-					<input type="checkbox" name="sticky"<? if($ThreadInfo['IsSticky']) { echo ' checked="checked"'; } ?> />
+					<input type="checkbox" name="sticky"<? if($ThreadInfo['IsSticky']) { echo ' checked="checked"'; } ?> tabindex="2" />
 				</td>
 			</tr>
 			<tr>
 				<td class="label">Locked</td>
 				<td>
-					<input type="checkbox" name="locked"<? if($ThreadInfo['IsLocked']) { echo ' checked="checked"'; } ?> />
+					<input type="checkbox" name="locked"<? if($ThreadInfo['IsLocked']) { echo ' checked="checked"'; } ?> tabindex="2" />
 				</td>
 			</tr>
 			<tr>
 				<td class="label">Title</td>
 				<td>
-					<input type="text" name="title" size="50" value="<?=display_str($ThreadInfo['Title'])?>" />
+					<input type="text" name="title" size="50" value="<?=display_str($ThreadInfo['Title'])?>" tabindex="2" />
 				</td>
 			</tr>
 			<tr>
 				<td class="label">Move thread</td>
 				<td>
-					<select name="forumid">
+					<select name="forumid" tabindex="2">
 <? 
 $OpenGroup = false;
 $LastCategoryID=-1;
@@ -500,12 +505,12 @@ foreach ($Forums as $Forum) {
 			<tr>
 				<td class="label">Delete thread</td>
 				<td>
-					<input type="checkbox" name="delete" />
+					<input type="checkbox" name="delete" tabindex="2" />
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2" class="center">
-					<input type="submit" value="Edit thread" />
+					<input type="submit" value="Edit thread" tabindex="2" />
 				</td>
 			</tr>
 

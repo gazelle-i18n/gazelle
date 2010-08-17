@@ -576,8 +576,8 @@ foreach($Thread as $Key => $Post){
 <table class="forum_post box vertical_margin" id="post<?=$PostID?>">
 	<tr class="colhead_dark">
 		<td colspan="2">
-			<span style="float:left;"><a href='#post<?=$PostID?>'>#<?=$PostID?></a>
-				by <strong><?=format_username($AuthorID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $PermissionID)?></strong> <?=time_diff($AddedTime)?> <a href="reports.php?action=report&amp;type=torrents_comment&amp;id=<?=$PostID?>">[Report Comment]</a>
+			<span style="float:left;"><a class="post_id" href='#post<?=$PostID?>'>#<?=$PostID?></a>
+				<strong><?=format_username($AuthorID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $PermissionID)?></strong> <?=time_diff($AddedTime)?> <a href="reports.php?action=report&amp;type=torrents_comment&amp;id=<?=$PostID?>">[Report]</a>
 				- <a href="#quickpost" onclick="Quote('<?=$PostID?>','<?=$Username?>');">[Quote]</a>
 <?if ($AuthorID == $LoggedUser['ID'] || check_perms('site_moderate_forums')){ ?>				- <a href="#post<?=$PostID?>" onclick="Edit_Form('<?=$PostID?>','<?=$Key?>');">[Edit]</a><? }
 if (check_perms('site_moderate_forums')){ ?>				- <a href="#post<?=$PostID?>" onclick="Delete('<?=$PostID?>');">[Delete]</a> <? } ?>
@@ -657,10 +657,8 @@ if(!$LoggedUser['DisablePosting']) { ?>
 						<input type="hidden" name="groupid" value="<?=$GroupID?>" />
 						<textarea id="quickpost" name="body"  cols="70"  rows="8"></textarea> <br />
 					</div>
-					<div id="quickreplybuttons">
-						<input type="button" value="Preview" onclick="Quick_Preview();" />
-						<input type="submit" value="Submit reply" />
-					</div>
+					<input type="submit" value="Post reply" />
+					<input id="post_preview" type="button" value="Preview" onclick="if(this.preview){Quick_Edit();}else{Quick_Preview();}" />
 				</form>
 			</div>
 <? } ?>

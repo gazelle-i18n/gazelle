@@ -90,6 +90,7 @@ show_message();
 <?	} ?>
 		<a href="reports.php?action=report&amp;type=request&amp;id=<?=$RequestID?>">[Report Request]</a>
 		<a href="upload.php?requestid=<?=$RequestID?>">[Upload Request]</a>
+		<a href="reports.php?action=report&amp;type=request_update&amp;id=<?=$RequestID?>">[Request Update]</a>
 	</div>
 	
 	<div class="sidebar">
@@ -446,10 +447,8 @@ if(!$LoggedUser['DisablePosting']) { ?>
 						<input type="hidden" name="requestid" value="<?=$RequestID?>" />
 						<textarea id="quickpost" name="body" cols="70" rows="8"></textarea> <br />
 					</div>
-					<div id="quickreplybuttons">
-						<input type="button" value="Preview" onclick="Quick_Preview();" />
-						<input type="submit" value="Submit reply" />
-					</div>
+					<input type="submit" value="Post reply" />
+					<input id="post_preview" type="button" value="Preview" onclick="if(this.preview){Quick_Edit();}else{Quick_Preview();}" />
 				</form>
 			</div>
 <? } ?>

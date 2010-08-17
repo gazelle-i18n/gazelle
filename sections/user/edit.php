@@ -5,6 +5,8 @@ if(!is_number($UserID) || ($UserID != $LoggedUser['ID'] && !check_perms('users_e
 	error(403);
 }
 
+
+
 $DB->query("SELECT 
 			m.Username,
 			m.Email,
@@ -20,6 +22,7 @@ $DB->query("SELECT
 			JOIN users_info AS i ON i.UserID = m.ID
 			WHERE m.ID = '".db_string($UserID)."'");
 list($Username,$Email,$IRCKey,$Paranoia,$Info,$Avatar,$Country,$StyleID,$StyleURL,$SiteOptions)=$DB->next_record(MYSQLI_NUM, array(9));
+
 
 if ($SiteOptions) { 
 	$SiteOptions=unserialize($SiteOptions); 
@@ -49,6 +52,9 @@ show_message();
 					<strong>Site preferences</strong>
 				</td>
 			</tr>
+<?
+
+?>
 			<tr>
 				<td class="label"><strong>Stylesheet</strong></td>
 				<td>

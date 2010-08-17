@@ -124,16 +124,13 @@ if($DownloadAlt) {
 	} else {
 		header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.txt"');
 	}
-	//header('Content-Length: '.strlen($Tor->enc()));
-	echo $Tor->enc();
-	
 } elseif(!$DownloadAlt || $Failed) {
 	header('Content-Type: application/x-bittorrent; charset=utf-8');
 	if ($Browser == 'Internet Explorer') {
-		header('Content-disposition: attachement; filename="'.urlencode(file_string($TorrentName)).'.torrent"');
+		header('Content-disposition: attachment; filename="'.urlencode(file_string($TorrentName)).'.torrent"');
 	} else {
-		header('Content-disposition: attachement; filename="'.file_string($TorrentName).'.torrent"');
+		header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.torrent"');
 	}
-	//header('Content-Length: '.strlen($Tor->enc()));
-	echo $Tor->enc();
 }
+
+echo $Tor->enc();

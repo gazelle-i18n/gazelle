@@ -172,7 +172,7 @@ class DB_MYSQL {
 			preg_match("Table '(\S+)' is marked as crashed and should be repaired", $this->Error, $Matches);
 			if($Matches
 			send_irc('PRIVMSG '.ADMIN_CHAN.' :'.$this->Error); } */
-		$Debug->analysis('!dev DB Error',$DBError,3600*24);
+		//$Debug->analysis('!dev DB Error',$DBError,3600*24);
 		if (DEBUG_MODE || check_perms('site_debug') || $argv[1]==SCHEDULE_KEY) {
 			echo '<pre>'.$DBError.'</pre>';
 			print_r($this->Queries);

@@ -114,10 +114,8 @@ if(!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 				<div id="quickreplytext">
 					<textarea id="quickpost" name="body"  cols="90"  rows="8"></textarea> <br />
 				</div>
-				<div id="quickreplybuttons">
-					<input type="button" value="Preview" onclick="Quick_Preview();" />
-					<input type="submit" value="Submit reply" />
-				</div>
+				<input type="submit" value="Post reply" />
+				<input id="post_preview" type="button" value="Preview" onclick="if(this.preview){Quick_Edit();}else{Quick_Preview();}" />
 			</form>
 		</div>
 <?

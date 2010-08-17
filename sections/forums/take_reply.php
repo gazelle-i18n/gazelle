@@ -235,5 +235,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 	$ThreadInfo['Posts']++;
 }
 
+
+
 header('Location: forums.php?action=viewthread&threadid='.$TopicID.'&page='.ceil($ThreadInfo['Posts']/$PerPage));
 die();

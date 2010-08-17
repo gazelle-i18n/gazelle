@@ -51,7 +51,7 @@ foreach ($Forums as $Forum) {
 	</table>
 <? 		} ?>
 <h3><?=$ForumCats[$CategoryID]?></h3>
-	<table>
+	<table class="forum_index">
 		<tr class="colhead">
 			<td style="width:2%;"></td>
 			<td style="width:25%;">Forum</td>
@@ -84,7 +84,7 @@ foreach ($Forums as $Forum) {
 		<td colspan="3">There are no topics here<?=($MinCreate<=$LoggedUser['Class'])?', <a href="forums.php?action=new&amp;forumid='.$ForumID.'">create one</a>':''?>.</td>
 <? } else { ?>
 		<td>
-			<span style="float:left;">
+			<span style="float:left;" class="last_topic">
 				<a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>" title="<?=display_str($LastTopic)?>"><?=display_str(cut_string($LastTopic, 50, 1))?></a>
 			</span>
 <? if (!empty($LastRead[$LastTopicID])) { ?>
@@ -92,7 +92,7 @@ foreach ($Forums as $Forum) {
 				<a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>&amp;page=<?=$LastRead[$LastTopicID]['Page']?>#post<?=$LastRead[$LastTopicID]['PostID']?>"></a>
 			</span>
 <? } ?>
-			<span style="float:right;">by <?=format_username($LastAuthorID, $LastPostAuthorName)?> <?=time_diff($LastTime,1)?></span>
+			<span style="float:right;" class="last_poster">by <?=format_username($LastAuthorID, $LastPostAuthorName)?> <?=time_diff($LastTime,1)?></span>
 		</td>
 		<td><?=number_format($NumTopics)?></td>
 		<td><?=number_format($NumPosts)?></td>

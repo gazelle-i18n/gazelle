@@ -1,7 +1,7 @@
 <?
 authorize();
 
-if(empty($_POST['id']) || !is_number($_POST['id']) || empty($_POST['type']) || empty($_POST['reason'])) {
+if(empty($_POST['id']) || !is_number($_POST['id']) || empty($_POST['type']) || ($_POST['type'] != "request_update" && empty($_POST['reason']))) {
 	error(404);
 }
 
@@ -13,10 +13,17 @@ if(!array_key_exists($_POST['type'], $Types)) {
 $Short = $_POST['type'];
 $Type = $Types[$Short]; 
 $ID = $_POST['id'];
-$Reason = $_POST['reason'];
+if($Short == "request_update") {
+	$Reason  = "[b]Year[/b]: ".((empty($_POST['year']) || !is_number($_POST['year'])) ? 'Not given' : $_POST['year']).".\n\n";
+	$Reason .= "[b]Release Type[/b]: ".((empty($_POST['releasetype']) || !is_number($_POST['releasetype'] || $_POST['releasetype'] == 0)) ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).".\n\n";
+	$Reason .= "[b]Additional Comments[/b]: ".$_POST['comment'];
+} else {
+	$Reason = $_POST['reason'];
+}
 
 switch($Short) {
 	case "request" :
+	case "request_update" :
 		$Link = 'requests.php?action=view&id='.$ID;
 		break;
 	case "user" :
@@ -59,7 +66,9 @@ $DB->query("INSERT INTO reports
 			VALUES
 				(".db_string($LoggedUser['ID']).", ".$ID." , '".$Short."', '".sqltime()."', '".db_string($Reason)."')");
 $ReportID = $DB->inserted_id();
-send_irc("PRIVMSG #admin :".$ReportID." - ".$LoggedUser['Username']." just reported a ".$Short.": http://what.cd/".$Link." : ".$Reason);
+
+$Channel = (($Short == "request_update") ? "#requestedits" : ADMIN_CHAN);
+send_irc("PRIVMSG ".$Channel." :".$ReportID." - ".$LoggedUser['Username']." just reported a ".$Short.": http://what.cd/".$Link." : ".$Reason);
 
 $Cache->delete_value('num_other_reports');
 

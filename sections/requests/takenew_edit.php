@@ -329,8 +329,6 @@ if($CategoryName == "Music") {
 		}
 		$DB->query("DELETE FROM requests_artists WHERE RequestID = ".$RequestID);
 		$Cache->delete_value('request_artists_'.$RequestID);
-		
-		$DB->query("DELETE FROM requests_tags WHERE RequestID = ".$RequestID);
 	}
 	
 	/*
@@ -457,6 +455,10 @@ if($CategoryName == "Music") {
 }
 
 //Tags
+if(!$NewRequest) {
+	$DB->query("DELETE FROM requests_tags WHERE RequestID = ".$RequestID);
+}
+
 $Tags = array_unique(explode(',', $Tags));
 foreach($Tags as $Index => $Tag) {
 	$Tag = sanitize_tag($Tag);

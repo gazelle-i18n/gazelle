@@ -47,6 +47,71 @@ switch($Short) {
 	<p>You are reporting the user <strong><?=display_str($Username)?></strong></p>
 <?
 		break;
+	case "request_update" :
+		$NoReason = true;
+		$DB->query("SELECT Title, Description, TorrentID FROM requests WHERE ID=".$ID);
+		if($DB->record_count() < 1) {
+			//error(404);
+		}
+		list($Name, $Desc, $Filled) = $DB->next_record();
+?>
+	<p>You are reporting the request:</p>
+	<table>
+		<tr class="colhead">
+			<td>Title</td>
+			<td>Description</td>
+			<td>Filled?</td>
+		</tr>
+		<tr>
+			<td><?=display_str($Name)?></td>
+			<td><?=$Text->full_format($Desc)?></td>	
+			<td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong></td>
+		</tr>
+	</table>
+	<br />
+
+	<div class="box pad center">
+		<p><strong>It will greatly increase the turnover rate of the updates if you can fill in as much of the following details in as possible</strong></p>
+		<form action="" method="post">
+			<input type="hidden" name="action" value="takereport" />
+			<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+			<input type="hidden" name="id" value="<?=$ID?>" />
+			<input type="hidden" name="type" value="<?=$Short?>" />
+			<table>
+				<tr>
+					<td class="label">Year</td>
+					<td>
+						<input type="text" size="4" name="year" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Release Type</td>
+					<td>
+						<select id="releasetype" name="releasetype">
+							<option value='0'>---</option>
+<?		
+		foreach ($ReleaseTypes as $Key => $Val) {
+?>							<option value='<?=$Key?>' <?=(!empty($ReleaseType) ? ($Key == $ReleaseType ?" selected='selected'" : "") : '') ?>><?=$Val?></option>
+<?			
+		}
+?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Comment</td>
+					<td>
+						<textarea rows="8" cols="80" name="comment"></textarea>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<br />
+			<input type="submit" value="Submit report" />
+		</form>
+	</div>
+<?
+		break;
 	case "request" :
 		$DB->query("SELECT Title, Description, TorrentID FROM requests WHERE ID=".$ID);
 		if($DB->record_count() < 1) {
@@ -175,8 +240,9 @@ switch($Short) {
 		</tr>
 	</table>
 <?	
-		break;	   
+	break;	   
 }
+if(empty($NoReason)) {
 ?>
 	<h3>Reason</h3>
 	<div class="box pad center">
@@ -190,6 +256,7 @@ switch($Short) {
 		</form>
 	</div>
 <?
+}
 // close <div class="thin"> ?>
 </div>
 <?

@@ -48,9 +48,19 @@ define('BANS_PER_PAGE', '20');
 list($Page,$Limit) = page_limit(BANS_PER_PAGE);
 
 $sql = "SELECT SQL_CALC_FOUND_ROWS ID, FromIP, ToIP, Reason FROM ip_bans AS i ";
-if(isset($_REQUEST['ip']) && preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $_REQUEST['ip'])) {
-	$sql .= "WHERE '".ip2unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+
+if(!empty($_REQUEST['notes'])) {
+	$sql .= "WHERE Reason LIKE '%".db_string($_REQUEST['notes'])."%' ";
 }
+
+if(!empty($_REQUEST['ip']) && preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $_REQUEST['ip'])) {
+	if (!empty($_REQUEST['notes'])) {
+		$sql .= "AND '".ip2unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+	} else {
+		$sql .= "WHERE '".ip2unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+	}
+}
+
 $sql .= "ORDER BY FromIP ASC";
 $sql .= " LIMIT ".$Limit;
 $Bans = $DB->query($sql);
@@ -70,11 +80,17 @@ show_header('IP Bans');
 	<form action="" method="get">
 		<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 			<tr>
-				<td class="label"><strong>IP:</strong></td>
+				<td class="label"><label for="ip">IP:</label></td>
 				<td>
 					<input type="hidden" name="action" value="ip_ban" />
-					<input type="text" name="ip" size="60" value="<?=(!empty($_GET['ip']) ? display_str($_GET['ip']) : '')?>" />
-					&nbsp;
+					<input type="text" id="ip" name="ip" size="20" value="<?=(!empty($_GET['ip']) ? display_str($_GET['ip']) : '')?>" />
+				</td>
+				<td class="label"><label for="notes">Notes:</label></td>
+				<td>
+					<input type="hidden" name="action" value="ip_ban" />
+					<input type="text" id="notes" name="notes" size="60" value="<?=(!empty($_GET['notes']) ? display_str($_GET['notes']) : '')?>" />
+				</td>
+				<td>
 					<input type="submit" value="Search" />
 				</td>
 			</tr>

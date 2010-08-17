@@ -110,7 +110,7 @@ while(list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) { ?>
 
 if(empty($LoggedUser['DisablePM']) || isset($StaffIDs[$User2ID])) {
 ?>
-	<h2>Reply</h2>
+	<h3>Reply</h3>
 	<form action="inbox.php" method="post" id="messageform">
 		<div class="box pad">
 			<input type="hidden" name="action" value="takecompose" />
@@ -128,7 +128,7 @@ if(empty($LoggedUser['DisablePM']) || isset($StaffIDs[$User2ID])) {
 <?
 }
 ?>
-	<h2>Manage conversation</h2>
+	<h3>Manage conversation</h3>
 	<form action="inbox.php" method="post">
 		<div class="box pad">
 			<input type="hidden" name="action" value="takeedit" />
@@ -160,7 +160,7 @@ if(empty($LoggedUser['DisablePM']) || isset($StaffIDs[$User2ID])) {
 <?
 if(check_perms('users_mod')) {
 ?>
-	<h2>Forward conversation</h2>
+	<h3>Forward conversation</h3>
 	<form action="inbox.php" method="post">
 		<div class="box pad">
 			<input type="hidden" name="action" value="forward" />

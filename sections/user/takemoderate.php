@@ -195,9 +195,17 @@ if ($Classes[$Class]['Level']!=$Cur['Class'] && (
 }
 
 if ($Username!=$Cur['Username'] && check_perms('users_edit_usernames', $Cur['Class']-1)) {
-	$UpdateSet[]="Username='".$Username."'";
-	$EditSummary[]="username changed from ".$Cur['Username']." to ".$Username;
-	$LightUpdates['Username']=$Username;
+	$DB->query("SELECT ID FROM users_main WHERE Username = '".$Username."'");
+	if($DB->next_record() > 0) {
+		list($UsedUsernameID) = $DB->next_record();
+		error_message("Username already in use by <a href='user.php?id=".$UsedUsernameID."'>".$Username."</a>");
+		header("Location: user.php?id=".$UserID);
+		die();
+	} else {
+		$UpdateSet[]="Username='".$Username."'";
+		$EditSummary[]="username changed from ".$Cur['Username']." to ".$Username;
+		$LightUpdates['Username']=$Username;
+	}
 }
 
 if ($Title!=db_string($Cur['Title']) && check_perms('users_edit_titles')) {
@@ -441,8 +449,6 @@ if ($Pass && check_perms('users_edit_password')) {
         
 }
 
-
-
 if (empty($UpdateSet) && empty($EditSummary) && str_replace("\r", '', $Cur['AdminComment']) == str_replace("\r", '', $_POST['AdminComment'])) {
 	if(!$Reason) {
 		header("Location: user.php?id=$UserID");
@@ -451,7 +457,6 @@ if (empty($UpdateSet) && empty($EditSummary) && str_replace("\r", '', $Cur['Admi
 		$EditSummary[]='notes added';
 	}
 }
-
 
 if ($AdminComment!=$Cur['AdminComment'] && check_perms('users_disable_any')) {
 	$UpdateSet[]="AdminComment='$AdminComment'";
