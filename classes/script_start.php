@@ -300,26 +300,7 @@ function user_info($UserID) {
 	global $DB, $Cache;
 	$UserInfo = $Cache->get_value('user_info_'.$UserID);
 	if(empty($UserInfo) || empty($UserInfo['ID'])) {
-//</strip>
-		$DB->query("SELECT
-			m.ID,
-			m.Username,
-			m.PermissionID,
-			i.Artist,
-			i.Donor,
-			i.Warned,
-			i.Avatar,
-			m.Enabled,
-			m.Title,
-			i.CatchupTime,
-			m.Visible,
-			m.Language
-			FROM users_main AS m
-			INNER JOIN users_info AS i ON i.UserID=m.ID
-			WHERE m.ID='$UserID'");
-		if($DB->record_count() == 0) { // Deleted user, maybe?
-			$UserInfo = array('ID'=>'','Username'=>'','PermissionID'=>0,'Artist'=>false,'Donor'=>false,'Warned'=>'0000-00-00 00:00:00','Avatar'=>'','Enabled'=>0,'Title'=>'', 'CatchupTime'=>0, 'Visible'=>'1', 'Language'=>DEFAULT_LOCALE);
-//</strip>
+
 
 		$DB->query("SELECT
 			m.ID,

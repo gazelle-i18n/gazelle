@@ -7,7 +7,7 @@ if(!check_perms('site_moderate_forums')) {
 
 $ThreadID = $_GET['threadid'];
 $PostID = $_GET['postid'];
-$Delete = !empty($_GET['delete']);
+$Delete = !empty($_GET['remove']);
 
 if(!$ThreadID || !$PostID || !is_number($ThreadID) || !is_number($PostID)) {
 	error(404);
