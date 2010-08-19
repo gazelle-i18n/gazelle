@@ -97,7 +97,7 @@ switch ($Type) {
 		}
 			
 		$Validate->SetFields('remaster_title',
-			'0','string','Remaster title must be between 2 and 50 characters.',array('maxlength'=>50, 'minlength'=>2));
+			'0','string','Remaster title must be between 2 and 80 characters.',array('maxlength'=>80, 'minlength'=>2));
 
 		if ($Properties['RemasterTitle'] == 'Original Release') {
 			error_message('"Original Release" is not a valid remaster title.');

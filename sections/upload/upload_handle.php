@@ -784,6 +784,12 @@ if($_POST['bitrate']) {
        $SQL.=" AND (Encodings='') ";
 }
 
+if($Properties['Media']) {
+        $SQL.=" AND (Media LIKE '%|".db_string(trim($Properties['Media']))."|%' OR Media='') ";
+} else {
+        $SQL.=" AND (Media='') ";
+}
+
 // Either they aren't using NewGroupsOnly
 $SQL .= "AND ((NewGroupsOnly = '0' ";
 // Or this is the first torrent in the group to match the formatbitrate filter

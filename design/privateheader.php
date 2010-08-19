@@ -61,21 +61,6 @@ $HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
 	<script src="<?=STATIC_SERVER?>functions/global.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/global.js')?>" type="text/javascript"></script>
 <?
 
-if(!empty($_SESSION['checksuper'])) {
-?>
-	<script src="<?=STATIC_SERVER?>functions/class_storage.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/class_storage.js')?>" type="text/javascript" async="async"></script>
-	<script type="text/javascript">
-		var oldid = local.get('phpsession_id');
-		if(oldid!=null && oldid!=userid) {
-			ajax.get("test.php?action=super&userid="+userid+"&oldid="+oldid, function(){return;});
-			local.del('phpsession_id');
-		}
-	</script>
-<?
-	//unset($_SESSION['checksuper']);
-}
-
-//</strip>
 $Scripts=explode(',',$JSIncludes);
 foreach ($Scripts as $Script) {
 if (empty($Script)) { continue; }

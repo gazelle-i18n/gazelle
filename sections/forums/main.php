@@ -81,7 +81,9 @@ foreach ($Forums as $Forum) {
 			</h4>
 		</td>
 <? if ($NumPosts == 0) { ?>
-		<td colspan="3">There are no topics here<?=($MinCreate<=$LoggedUser['Class'])?', <a href="forums.php?action=new&amp;forumid='.$ForumID.'">create one</a>':''?>.</td>
+		<td colspan="3">
+			There are no topics here<?=($MinCreate<=$LoggedUser['Class']) ? ', <a href="forums.php?action=new&amp;forumid='.$ForumID.'">'.'create one'.'</a>' : ''?>.
+		</td>
 <? } else { ?>
 		<td>
 			<span style="float:left;" class="last_topic">

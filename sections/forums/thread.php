@@ -90,9 +90,8 @@ if(empty($UserSubscriptions)) {
 }
 
 
-*/
 // Start printing
-show_header('Forums > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
+show_header('Forums'.' > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
 show_message();
 ?>
 <div class="thin">
@@ -108,7 +107,7 @@ if(!$ThreadInfo['IsLocked']) {
 ?>
 			<a href="reports.php?action=report&amp;type=thread&amp;id=<?=$ThreadID?>">[Report Thread]</a>
 <? } ?>
-			<a href="#" onclick="Subscribe(<?=$ThreadID?>);return false;" id="subscribelink<?=$ThreadID?>"><?=in_array($ThreadID, $UserSubscriptions) ? '[Unsubscribe]' : '[Subscribe]'?></a>
+			<a href="#" onclick="Subscribe(<?=$ThreadID?>);return false;" id="subscribelink<?=$ThreadID?>">[<?=(in_array($ThreadID, $UserSubscriptions) ? 'Unsubscribe' : 'Subscribe')?>]</a>
 		</div>
 <?
 $Pages=get_pages($Page,$ThreadInfo['Posts'],$PerPage,9);
@@ -287,7 +286,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
 				<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 				<input type="hidden" name="topicid" value="<?=$ThreadID?>" />
 				<input type="hidden" name="close" value="1">
-				<input type="submit" style="float: left;" value="<?=!$Closed?'Close':'Open'?>">
+				<input type="submit" style="float: left;" value="<?=(!$Closed ? 'Close' : 'Open')?>">
 			</form>
 <? } ?>
 		</div>

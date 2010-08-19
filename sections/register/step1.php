@@ -6,11 +6,7 @@ echo $Val->GenerateJS('regform');
 <div style="width:500px;">
 	<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 <?
-//</strip>
-if(!empty($_GET['lang'])) { ?>
-		<input type="hidden" name="lang" value="<?=$_GET['lang']?>" />
-<? }
-//</strip>
+
 if(empty($Sent)) {
 	if(!empty($_REQUEST['invite'])) {
 		echo '<input type="hidden" name="invite" value="'.display_str($_REQUEST['invite']).'" />'."\n";

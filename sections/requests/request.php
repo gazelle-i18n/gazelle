@@ -84,13 +84,15 @@ show_message();
 <div class="thin">
 	<h2><a href="requests.php">Requests</a> &gt; <?=$CategoryName?> &gt; <?=$DisplayLink?></h2>
 	<div class="linkbox">
-<?	if($CanEdit) { ?> 
+<? if($CanEdit) { ?> 
 		<a href="requests.php?action=edit&amp;id=<?=$RequestID?>">[Edit]</a>
 		<a href="requests.php?action=delete&amp;id=<?=$RequestID?>">[Delete]</a>
-<?	} ?>
+<? } ?>
 		<a href="reports.php?action=report&amp;type=request&amp;id=<?=$RequestID?>">[Report Request]</a>
 		<a href="upload.php?requestid=<?=$RequestID?>">[Upload Request]</a>
+<? if(!$IsFilled && (($CategoryID == 0) || ($CategoryName == "Music" && $Year == 0))) { ?>
 		<a href="reports.php?action=report&amp;type=request_update&amp;id=<?=$RequestID?>">[Request Update]</a>
+<? } ?>
 	</div>
 	
 	<div class="sidebar">

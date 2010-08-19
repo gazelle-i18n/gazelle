@@ -784,7 +784,7 @@ function get_size($Size, $Levels = 2) {
 	elseif ($Steps==5) { return number_format($Size,$Levels).' PB'; }
 	elseif ($Steps==6) { return number_format($Size,$Levels).' EB'; }
 	elseif ($Steps==7) { return number_format($Size,$Levels).' ZB'; }
-	elseif ($Steps==8) { return number_format($Size,$Levels).' EB'; }
+	elseif ($Steps==8) { return number_format($Size,$Levels).' YB'; }
 }
 
 function human_format($Number) {
@@ -799,7 +799,7 @@ function human_format($Number) {
 		case 2: return round($Number,2).'M'; break;
 		case 3: return round($Number,2).'B'; break;
 		case 4: return round($Number,2).'T'; break;
-		case 5: return round($Number,2).'Q'; break;
+		case 5: return round($Number,2).'P'; break;
 		default:
 			return round($Number,2).'E + '.$Steps*3;
 	}

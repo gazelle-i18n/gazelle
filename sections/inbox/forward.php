@@ -5,6 +5,8 @@ $UserID = $LoggedUser['ID'];
 $ConvID = $_POST['convid'];
 $ReceiverID = $_POST['receiverid'];
 if(!is_number($ConvID) || !is_number($ReceiverID)) { error(404); }
+if(!check_perms('users_mod') || !isset($StaffIDs[$ReceiverID])) { error(403); }
+
 $DB->query("SELECT DISTINCT UserID FROM pm_conversations_users WHERE (UserID='$UserID' OR UserID='$ReceiverID') AND ConvID='$ConvID'");
 if($DB->record_count() != 1) { error(0); }
 

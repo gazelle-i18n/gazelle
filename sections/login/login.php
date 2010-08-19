@@ -6,11 +6,7 @@ if(strtotime($BannedUntil)<time() && !$BanID) {
 ?>
 	<form id="loginform" method="post" action="login.php">
 <?
-//</strip>
-if(!empty($_REQUEST['lang'])) { ?>
-		<input type="hidden" name="lang" value="<?=$_REQUEST['lang']?>" />
-<? }
-//</strip>
+
 	if(!empty($BannedUntil) && $BannedUntil != '0000-00-00 00:00:00') {
 		$DB->query("UPDATE login_attempts SET BannedUntil='0000-00-00 00:00:00', Attempts='0' WHERE ID='".db_string($AttemptID)."'");
 		$Attempts = 0;
