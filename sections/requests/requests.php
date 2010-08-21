@@ -392,7 +392,7 @@ foreach($Categories as $CatKey => $CatName) {
 	<div class="linkbox">
 		<?=$PageLinks?>
 	</div>
-	<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
+	<table id="request_table" cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 		<tr class="colhead_dark">
 			<td style="width: 38%;">
 				<strong>Request Name</strong>
@@ -494,7 +494,7 @@ foreach($Categories as $CatKey => $CatName) {
 <?   		if($IsFilled){ ?>
 				<a href="torrents.php?<?=(strtotime($TimeFilled)<$TimeCompare?'id=':'torrentid=').$TorrentID?>"><strong><?=time_diff($TimeFilled)?></strong></a>
 <?   		} else { ?>
-				<strong>No</a></strong>
+				<strong>No</strong>
 <?   		} ?>
 			</td>
 			<td>

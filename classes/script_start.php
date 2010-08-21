@@ -666,7 +666,7 @@ function catalogue_select($Catalogue,$Page,$PerPage,$CatalogueSize=500) {
 }
 
 function get_pages($StartPage,$TotalRecords,$ItemsPerPage,$ShowPages=11,$Anchor='') {
-	global $Document, $Method;
+	global $Document, $Method, $Mobile;
 	$Location = $Document.'.php';
 	/*-- Get pages ---------------------------------------------------------------//
 	This function returns a page list, given certain information about the pages.
@@ -721,20 +721,24 @@ function get_pages($StartPage,$TotalRecords,$ItemsPerPage,$ShowPages=11,$Anchor=
 			$Pages.='<a href="'.$Location.'?page='.($StartPage-1).$QueryString.$Anchor.'" class="pager_prev"><strong>&lt; Prev</strong></a> | ';
 		}
 		//End change
+		
+		if (!$Mobile) {
+			for ($i=$StartPosition; $i<=$StopPage; $i++) {
+				//if ($i!=$StartPage) { $Pages.='<a href="'.$Location.'?page='.$i.$QueryString.'">'; }
+				if ($i!=$StartPage) { $Pages.='<a href="'.$Location.'?page='.$i.$QueryString.$Anchor.'">'; }
+				$Pages.="<strong>";
+				if($i*$ItemsPerPage>$TotalRecords) {
+					$Pages.=((($i-1)*$ItemsPerPage)+1).'-'.($TotalRecords);
+				} else {
+					$Pages.=((($i-1)*$ItemsPerPage)+1).'-'.($i*$ItemsPerPage);
+				}
 
-		for ($i=$StartPosition; $i<=$StopPage; $i++) {
-			//if ($i!=$StartPage) { $Pages.='<a href="'.$Location.'?page='.$i.$QueryString.'">'; }
-			if ($i!=$StartPage) { $Pages.='<a href="'.$Location.'?page='.$i.$QueryString.$Anchor.'">'; }
-			$Pages.="<strong>";
-			if($i*$ItemsPerPage>$TotalRecords) {
-				$Pages.=((($i-1)*$ItemsPerPage)+1).'-'.($TotalRecords);
-			} else {
-				$Pages.=((($i-1)*$ItemsPerPage)+1).'-'.($i*$ItemsPerPage);
+				$Pages.="</strong>";
+				if ($i!=$StartPage) { $Pages.='</a>'; }
+				if ($i<$StopPage) { $Pages.=" | "; }
 			}
-
-			$Pages.="</strong>";
-			if ($i!=$StartPage) { $Pages.='</a>'; }
-			if ($i<$StopPage) { $Pages.=" | "; }
+		} else {
+			$Pages .= $StartPage;
 		}
 
 		if ($StartPage<$TotalPages) {

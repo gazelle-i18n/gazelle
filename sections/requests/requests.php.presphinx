@@ -379,7 +379,7 @@ foreach($Categories as $CatKey => $CatName) {
 		<?=$PageLinks?>
 	</div>
 	
-	<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
+	<table id="request_table" cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 		<tr class="colhead_dark">
 			<td style="width: 38%;">
 				<a href="requests.php?order=name&amp;sort=<?=(($CurrentOrder == 'name') ? $NewSort : 'asc')?>&amp;<?=$CurrentURL ?>"><strong>Request Name</strong></a>

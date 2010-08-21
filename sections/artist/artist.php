@@ -57,6 +57,34 @@ if($Data) {
 ob_start();
 
 
+// Requests
+$Requests = $Cache->get_value('artists_requests_'.$ArtistID);
+if(!is_array($Requests)) {
+	$DB->query("SELECT
+			r.ID,
+			r.CategoryID,
+			r.Title,
+			r.Year,
+			r.TimeAdded,
+			COUNT(rv.UserID) AS Votes,
+			SUM(rv.Bounty) AS Bounty
+		FROM requests AS r
+			LEFT JOIN requests_votes AS rv ON rv.RequestID=r.ID
+			LEFT JOIN requests_artists AS ra ON r.ID=ra.RequestID 
+		WHERE ra.ArtistID = ".$ArtistID."
+			AND r.TorrentID = 0
+		GROUP BY r.ID
+		ORDER BY Votes DESC");
+	
+	if($DB->record_count() > 0) {
+		$Requests = $DB->to_array();
+	} else {
+		$Requests = array();
+	}
+	$Cache->cache_value('artists_requests_'.$ArtistID, $Requests);
+}
+$NumRequests = count($Requests);
+
 $LastReleaseType = 0;
 if(empty($Importances) || empty($TorrentList)) {
 	$DB->query("SELECT 
@@ -128,8 +156,10 @@ if(!empty($UsedReleases)) { ?>
 		<a href="#torrents_<?=str_replace(" ", "_", strtolower($ReleaseTypes[$ReleaseID]))?>">[<?=$DisplayName?>]</a>
 <?
 	}
+	if ($NumRequests > 0) {
 ?>
 	<a href="#requests">[Requests]</a>
+<? } ?>
 	</div>
 <? }
 
@@ -494,33 +524,7 @@ if(empty($SimilarArray)) {
 
 echo $TorrentDisplayList;
 
-// Requests
-$Requests = $Cache->get_value('artists_requests_'.$ArtistID);
-if(!is_array($Requests)) {
-	$DB->query("SELECT
-			r.ID,
-			r.CategoryID,
-			r.Title,
-			r.Year,
-			r.TimeAdded,
-			COUNT(rv.UserID) AS Votes,
-			SUM(rv.Bounty) AS Bounty
-		FROM requests AS r
-			LEFT JOIN requests_votes AS rv ON rv.RequestID=r.ID
-			LEFT JOIN requests_artists AS ra ON r.ID=ra.RequestID 
-		WHERE ra.ArtistID = ".$ArtistID."
-			AND r.TorrentID = 0
-		GROUP BY r.ID
-		ORDER BY Votes DESC");
-	
-	if($DB->record_count() > 0) {
-		$Requests = $DB->to_array();
-	} else {
-		$Requests = array();
-	}
-	$Cache->cache_value('artists_requests_'.$ArtistID, $Requests);
-}
-if(count($Requests) > 0) {
+if($NumRequests > 0) {
 	
 ?>
 	<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%" id="requests">
@@ -618,7 +622,7 @@ if($NumSimilar>0) {
 	}
 ?>
 
-		<div class="box" style="">
+		<div id="similar_artist_map" class="box">
 			<div class="head"><strong>Similar artist map</strong></div>
 			<div style="width:<?=WIDTH?>px;height:<?=HEIGHT?>px;position:relative;background-image:url(static/similar/<?=$ArtistID?>.png?t=<?=time()?>)">
 <?

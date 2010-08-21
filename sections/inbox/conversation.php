@@ -101,7 +101,7 @@ $DB->query("SELECT SentDate, SenderID, Body, ID FROM pm_messages AS m WHERE Conv
 while(list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) { ?>
 	<div class="box vertical_space">
 		<div class="head">
-			By <strong><?=$Users[$SenderID]['UserStr']?></strong> <?=time_diff($SentDate)?> - <a href="#quickpost" onclick="Quote('<?=$MessageID?>','<?=$Users[$SenderID]['Username']?>');">[Quote]</a>	
+			<strong><?=$Users[$SenderID]['UserStr']?></strong> <?=time_diff($SentDate)?> - <a href="#quickpost" onclick="Quote('<?=$MessageID?>','<?=$Users[$SenderID]['Username']?>');">[Quote]</a>	
 		</div>
 		<div class="body" id="message<?=$MessageID?>"><?=$Text->full_format($Body)?></div>
 	</div>
@@ -137,17 +137,17 @@ if(empty($LoggedUser['DisablePM']) || isset($StaffIDs[$User2ID])) {
 
 			<table width="100%">
 				<tr>
-					<td class="label">Sticky</td>
+					<td class="label"><label for="sticky">Sticky</label></td>
 					<td>
-						<input type="checkbox" name="sticky"<? if($Sticky) { echo ' checked="checked"'; } ?> />
+						<input type="checkbox" id="sticky" name="sticky"<? if($Sticky) { echo ' checked="checked"'; } ?> />
 					</td>
-					<td class="label">Mark as unread</td>
+					<td class="label"><label for="mark_unread">Mark as unread</label></td>
 					<td>
-						<input type="checkbox" name="mark_unread" />
+						<input type="checkbox" id="mark_unread" name="mark_unread" />
 					</td>
-					<td class="label">Delete conversation</td>
+					<td class="label"><label for="delete">Delete conversation</label></td>
 					<td>
-						<input type="checkbox" name="delete" />
+						<input type="checkbox" id="delete" name="delete" />
 					</td>
 
 				</tr>
@@ -166,8 +166,8 @@ if(check_perms('users_mod')) {
 			<input type="hidden" name="action" value="forward" />
 			<input type="hidden" name="convid" value="<?=$ConvID?>" />
 			<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-			Forward to
-			<select name="receiverid">
+			<label for="receiverid">Forward to</label>
+			<select id="receiverid" name="receiverid">
 <?
 	foreach($StaffIDs as $StaffID => $StaffName) {
 		if($StaffID == $LoggedUser['ID'] || $StaffID == $User2ID) {
