@@ -2,7 +2,7 @@
 
 $Queries = array();
 
-$OrderWays = array('votes', 'bounty', 'created', 'lastvote', 'filled');
+$OrderWays = array('year', 'votes', 'bounty', 'created', 'lastvote', 'filled');
 list($Page,$Limit) = page_limit(REQUESTS_PER_PAGE);
 $Submitted = !empty($_GET['submit']);
 
@@ -202,6 +202,9 @@ switch($CurrentOrder) {
 		break;
 	case 'filled' :
 		$OrderBy = "TimeFilled";
+		break;
+	case 'year' :
+		$OrderBy = "Year";
 		break;
 	default :
 		$OrderBy = "TimeAdded";
