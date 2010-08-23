@@ -226,6 +226,8 @@ $TorrentName = $File['tmp_name'];
 
 if (!is_uploaded_file($TorrentName) || !filesize($TorrentName)) {
 	$Err='No torrent file uploaded, or file is empty.';
+} else if(substr(strtolower($File['name']), strlen($File['name']) - strlen(".torrent")) !== ".torrent") {
+	$Err = "You seem to have put something other than a torrent file into the upload field. (".$File['name'].").";
 }
 
 $LogScoreAverage = 0;
@@ -877,7 +879,7 @@ if (!$Private) {
 	show_footer();
 	die();
 } elseif($RequestID) {
-	header("Location: requests.php?action=takefill&requestid=".$RequestID."&torrentid=".$TorrentID);
+	header("Location: requests.php?action=takefill&requestid=".$RequestID."&torrentid=".$TorrentID."&auth=".$LoggedUser['AuthKey']);
 } else {
 	header("Location: torrents.php?id=$GroupID");
 }

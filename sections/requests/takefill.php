@@ -60,7 +60,20 @@ if($DB->record_count() < 1) {
 }
 list($UploaderID, $UploadTime, $TorrentReleaseType, $Bitrate, $Format, $Media, $HasLog, $HasCue, $LogScore, $TorrentCategoryID, $TorrentCatalogueNumber) = $DB->next_record();
 
-if(time_ago($UploadTime) < 3600 && $UploaderID != $LoggedUser['ID']) {
+$FillerID = $LoggedUser['ID'];
+$FillerUsername = $LoggedUser['Username'];
+
+if(!empty($_POST['user']) && check_perms('site_moderate_requests')) {
+	$FillerUsername = $_POST['user'];
+	$DB->query("SELECT ID FROM users_main WHERE Username LIKE '".$FillerUsername."'");
+	if($DB->record_count() < 1) {
+		$Err = "No such user to fill for!";
+	} else {
+		list($FillerID) = $DB->next_record();
+	}
+}
+
+if(time_ago($UploadTime) < 3600 && $UploaderID != $FillerID && !check_perms('site_moderate_requests')) {
 	$Err = "There is a one hour grace period for new uploads, to allow the torrent's uploader to fill the request";
 }
 
@@ -133,19 +146,6 @@ if($CategoryName == "Music") {
 		if(strpos($MediaList, $Media) === false) {
 			$Err = $Media." is not allowed media for this request";
 		}
-	}
-}
-
-$FillerID = $LoggedUser['ID'];
-$FillerUsername = $LoggedUser['Username'];
-
-if(!empty($_POST['user']) && check_perms('site_moderate_requests')) {
-	$FillerUsername = $_POST['user'];
-	$DB->query("SELECT ID FROM users_main WHERE Username LIKE '".$FillerUsername."'");
-	if($DB->record_count() < 1) {
-		$Err = "No such user to fill for!";
-	} else {
-		list($FillerID) = $DB->next_record();
 	}
 }
 

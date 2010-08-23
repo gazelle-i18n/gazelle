@@ -23,6 +23,11 @@ list($Username) = $DB->next_record();
 
 show_header("IP history for $Username");
 ?>
+<script type="text/javascript">
+function ShowIPs(rowname) {
+	$('tr[name="'+rowname+'"]').toggle();
+}
+</script>
 <div class="thin">
 <?
 list($Page,$Limit) = page_limit(IPS_PER_PAGE);
@@ -85,7 +90,7 @@ $Pages=get_pages($Page,$NumResults,IPS_PER_PAGE,9);
 		</tr>
 <?
 $Results = $DB->to_array();
-foreach($Results as $Result) {
+foreach($Results as $Index => $Result) {
 	list($IP, $StartTime, $EndTime, $UserIDs, $UserStartTimes, $UserEndTimes, $Usernames, $UsersEnabled, $UsersDonor, $UsersWarned) = $Result;
 
 	$HasDupe = false;
@@ -102,17 +107,21 @@ foreach($Results as $Result) {
 	}
 ?>
 		<tr class="rowa">
-			<td><?=$IP?> (<?=geoip($IP)?>)<br /><?=get_host($IP)?></td>
+			<td><?=$IP?> (<?=geoip($IP)?>)<br /><?=get_host($IP)?> 
+			<?=($HasDupe ? 
+			'<a href="#" onclick="ShowIPs('.$Index.'); return false;">('.count($UserIDs).')</a>' 
+			: '(0)')?></td>
 			<td><?=time_diff($StartTime)?></td>
 			<td><?=time_diff($EndTime)?></td>
 			<td><?//time_diff(strtotime($StartTime), strtotime($EndTime)); ?></td>
 		</tr>
 <?
 	if($HasDupe){
+		$HideMe = (count($UserIDs) > 10);
 		foreach ($UserIDs as $Key => $Val) {
 		if(!$UserEndTimes[$Key]){ $UserEndTimes[$Key] = sqltime(); }
 ?>
-		<tr class="rowb">
+		<tr class="rowb<?=($HideMe ? ' hidden' : '')?>" name="<?=$Index?>">
 			<td>&nbsp;&nbsp;&#187;&nbsp;<?=format_username($Val, $Usernames[$Key], $UsersDonor[$Key], $UsersWarned[$Key], $UsersEnabled[$Key] == 2 ? false : true)?></td>
 			<td><?=time_diff($UserStartTimes[$Key])?></td>
 			<td><?=time_diff($UserEndTimes[$Key])?></td>

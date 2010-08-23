@@ -1461,7 +1461,7 @@ function display_artists($Artists, $makelink = true, $IncludeHyphen = true) {
 			default:
 				$link = 'Various Artists';
 		}
-		if(!empty($Artists[2])) {
+		if(!empty($Artists[2]) && (count($Artists[1]) < 3)) {
 			switch(count($Artists[2])) {
 				case 1:
 					$link .= ' with '.display_artist($Artists[2][0], $makelink);

@@ -8,8 +8,13 @@ function ChangeResolve(reportid) {
 	ajax.get('reportsv2.php?action=ajax_change_resolve&id=' + reportid + '&type=' + $('#resolve_type' + reportid).raw().value + '&categoryid=' + $('#categoryid' + reportid).raw().value, function (response) {
 			var x = json.decode(response);
 			$('#delete' + reportid).raw().checked = (x[0] == '1' ? true : false);
-			$('#upload' + reportid).raw().checked = (x[1] == '1' ? true : false);
-			$('#warning' + reportid).raw().selectedIndex = x[2];
+			if($('#uploaderid' + reportid).raw().value == $('#reporterid' + reportid).raw().value) {
+				$('#warning' + reportid).raw().selectedIndex = 0;
+				$('#upload' + reportid).raw().checked = false;
+			} else {
+				$('#upload' + reportid).raw().checked = (x[1] == '1' ? true : false);
+				$('#warning' + reportid).raw().selectedIndex = x[2];
+			}
 			$('#update_resolve' + reportid).raw().disabled = false;
 		}
 	);

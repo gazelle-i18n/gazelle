@@ -88,8 +88,12 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 	$CatalogueID = floor((POSTS_PER_PAGE*ceil($ThreadInfo['Posts']/POSTS_PER_PAGE)-POSTS_PER_PAGE)/THREAD_CATALOGUE);
 	
 	//Get the catalogue value for the post we're appending to
-	$Key = ($ThreadInfo['Posts']%THREAD_CATALOGUE)-1;
-	
+	if($ThreadInfo['Posts']%THREAD_CATALOGUE == 0) {
+		$Key = THREAD_CATALOGUE-1;
+	} else {
+		$Key = ($ThreadInfo['Posts']%THREAD_CATALOGUE)-1;
+	}
+
 	//Edit the post in the cache
 	$Cache->begin_transaction('thread_'.$TopicID.'_catalogue_'.$CatalogueID);
 	$Cache->update_row($Key, array(
@@ -140,8 +144,8 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 			$Thread['LastPostAuthorID'] = $LoggedUser['ID']; //Last poster id
 			$Thread['LastPostUsername'] = $LoggedUser['Username']; //Last poster username
 			if ($Stickies > 0) {
-				$Part1 = array_slice($Forum,0,$Stickies,true); //Stickys
-				$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE,true); //Rest of page
+				$Part1 = array_slice($Forum,0,$Stickies,true); //Stickies
+				$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE-$Stickies-1,true); //Rest of page
 			} else {
 				$Part1 = array();
 				$Part3 = $Forum;
@@ -149,25 +153,20 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 			$Part2 = array($TopicID=>$Thread); //Bumped thread
 			if (is_null($Part1)) { $Part1 = array(); }
 			if (is_null($Part3)) { $Part3 = array(); }
-			if($Thread['IsSticky'] == 1) {
-				$Forum = $Part2 + $Part1 + $Part3; //Merge it
-			} else {
-				$Forum = $Part1 + $Part2 + $Part3; //Merge it
-			}
 			
 		//if we're bumping from an older page
 		} else {
 			//Remove the last thread from the index
 			if (count($Forum) == TOPICS_PER_PAGE) {
-				unset($Forum[(count($Forum)-1)]);
+				array_pop($Forum);
 			}
 			
 			//Pull the data for the thread we're bumping
 			$DB->query("SELECT f.AuthorID, f.IsLocked, f.IsSticky, f.NumPosts, u.Username, ISNULL(p.TopicID) AS NoPoll FROM forums_topics AS f INNER JOIN users_main AS u ON u.ID=f.AuthorID LEFT JOIN forums_polls AS p ON p.TopicID=f.ID WHERE f.ID ='$TopicID'");
 			list($AuthorID,$IsLocked,$IsSticky,$NumPosts,$AuthorName,$NoPoll) = $DB->next_record();
 			if ($Stickies > 0) {
-				$Part1 = array_slice($Forum,0,$Stickies,true); //Stikys
-				$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE,true); //Rest of page
+				$Part1 = array_slice($Forum,0,$Stickies,true); //Stickies
+				$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE-$Stickies-1,true); //Rest of page
 			} else {
 				$Part1 = array();
 				$Part3 = $Forum;
@@ -186,7 +185,11 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 				'LastPostUsername' => $LoggedUser['Username'],
 				'NoPoll' => $NoPoll
 			)); //Bumped
-			$Forum = $Part1 + $Part2 + $Part3;
+		}
+		if($ThreadInfo['IsSticky'] == 1) {
+			$Forum = $Part2 + $Part1 + $Part3; //Merge it
+		} else {
+			$Forum = $Part1 + $Part2 + $Part3; //Merge it
 		}
 		$Cache->cache_value('forums_'.$ForumID, array($Forum,'',0,$Stickies), 0);
 		

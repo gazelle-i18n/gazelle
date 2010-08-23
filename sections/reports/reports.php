@@ -19,8 +19,10 @@ include(SERVER_ROOT.'/sections/reports/array.php');
 show_header('Reports');
 
 if(empty($_GET['view'])) {
+	$View = "New";
 	$Where = "Status='New'";
 } else {
+	$View = $_GET['view'];
 	switch($_GET['view']) {
 		case 'old' :
 			$Where = "Status='Resolved'";
@@ -186,11 +188,13 @@ while(list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $
 		<tr>
 			<td colspan="2"><?=$Text->full_format($Reason)?></td>
 		</tr>
+<? if($View != "old") { ?>
 		<tr>
 			<td class="center" colspan="2">
 				<input type="submit" name="submit" value="Resolved" />
 			</td>
 		</tr>
+<? } ?>
 	</table>
 </form>
 </div>

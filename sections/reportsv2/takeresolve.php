@@ -206,9 +206,9 @@ if($DB->affected_rows() > 0 || !$Report) {
 	//PM
 	if($Escaped['uploader_pm'] || $Warning > 0 || isset($Escaped['delete']) || $SendPM) {
 		if(isset($Escaped['delete'])) {
-			$PM = "Your above torrent was reported and has been deleted.\n\n";
+			$PM = "[url=torrents.php?torrentid=".$TorrentID."]Your above torrent[/url] was reported and has been deleted.\n\n";
 		} else {
-			$PM = "Your above torrent was reported but not deleted.\n\n";
+			$PM = "[url=torrents.php?torrentid=".$TorrentID."]Your above torrent[/url] was reported but not deleted.\n\n";
 		}
 		
 		$Preset = $ResolveType['resolve_options']['pm'];

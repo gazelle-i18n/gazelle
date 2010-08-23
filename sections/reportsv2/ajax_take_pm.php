@@ -11,6 +11,7 @@ if(!check_perms('admin_reports')){
 }
 
 $Recipient = $_POST['pm_type'];
+$TorrentID = $_POST['torrentid'];
 
 if(isset($_POST['uploader_pm']) && $_POST['uploader_pm'] != "") {
 	$Message = $_POST['uploader_pm'];
@@ -19,7 +20,7 @@ if(isset($_POST['uploader_pm']) && $_POST['uploader_pm'] != "") {
 	die();
 }
 
-if(!is_number($_POST['categoryid'])) {
+if(!is_number($_POST['categoryid']) || !is_number($TorrentID)) {
 	echo 'HAX on categoryid!';
 	die();
 } else {
@@ -45,9 +46,9 @@ if(!isset($_POST['from_delete'])) {
 if($Recipient == 'Uploader') {
 	$ToID = $_POST['uploaderid'];
 	if($Report) {
-		$Message = "You uploaded the above torrent, it has been reported for the reason: ".$ReportType['title'].":\n\"".$_POST['report_reason']."\"\n\n".$Message;
+		$Message = "You uploaded [url=torrents.php?torrentid=".$TorrentID."]the above torrent[/url], it has been reported for the reason: ".$ReportType['title'].":\n\"".$_POST['report_reason']."\"\n\n".$Message;
 	} else {
-		$Message = "I am PMing you as you are the uploader of the above torrent.\n\n".$Message;
+		$Message = "I am PMing you as you are the uploader of [url=torrents.php?torrentid=".$TorrentID."]the above torrent[/url].\n\n".$Message;
 	}
 } else if($Recipient == 'Reporter') {
 	$ToID = $_POST['reporterid'];
