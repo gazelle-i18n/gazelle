@@ -14,7 +14,12 @@ $Short = $_POST['type'];
 $Type = $Types[$Short]; 
 $ID = $_POST['id'];
 if($Short == "request_update") {
-	$Reason  = "[b]Year[/b]: ".((empty($_POST['year']) || !is_number($_POST['year'])) ? 'Not given' : $_POST['year']).".\n\n";
+	if(empty($_POST['year']) || !is_number($_POST['year'])) {
+		error_message('Year must be specified.');
+		header('Location: reports.php?action=report&type=request_update&id='.$ID);
+		die();
+	}
+	$Reason  = "[b]Year[/b]: ".$_POST['year'].".\n\n";
 	$Reason .= "[b]Release Type[/b]: ".((empty($_POST['releasetype']) || !is_number($_POST['releasetype'] || $_POST['releasetype'] == 0)) ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).".\n\n";
 	$Reason .= "[b]Additional Comments[/b]: ".$_POST['comment'];
 } else {

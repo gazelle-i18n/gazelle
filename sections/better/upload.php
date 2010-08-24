@@ -1,13 +1,23 @@
 <?
 // Get list of FLAC snatches
 
+if(!empty($_GET['userid']) && is_number($_GET['userid'])) {
+	if (check_perms('users_override_paranoia')) {
+		$UserID = $_GET['userid'];
+	} else {
+		error(403);
+	}
+} else {
+	$UserID = $LoggedUser['ID'];
+}
+
 $DB->query("SELECT t.GroupID, t.ID
 	FROM torrents AS t
 	WHERE 
 	t.Format='FLAC' 
 	AND ((t.LogScore = '100' AND t.Media = 'CD')
 		OR t.Media = 'Vinyl')
-	AND t.UserID='$LoggedUser[ID]'");
+	AND t.UserID='$UserID'");
 
 $UploadedGroupIDs = $DB->collect('GroupID');
 $Uploads = $DB->to_array('GroupID');

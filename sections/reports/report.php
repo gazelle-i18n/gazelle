@@ -15,6 +15,7 @@ $Type = $Types[$Short];
 $ID = $_GET['id'];
 
 show_header('Report a '.$Type['title']);
+show_message();
 ?>
 <div class="thin">
 	<h2 class="center">Report <?=$Type['title']?></h2>
@@ -79,7 +80,7 @@ switch($Short) {
 			<input type="hidden" name="type" value="<?=$Short?>" />
 			<table>
 				<tr>
-					<td class="label">Year</td>
+					<td class="label">Year (required)</td>
 					<td>
 						<input type="text" size="4" name="year" />
 					</td>

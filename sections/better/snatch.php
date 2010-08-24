@@ -1,7 +1,11 @@
 <?
 
 if(!empty($_GET['userid']) && is_number($_GET['userid'])) {
-	$UserID = $_GET['userid'];
+	if (check_perms('users_override_paranoia')) {
+		$UserID = $_GET['userid'];
+	} else {
+		error(403);
+	}
 } else {
 	$UserID = $LoggedUser['ID'];
 }

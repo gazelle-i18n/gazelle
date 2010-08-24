@@ -221,6 +221,9 @@ if($CategoryName == "Music") {
 	if($MainArtistCount < 1) {
 		$Err = "Please enter at least one main artist";
 	}
+	if(!isset($ArtistNames[0])) {
+		unset($ArtistForm);
+	}
 }
 
 if(!empty($Err)) {

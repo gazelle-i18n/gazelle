@@ -26,7 +26,7 @@ $Owner = display_str($Owner);
 $DB->query("SELECT um.ID, um.Username, COUNT(r.ID) AS Reports FROM reportsv2 AS r JOIN users_main AS um ON um.ID=r.ResolverID WHERE r.LastChangeTime > NOW() - INTERVAL 24 HOUR GROUP BY r.ResolverID ORDER BY Reports DESC");
 $Results = $DB->to_array();
 ?>
-		<strong>Reports resolved in the last 24h</strong>
+		<strong>Reports resolved in the last 24 hours</strong>
 		<table class="border">
 			<tr>
 				<td class="head colhead_dark">Username</td>

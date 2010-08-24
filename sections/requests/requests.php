@@ -16,6 +16,9 @@ if(empty($_GET['type'])) {
 		case 'created':
 			$Title = 'My requests';
 			$SS->set_filter('userid', array($LoggedUser['ID']));
+			if(empty($_GET['show_filled'])) {
+				$SS->set_filter('torrentid', array(0));
+			}
 			break;
 		case 'voted':
 			if(!empty($_GET['userid'])) {
@@ -31,6 +34,9 @@ if(empty($_GET['type'])) {
 				$Title = "Requests I've voted on";
 				$SS->set_filter('voter', array($LoggedUser['ID']));
 			}
+			if(empty($_GET['show_filled'])) {
+				$SS->set_filter('torrentid', array(0));
+			}
 			break;
 		case 'filled':
 			if(empty($_GET['userid']) || !is_number($_GET['userid'])) {
@@ -45,8 +51,7 @@ if(empty($_GET['type'])) {
 	}
 }
 
-if(($Submitted && empty($_GET['show_filled'])) 
-	|| (!$Submitted && empty($_GET['type']))) {
+if($Submitted && empty($_GET['show_filled'])) {
 	$SS->set_filter('torrentid', array(0));
 }
 
@@ -268,6 +273,10 @@ show_header($Title, 'requests');
 	<div class="center">
 		<form action="" method="get">
 			<input type="hidden" name="submit" value="true" />
+			<input type="hidden" name="type" value="<?=$_GET['type']?>" />
+<?	if(!empty($_GET['userid']) && is_number($_GET['userid'])) { ?>
+			<input type="hidden" name="userid" value="<?=$_GET['userid']?>" />
+<?	} ?>
 			<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 				<tr>
 					<td class="label">Search terms:</td>

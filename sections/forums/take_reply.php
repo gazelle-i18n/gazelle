@@ -151,8 +151,6 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 				$Part3 = $Forum;
 			}
 			$Part2 = array($TopicID=>$Thread); //Bumped thread
-			if (is_null($Part1)) { $Part1 = array(); }
-			if (is_null($Part3)) { $Part3 = array(); }
 			
 		//if we're bumping from an older page
 		} else {
@@ -186,6 +184,8 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 				'NoPoll' => $NoPoll
 			)); //Bumped
 		}
+		if (is_null($Part1)) { $Part1 = array(); }
+		if (is_null($Part3)) { $Part3 = array(); }
 		if($ThreadInfo['IsSticky'] == 1) {
 			$Forum = $Part2 + $Part1 + $Part3; //Merge it
 		} else {
