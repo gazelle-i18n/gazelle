@@ -586,7 +586,8 @@ if($Day != next_day() || $_GET['runday']){
 	
 	sleep(10);
 	//remove dead torrents that were never announced to -- XBTT will not delete those with a pid of 0, only those that belong to them (valid pids)
-	$DB->query("DELETE FROM torrents WHERE flags = 1 AND pid = 0");
+	//XBTT is now modified to delete torrents with pid = 0
+//	$DB->query("DELETE FROM torrents WHERE flags = 1 AND pid = 0");
 	sleep(10);
 	$i = 0;
 	$DB->query("SELECT
@@ -705,20 +706,20 @@ if($BiWeek != next_biweek() || $_GET['runbiweek']) {
 			$DB->query("UPDATE users_main SET Invites=Invites+1 WHERE ID IN(".implode(',',$UserIDs).")");
 		}
 
+	}
 
 	// Elite users
-	
-		$DB->query("SELECT ID FROM users_main AS um JOIN users_info AS ui on ui.UserID=um.ID WHERE PermissionID=".ELITE." AND um.Enabled='1' AND ui.DisableInvites = '0' AND um.Invites<4");
-		$UserIDs = $DB->collect('ID');
-		if (count($UserIDs) > 0) {
-			foreach($UserIDs as $UserID) {
-					$Cache->begin_transaction('user_info_heavy_'.$UserID);
-					$Cache->update_row(false, array('Invites' => '+1'));
-					$Cache->commit_transaction(0);
-			}
-			$DB->query("UPDATE users_main SET Invites=Invites+1 WHERE ID IN (".implode(',',$UserIDs).")");
+	$DB->query("SELECT ID FROM users_main AS um JOIN users_info AS ui on ui.UserID=um.ID WHERE PermissionID=".ELITE." AND um.Enabled='1' AND ui.DisableInvites = '0' AND um.Invites<4");
+	$UserIDs = $DB->collect('ID');
+	if (count($UserIDs) > 0) {
+		foreach($UserIDs as $UserID) {
+				$Cache->begin_transaction('user_info_heavy_'.$UserID);
+				$Cache->update_row(false, array('Invites' => '+1'));
+				$Cache->commit_transaction(0);
 		}
+		$DB->query("UPDATE users_main SET Invites=Invites+1 WHERE ID IN (".implode(',',$UserIDs).")");
 	}
+
 	$BonusReqs = array(
 		array(0.75, 2*1024*1024*1024),
 		array(2.0, 10*1024*1024*1024),

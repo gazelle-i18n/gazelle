@@ -449,17 +449,17 @@ if ($Pass && check_perms('users_edit_password')) {
         
 }
 
-if (empty($UpdateSet) && empty($EditSummary) && str_replace("\r", '', $Cur['AdminComment']) == str_replace("\r", '', $_POST['AdminComment'])) {
+if (empty($UpdateSet) && empty($EditSummary)) {
 	if(!$Reason) {
-		header("Location: user.php?id=$UserID");
-		die();
+		if (str_replace("\r", '', $Cur['AdminComment']) != str_replace("\r", '', $AdminComment) && check_perms('users_disable_any')) {
+			$UpdateSet[]="AdminComment='$AdminComment'";
+		} else {
+			header("Location: user.php?id=$UserID");
+			die();
+		}
 	} else {
 		$EditSummary[]='notes added';
 	}
-}
-
-if ($AdminComment!=$Cur['AdminComment'] && check_perms('users_disable_any')) {
-	$UpdateSet[]="AdminComment='$AdminComment'";
 }
 
 $Cache->begin_transaction('user_info_'.$UserID);

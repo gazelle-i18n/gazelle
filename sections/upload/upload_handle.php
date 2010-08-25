@@ -698,18 +698,25 @@ if(!$IsNewGroup) {
 	// maybe there are torrents in the same release as the new torrent. Let's find out (for notifications)
 	$GroupInfo = get_group_info($GroupID);
 
+	$ThisMedia = display_str($Properties['Media']);
+	$ThisRemastered = display_str($Properties['Remastered']);
+	$ThisRemasterYear = display_str($Properties['RemasterYear']);
+	$ThisRemasterTitle = display_str($Properties['RemasterTitle']);
+	$ThisRemasterRecordLabel = display_str($Properties['RemasterRecordLabel']);
+	$ThisRemasterCatalogueNumber = display_str($Properties['RemasterCatalogueNumber']);
+
 	foreach($GroupInfo[1] as $TorrentInfo) {
-		if (($TorrentInfo['Media'] == $Properties['Media'])
-		    && ($TorrentInfo['Remastered'] == $Properties['Remastered'])
-		    && ($TorrentInfo['RemasterYear'] == $Properties['RemasterYear'])
-		    && ($TorrentInfo['RemasterTitle'] == $Properties['RemasterTitle'])
-		    && ($TorrentInfo['RemasterRecordLabel'] == $Properties['RemasterRecordLabel'])
-		    && ($TorrentInfo['RemasterCatalogueNumber'] == $Properties['RemasterCatalogueNumber'])) {
+		if (($TorrentInfo['Media'] == $ThisMedia)
+		    && ($TorrentInfo['Remastered'] == $ThisRemastered)
+		    && ($TorrentInfo['RemasterYear'] == $ThisRemasterYear)
+		    && ($TorrentInfo['RemasterTitle'] == $ThisRemasterTitle)
+		    && ($TorrentInfo['RemasterRecordLabel'] == $ThisRemasterRecordLabel)
+		    && ($TorrentInfo['RemasterCatalogueNumber'] == $ThisRemasterCatalogueNumber)
+		    && ($TorrentInfo['ID'] != $TorrentID)) {
 			$UsedFormatBitrates[] = array('format' => $TorrentInfo['Format'], 'bitrate' => $TorrentInfo['Encoding']);
 		}
 	}
 }
-
 
 // For RSS
 $Item = $Feed->item($Title, $Text->strip_bbcode($Body), 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID, $LoggedUser['Username'], 'torrents.php?id='.$GroupID, trim($Properties['TagList']));

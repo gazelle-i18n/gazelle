@@ -76,7 +76,7 @@ if(isset($_POST['subscribe'])) {
 }
 
 //Now lets handle the special case of merging posts, we can skip bumping the thread and all that fun
-if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['merge']) && check_perms('site_forums_double_post'))) {
+if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && (!check_perms('site_forums_double_post') || isset($_POST['merge']))) {
 	//Get the id for this post in the database to append
 	$DB->query("SELECT ID FROM forums_posts WHERE TopicID='$TopicID' AND AuthorID='".$LoggedUser['ID']."' ORDER BY ID DESC LIMIT 1");
 	list($PostID) = $DB->next_record();
@@ -86,7 +86,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 	
 	//Get the catalogue it is in
 	$CatalogueID = floor((POSTS_PER_PAGE*ceil($ThreadInfo['Posts']/POSTS_PER_PAGE)-POSTS_PER_PAGE)/THREAD_CATALOGUE);
-	
+
 	//Get the catalogue value for the post we're appending to
 	if($ThreadInfo['Posts']%THREAD_CATALOGUE == 0) {
 		$Key = THREAD_CATALOGUE-1;
@@ -137,52 +137,48 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && !(!isset($_POST['mer
 		if (array_key_exists($TopicID,$Forum)) {
 			$Thread = $Forum[$TopicID];
 			unset($Forum[$TopicID]);
-	
 			$Thread['NumPosts'] = $Thread['NumPosts']+1; //Increment post count
 			$Thread['LastPostID'] = $PostID; //Set postid for read/unread
 			$Thread['LastPostTime'] = sqltime(); //Time of last post
 			$Thread['LastPostAuthorID'] = $LoggedUser['ID']; //Last poster id
 			$Thread['LastPostUsername'] = $LoggedUser['Username']; //Last poster username
-			if ($Stickies > 0) {
-				$Part1 = array_slice($Forum,0,$Stickies,true); //Stickies
-				$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE-$Stickies-1,true); //Rest of page
-			} else {
-				$Part1 = array();
-				$Part3 = $Forum;
-			}
 			$Part2 = array($TopicID=>$Thread); //Bumped thread
 			
 		//if we're bumping from an older page
 		} else {
 			//Remove the last thread from the index
-			if (count($Forum) == TOPICS_PER_PAGE) {
+			if (count($Forum) == TOPICS_PER_PAGE && $Stickies < TOPICS_PER_PAGE) {
 				array_pop($Forum);
 			}
-			
-			//Pull the data for the thread we're bumping
-			$DB->query("SELECT f.AuthorID, f.IsLocked, f.IsSticky, f.NumPosts, u.Username, ISNULL(p.TopicID) AS NoPoll FROM forums_topics AS f INNER JOIN users_main AS u ON u.ID=f.AuthorID LEFT JOIN forums_polls AS p ON p.TopicID=f.ID WHERE f.ID ='$TopicID'");
-			list($AuthorID,$IsLocked,$IsSticky,$NumPosts,$AuthorName,$NoPoll) = $DB->next_record();
-			if ($Stickies > 0) {
-				$Part1 = array_slice($Forum,0,$Stickies,true); //Stickies
-				$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE-$Stickies-1,true); //Rest of page
+			//Never know if we get a page full of stickies...
+			if ($Stickies < TOPICS_PER_PAGE || $ThreadInfo['IsSticky'] == 1) {
+				//Pull the data for the thread we're bumping
+				$DB->query("SELECT f.AuthorID, f.IsLocked, f.IsSticky, f.NumPosts, u.Username, ISNULL(p.TopicID) AS NoPoll FROM forums_topics AS f INNER JOIN users_main AS u ON u.ID=f.AuthorID LEFT JOIN forums_polls AS p ON p.TopicID=f.ID WHERE f.ID ='$TopicID'");
+				list($AuthorID,$IsLocked,$IsSticky,$NumPosts,$AuthorName,$NoPoll) = $DB->next_record();
+				$Part2 = array($TopicID => array(
+					'ID' => $TopicID,
+					'Title' => $ThreadInfo['Title'],
+					'AuthorID' => $AuthorID,
+					'AuthorUsername' => $AuthorName,
+					'IsLocked' => $IsLocked,
+					'IsSticky' => $IsSticky,
+					'NumPosts' => $NumPosts,
+					'LastPostID' => $PostID,
+					'LastPostTime' => sqltime(),
+					'LastPostAuthorID' => $LoggedUser['ID'],
+					'LastPostUsername' => $LoggedUser['Username'],
+					'NoPoll' => $NoPoll
+				)); //Bumped
 			} else {
-				$Part1 = array();
-				$Part3 = $Forum;
+				$Part2 = array();
 			}
-			$Part2 = array($TopicID => array(
-				'ID' => $TopicID,
-				'Title' => $ThreadInfo['Title'],
-				'AuthorID' => $AuthorID,
-				'AuthorUsername' => $AuthorName,
-				'IsLocked' => $IsLocked,
-				'IsSticky' => $IsSticky,
-				'NumPosts' => $NumPosts,
-				'LastPostID' => $PostID,
-				'LastPostTime' => sqltime(),
-				'LastPostAuthorID' => $LoggedUser['ID'],
-				'LastPostUsername' => $LoggedUser['Username'],
-				'NoPoll' => $NoPoll
-			)); //Bumped
+		}
+		if ($Stickies > 0) {
+			$Part1 = array_slice($Forum,0,$Stickies,true); //Stickies
+			$Part3 = array_slice($Forum,$Stickies,TOPICS_PER_PAGE-$Stickies-1,true); //Rest of page
+		} else {
+			$Part1 = array();
+			$Part3 = $Forum;
 		}
 		if (is_null($Part1)) { $Part1 = array(); }
 		if (is_null($Part3)) { $Part3 = array(); }
