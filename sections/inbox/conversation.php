@@ -8,59 +8,39 @@ if(!$ConvID || !is_number($ConvID)) { error(404); }
 
 
 $UserID = $LoggedUser['ID'];
-$DB->query("SELECT UserID FROM pm_conversations_users WHERE UserID='$UserID' AND ConvID='$ConvID'");
+$DB->query("SELECT InInbox, InSentbox FROM pm_conversations_users WHERE UserID='$UserID' AND ConvID='$ConvID'");
 if($DB->record_count() == 0) {
 	error(403);
 }
 
 
+
+
+if (!$InInbox && !$InSentbox) {
+
+	error(404);
+}
+
 // Get information on the conversation
 $DB->query("SELECT
 	c.Subject,
-	cu1.Sticky,
-	cu1.UnRead,
-	cu1.UserID AS u1ID,
-	um1.Username AS u1Username,
-	um1.PermissionID AS u1Class,
-	um1.Enabled AS u1Enabled,
-	ui1.Donor AS u1Donor,
-	ui1.Warned AS u1Warned,
-	cu2.UserID AS u2ID,
-	um2.Username AS u2Username,
-	um2.PermissionID AS u2Class,
-	um2.Enabled AS u2Enabled,
-	ui2.Donor AS u2Donor,
-	ui2.Warned AS u2Warned
+	cu.Sticky,
+	cu.UnRead,
+	cu.ForwardedTo
 	FROM pm_conversations AS c
-	JOIN pm_conversations_users AS cu1 ON cu1.UserID='$UserID' AND cu1.ConvID=c.ID
-	LEFT JOIN users_main AS um1 ON um1.ID='$UserID'
-	LEFT JOIN users_info AS ui1 ON ui1.UserID='$UserID'
-	LEFT JOIN pm_conversations_users AS cu2 ON cu2.UserID!='$UserID' AND cu2.ConvID=c.ID
-	LEFT JOIN users_main AS um2 ON um2.ID=cu2.UserID
-	LEFT JOIN users_info AS ui2 ON ui2.UserID=cu2.UserID
-	WHERE c.ID='$ConvID'");
+	JOIN pm_conversations_users AS cu ON c.ID=cu.ConvID
+	WHERE c.ID='$ConvID' AND UserID='$UserID'");
+list($Subject, $Sticky, $UnRead, $ForwardedTo) = $DB->next_record();
 
-$A = $DB->next_record(); // A = Array
-$Subject = $A['Subject'];
-$Sticky = $A['Sticky'];
-$UnRead = $A['UnRead'];
+$DB->query("SELECT UserID, Username, PermissionID, Enabled, Donor, Warned
+	FROM pm_messages AS pm
+	JOIN users_info AS ui ON ui.UserID=pm.SenderID
+	JOIN users_main AS um ON um.ID=pm.SenderID
+	WHERE pm.ConvID='$ConvID'");
 
-$Users = array();
-list($User1ID, $User1Name, $User1Class, $User1Enabled, $User1Donor, $User1Warned) = array($A['u1ID'], $A['u1Username'], $A['u1Class'], $A['u1Enabled'], $A['u1Donor'], $A['u1Warned']);
-list($User2ID, $User2Name, $User2Class, $User2Enabled, $User2Donor, $User2Warned) = array($A['u2ID'], $A['u2Username'], $A['u2Class'], $A['u2Enabled'], $A['u2Donor'], $A['u2Warned']);
-$Users[$User1ID]['UserStr'] = format_username($User1ID, $User1Name, $User1Donor , $User1Warned, $User1Enabled == 2 ? false : true, $User1Class);
-$Users[$User1ID]['Username'] = $User1Name;
-$Users[$User2ID]['UserStr'] = format_username($User2ID, $User2Name, $User2Donor , $User2Warned, $User2Enabled == 2 ? false : true, $User2Class);
-$Users[$User2ID]['Username'] = $User2Name;
-
-$DB->query("SELECT pm.SenderID, Username, PermissionID, Enabled, Donor, Warned
-				FROM pm_messages AS pm
-				LEFT JOIN users_main AS um ON um.ID = pm.SenderID
-				LEFT JOIN users_info AS ui ON ui.UserID = um.ID
-				WHERE ConvID='$ConvID'");
-while(list($User3ID, $User3Name, $User3Class, $User3Enabled, $User3Donor, $User3Warned) = $DB->next_record()) {
-	$Users[$User3ID]['UserStr'] = format_username($User3ID, $User3Name, $User3Donor , $User3Warned, $User3Enabled == 2 ? false : true, $User3Class);
-	$Users[$User3ID]['Username'] = $User3Name;
+while(list($PMUserID, $Username, $PermissionID, $Enabled, $Donor, $Warned) = $DB->next_record()) {
+	$Users[$PMUserID]['UserStr'] = format_username($PMUserID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $PermissionID);
+	$Users[$PMUserID]['Username'] = $Username;
 }
 $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
 $Users[0]['Username'] = 'System';
@@ -74,15 +54,8 @@ if($UnRead=='1') {
 	$Cache->decrement('inbox_new_'.$UserID);
 }
 
-$DB->query("SELECT InInbox, InSentbox FROM pm_conversations_users WHERE ConvID='$ConvID' AND UserID='$UserID'");
-list($InInbox, $InSentbox) = $DB->next_record();
-
-
-if (!$InInbox && !$InSentbox) {
-
-	error(404);
-}
 show_header('View conversation '.$Subject, 'comments,inbox');
+show_message();
 
 // Get messages
 $DB->query("SELECT SentDate, SenderID, Body, ID FROM pm_messages AS m WHERE ConvID='$ConvID' ORDER BY ID");
@@ -107,15 +80,18 @@ while(list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) { ?>
 	</div>
 <?
 }
+$DB->query("SELECT UserID FROM pm_conversations_users WHERE UserID!='$LoggedUser[ID]' AND ConvID='$ConvID' AND (ForwardedTo=0 OR ForwardedTo=UserID)");
+$ReceiverIDs = $DB->collect('UserID');
 
-if(empty($LoggedUser['DisablePM']) || isset($StaffIDs[$User2ID])) {
+
+if(!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
 ?>
 	<h3>Reply</h3>
 	<form action="inbox.php" method="post" id="messageform">
 		<div class="box pad">
 			<input type="hidden" name="action" value="takecompose" />
 			<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-			<input type="hidden" name="toid" value="<?=$User2ID?>" />
+			<input type="hidden" name="toid" value="<?=implode(',',$ReceiverIDs)?>" />
 			<input type="hidden" name="convid" value="<?=$ConvID?>" />
 			<textarea id="quickpost" name="body" cols="90" rows="10"></textarea> <br />
 			<div id="preview" class="box vertical_space body hidden"></div>
@@ -158,7 +134,7 @@ if(empty($LoggedUser['DisablePM']) || isset($StaffIDs[$User2ID])) {
 		</div>
 	</form>
 <?
-if(check_perms('users_mod')) {
+if(check_perms('users_mod') && (!$ForwardedTo || $ForwardedTo == $LoggedUser['ID'])) {
 ?>
 	<h3>Forward conversation</h3>
 	<form action="inbox.php" method="post">
@@ -170,7 +146,7 @@ if(check_perms('users_mod')) {
 			<select id="receiverid" name="receiverid">
 <?
 	foreach($StaffIDs as $StaffID => $StaffName) {
-		if($StaffID == $LoggedUser['ID'] || $StaffID == $User2ID) {
+		if($StaffID == $LoggedUser['ID'] || $StaffID == $ReceiverID) {
 			continue;
 		}
 ?>

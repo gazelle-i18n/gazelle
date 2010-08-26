@@ -38,6 +38,8 @@ $sql = "SELECT
 	c.Subject,
 	cu.Unread,
 	cu.Sticky,
+	cu.ForwardedTo,
+	um2.Username AS ForwardedName,
 	cu2.UserID,
 	um.Username,
 	ui.Donor,
@@ -49,7 +51,8 @@ $sql .= "AS Date
 	LEFT JOIN pm_conversations_users AS cu ON cu.ConvID=c.ID AND cu.UserID='$UserID'
 	LEFT JOIN pm_conversations_users AS cu2 ON cu2.ConvID=c.ID AND cu2.UserID!='$UserID'
 	LEFT JOIN users_main AS um ON um.ID=cu2.UserID
-	LEFT JOIN users_info AS ui ON ui.UserID=um.ID"
+	LEFT JOIN users_info AS ui ON ui.UserID=um.ID
+	LEFT JOIN users_main AS um2 ON um2.ID=cu.ForwardedTo"
 
 	." JOIN pm_messages AS m ON c.ID=m.ConvID
 	WHERE ";
@@ -116,13 +119,16 @@ echo $Pages;
 			<table>
 				<tr class="colhead">
 					<td width="10"><input type="checkbox" onclick="toggleChecks('messageform',this)" /></td>
-					<td width="40%">Subject</td>
+					<td width="50%">Subject</td>
 					<td><?=($Section == 'sentbox')? 'Receiver' : 'Sender' ?></td>
 					<td>Date</td>
+<?		if(check_perms('users_mod')) { ?>
+					<td>Forwarded to</td>
+<?		} ?>
 				</tr>
 <?
 	$Row = 'a';
-	while(list($ConvID, $Subject, $Unread, $Sticky, $SenderID, $Username, $Donor, $Warned, $Enabled, $Date) = $DB->next_record()) {
+	while(list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $SenderID, $Username, $Donor, $Warned, $Enabled, $Date) = $DB->next_record()) {
 		if($Unread === '1') {
 			$RowClass = 'unreadpm';
 		} else {
@@ -142,6 +148,9 @@ echo $Pages;
 					</td>
 					<td><?=format_username($SenderID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true)?></td>
 					<td><?=time_diff($Date)?></td>
+<?		if(check_perms('users_mod')) { ?>
+					<td><?=($ForwardedID && $ForwardedID != $LoggedUser['ID'] ? format_username($ForwardedID, $ForwardedName):'')?></td>
+<?		} ?>
 				</tr>
 <?	} ?>
 			</table>

@@ -206,9 +206,9 @@ if($DB->affected_rows() > 0 || !$Report) {
 	//PM
 	if($Escaped['uploader_pm'] || $Warning > 0 || isset($Escaped['delete']) || $SendPM) {
 		if(isset($Escaped['delete'])) {
-			$PM = "[url=torrents.php?torrentid=".$TorrentID."]Your above torrent[/url] was reported and has been deleted.\n\n";
+			$PM = "[url=http://".NONSSL_SITE_URL."/torrents.php?torrentid=".$TorrentID."]Your above torrent[/url] was reported and has been deleted.\n\n";
 		} else {
-			$PM = "[url=torrents.php?torrentid=".$TorrentID."]Your above torrent[/url] was reported but not deleted.\n\n";
+			$PM = "[url=http://".NONSSL_SITE_URL."/torrents.php?torrentid=".$TorrentID."]Your above torrent[/url] was reported but not deleted.\n\n";
 		}
 		
 		$Preset = $ResolveType['resolve_options']['pm'];
@@ -218,7 +218,7 @@ if($DB->affected_rows() > 0 || !$Report) {
 		}
 		
 		if($Warning > 0) {
-			$PM .= "\nThis has resulted in a ".$Warning." week warning.\n";	
+			$PM .= "\nThis has resulted in a [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&id=218]".$Warning." week warning.[/url]\n";	
 		}
 		
 		if($Log) {

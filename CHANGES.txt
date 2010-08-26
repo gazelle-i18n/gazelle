@@ -1,4 +1,9 @@
 CHANGELOG
+2010-08-25
+-Better handling of special characters in torrent searches
+-Improved file name search
+-Add negations to request searches
+
 2010-08-11
 -Fixed long standing IE Bug. Turns out that IE fails to handle unicode data in the Content-disposition header so this value is now urlencoded ensuring compatibility.
 

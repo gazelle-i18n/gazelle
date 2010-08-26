@@ -1200,8 +1200,8 @@ function update_hash($GroupID) {
 		GROUP_CONCAT(DISTINCT t.Media SEPARATOR ' ') AS Media,
 		GROUP_CONCAT(DISTINCT t.Format SEPARATOR ' ') AS Format,
 		GROUP_CONCAT(DISTINCT t.Encoding SEPARATOR ' ') AS Encoding,
-		GROUP_CONCAT(DISTINCT t.RemasterTitle SEPARATOR ' ') AS RemasterTitle ,
-		GROUP_CONCAT(FileList separator ' ') AS FileList
+		GROUP_CONCAT(DISTINCT t.RemasterTitle SEPARATOR ' ') AS RemasterTitle,
+		GROUP_CONCAT(REPLACE(REPLACE(FileList, '|||', '\n '), '_', ' ') SEPARATOR '\n ') AS FileList
 		FROM torrents AS t
 		JOIN torrents_group AS g ON g.ID=t.GroupID
 		WHERE g.ID=$GroupID
@@ -1245,12 +1245,13 @@ function send_pm($ToID,$FromID,$Subject,$Body,$ConvID='') {
 				(UserID, ConvID, InInbox, InSentbox, SentDate, ReceivedDate, UnRead) VALUES
 				('$FromID', '$ConvID', '0','1','".sqltime()."', '".sqltime()."', '0')");
 		}
+		$ToID = array($ToID);
 	} else {
 		$DB->query("UPDATE pm_conversations_users SET
 				InInbox='1',
 				UnRead='1',
 				ReceivedDate='".sqltime()."'
-				WHERE UserID='$ToID'
+				WHERE UserID IN (".implode(',', $ToID).")
 				AND ConvID='$ConvID'");
 
 		$DB->query("UPDATE pm_conversations_users SET
@@ -1265,9 +1266,11 @@ function send_pm($ToID,$FromID,$Subject,$Body,$ConvID='') {
 
 	// Clear the caches of the inbox and sentbox
 	//$DB->query("SELECT UnRead from pm_conversations_users WHERE ConvID='$ConvID' AND UserID='$ToID'");
-	$DB->query("SELECT COUNT(ConvID) FROM pm_conversations_users WHERE UnRead = '1' and UserID='$ToID' AND InInbox = '1'");
-	list($UnRead) = $DB->next_record();
-	$Cache->cache_value('inbox_new_'.$ToID, $UnRead);
+	foreach($ToID as $ID) {
+		$DB->query("SELECT COUNT(ConvID) FROM pm_conversations_users WHERE UnRead = '1' and UserID='$ID' AND InInbox = '1'");
+		list($UnRead) = $DB->next_record();
+		$Cache->cache_value('inbox_new_'.$ID, $UnRead);
+	}
 
 	//if ($UnRead == 0) {
 	//	$Cache->increment('inbox_new_'.$ToID);

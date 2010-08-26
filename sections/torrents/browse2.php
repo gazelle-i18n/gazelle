@@ -136,16 +136,37 @@ foreach(array('artistname','groupname', 'recordlabel', 'cataloguenumber',
 				'filelist', 'format', 'media') as $Search) {
 	if(!empty($_GET[$Search])) {
 		$_GET[$Search] = str_replace(array('%'), '', $_GET[$Search]);
-		$Queries[]="@$Search ".$SS->escape_string($_GET[$Search]);
+		if($Search == 'filelist') {
+			$Queries[]='@filelist "'.$SS->EscapeString($_GET['filelist']).'"~20';
+		} else {
+			$Words = explode(' ', $_GET[$Search]);
+			foreach($Words as &$Word) {
+				if($Word[0] == '!' && strlen($Word) > 2) {
+					if(strpos($Word,'!',1) === false) {
+						$Word = '!'.$SS->EscapeString(substr($Word,1));
+					} else {
+						$Word = $SS->EscapeString($Word);
+					}
+				} else {
+					$Word = $SS->escape_string($Word);
+				}
+			}
+			$Queries[]="@$Search ".implode(' ', $Words);
+		}
 	}
 }
 if(!empty($_GET['year'])) {
 	$Years = explode('-', $_GET['year']);
-	if(is_numeric($Years[0]) || (!empty($Years[1]) && is_numeric($Years[1]))) {
+	if(is_number($Years[0]) || (empty($Years[0]) && !empty($Years[1]) && is_number($Years[1]))) {
 		if(count($Years) == 1) {
-			$SS->SetFilter('year', array((int)$Years[0]));
+			$SS->set_filter('year', array((int)$Years[0]));
 		} else {
-			$SS->SetFilterRange('year', (int)$Years[0], ($Years[1]>=$Years[0]?(int)$Years[1]:PHP_INT_MAX));
+			if(empty($Years[1]) || !is_number($Years[1])) {
+				$Years[1] = PHP_INT_MAX;
+			} elseif($Years[0] > $Years[1]) {
+				$Years = array_reverse($Years);
+			}
+			$SS->SetFilterRange('year', (int)$Years[0], (int)$Years[1]);
 		}
 	}
 }
@@ -155,13 +176,13 @@ if(!empty($_GET['encoding'])) {
 
 if(isset($_GET['haslog']) && $_GET['haslog']!=='') {
 	if($_GET['haslog'] == 100) {
-		$SS->SetFilter('logscore', array(100));
+		$SS->set_filter('logscore', array(100));
  	} elseif ($_GET['haslog'] < 0) {
  		// Exclude torrents with log score equal to 100 
- 		$SS->SetFilter('logscore', array(100), true);
- 		$SS->SetFilter('haslog', array(1));
+ 		$SS->set_filter('logscore', array(100), true);
+ 		$SS->set_filter('haslog', array(1));
 	} else {
-		$SS->SetFilter('haslog', array(1));
+		$SS->set_filter('haslog', array(1));
 	}	
 }
 
@@ -173,7 +194,7 @@ foreach(array('hascue','scene','freetorrent','releasetype') as $Search) {
 
 
 if(!empty($_GET['filter_cat'])) {
-	$SS->SetFilter('categoryid', array_keys($_GET['filter_cat']));
+	$SS->set_filter('categoryid', array_keys($_GET['filter_cat']));
 }
 
 

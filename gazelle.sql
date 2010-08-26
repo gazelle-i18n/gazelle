@@ -382,6 +382,7 @@ CREATE TABLE `pm_conversations_users` (
   `ReceivedDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `UnRead` enum('1','0') NOT NULL DEFAULT '1',
   `Sticky` enum('1','0') NOT NULL DEFAULT '0',
+  `ForwardedTo` int(12) NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`,`ConvID`),
   KEY `InInbox` (`InInbox`),
   KEY `InSentbox` (`InSentbox`),
