@@ -213,7 +213,6 @@ if(isset($LoginCookie)) {
 		$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
 	}
 
-
 	// Update LastUpdate every 10 minutes
 	if(strtotime($UserSessions[$SessionID]['LastUpdate'])+600<time()) {
 		$DB->query("UPDATE users_main SET LastAccess='".sqltime()."' WHERE ID='$LoggedUser[ID]'");

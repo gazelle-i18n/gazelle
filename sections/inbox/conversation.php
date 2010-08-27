@@ -26,11 +26,13 @@ $DB->query("SELECT
 	c.Subject,
 	cu.Sticky,
 	cu.UnRead,
-	cu.ForwardedTo
+	cu.ForwardedTo,
+	um.Username
 	FROM pm_conversations AS c
 	JOIN pm_conversations_users AS cu ON c.ID=cu.ConvID
+	LEFT JOIN users_main AS um ON um.ID=cu.ForwardedTo
 	WHERE c.ID='$ConvID' AND UserID='$UserID'");
-list($Subject, $Sticky, $UnRead, $ForwardedTo) = $DB->next_record();
+list($Subject, $Sticky, $UnRead, $ForwardedID, $ForwardedName) = $DB->next_record();
 
 $DB->query("SELECT UserID, Username, PermissionID, Enabled, Donor, Warned
 	FROM pm_messages AS pm
@@ -61,7 +63,7 @@ show_message();
 $DB->query("SELECT SentDate, SenderID, Body, ID FROM pm_messages AS m WHERE ConvID='$ConvID' ORDER BY ID");
 ?>
 <div class="thin">
-	<h2><?=$Subject?></h2>
+	<h2><?=$Subject.($ForwardedID > 0 ? ' (Forwarded to '.$ForwardedName.')':'')?></h2>
 <?
 
 
@@ -134,7 +136,7 @@ if(!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect($
 		</div>
 	</form>
 <?
-if(check_perms('users_mod') && (!$ForwardedTo || $ForwardedTo == $LoggedUser['ID'])) {
+if(check_perms('users_mod') && (!$ForwardedID || $ForwardedID == $LoggedUser['ID'])) {
 ?>
 	<h3>Forward conversation</h3>
 	<form action="inbox.php" method="post">
@@ -146,7 +148,7 @@ if(check_perms('users_mod') && (!$ForwardedTo || $ForwardedTo == $LoggedUser['ID
 			<select id="receiverid" name="receiverid">
 <?
 	foreach($StaffIDs as $StaffID => $StaffName) {
-		if($StaffID == $LoggedUser['ID'] || $StaffID == $ReceiverID) {
+		if($StaffID == $LoggedUser['ID'] || in_array($StaffID, $ReceiverIDs)) {
 			continue;
 		}
 ?>
