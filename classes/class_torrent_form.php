@@ -160,7 +160,7 @@ class TORRENT_FORM {
 							RemasterCatalogueNumber DESC");
 			
 			if($DB->record_count() > 0) {
-				$GroupRemasters = $DB->to_array();
+				$GroupRemasters = $DB->to_array(false, MYSQLI_BOTH, false);
 			}
 		}
 		
@@ -266,7 +266,7 @@ class TORRENT_FORM {
 <? } ?>
 						<br /><br />
 <? if(!empty($GroupRemasters)) { ?>
-						<input type="hidden" id="json_remasters" value='<?=json_encode($GroupRemasters)?>' /> 
+						<input type="hidden" id="json_remasters" value="<?=display_str(json_encode($GroupRemasters))?>" />
 						<select id="groupremasters" name="groupremasters" onchange="GroupRemaster()"<? if($UnknownRelease){ echo " disabled";}?>>
 							<option value="">-------</option>
 <?

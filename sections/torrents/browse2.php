@@ -87,7 +87,7 @@ $Queries = array();
 
 //Simple search
 if(!empty($_GET['searchstr'])) {
-	$Words = explode(' ',strtolower($SS->escape_string($_GET['searchstr'])));
+	$Words = explode(' ',strtolower($_GET['searchstr']));
 	$FilterBitrates = array_intersect($Words, $SearchBitrates);
 	if(count($FilterBitrates)>0) {
 		$Queries[]='@encoding '.implode(' ',$FilterBitrates);
@@ -103,33 +103,52 @@ if(!empty($_GET['searchstr'])) {
 		unset($Words[array_search('100%',$Words)]);
 	}
 	
-	if(count($Words)>0) {
-		$Queries[]='@(groupname,artistname,yearfulltext) '.implode(' ',array_diff($Words, $FilterBitrates, $FilterFormats));
+	$Words = array_diff($Words, $FilterBitrates, $FilterFormats);
+	if(!empty($Words)) {
+		foreach($Words as $Key => &$Word) {
+			if($Word[0] == '!' && strlen($Word) > 2) {
+				if(strpos($Word,'!',1) === false) {
+					$Word = '!'.$SS->EscapeString(substr($Word,1));
+				} else {
+					$Word = $SS->EscapeString($Word);
+				}
+			} elseif(strlen($Word) >= 2) {
+				$Word = $SS->EscapeString($Word);
+			} else {
+				unset($Words[$Key]);
+			}
+		}
+		$Words = trim(implode(' ',$Words));
+		if(!empty($Words)) {
+			$Queries[]='@(groupname,artistname,yearfulltext) '.$Words;
+		}
 	}
 }
-
-
-
 
 if(!empty($_GET['taglist'])) {
 	$_GET['taglist'] = str_replace('.','_',$_GET['taglist']);
-	$TagList = explode(',',$SS->escape_string($_GET['taglist']));
-	foreach($TagList as $Key=>$Tag) {
-		$TagList[$Key] = $Tag;
+	$TagList = explode(',',$_GET['taglist']);
+	foreach($TagList as $Key => &$Tag) {
+		if(strlen($Tag) >= 2) {
+			if($Tag[0] == '!' && strlen($Tag) >= 3) {
+				$Tag = '!'.$SS->EscapeString(substr($Tag,1));
+			} else {
+				$Tag = $SS->EscapeString($Tag);
+			}
+		} else {
+			unset($TagList[$Key]);
+		}
 	}
 }
 
-if(empty($_GET['tags_type']) && !empty($_GET['taglist'])) {
+if(empty($_GET['tags_type']) && !empty($TagList)) {
 	$Queries[]='@taglist ('.implode(' | ', $TagList).')';
-} elseif(!empty($_GET['taglist'])) {
+} elseif(!empty($TagList)) {
 	$_GET['tags_type'] = '1';
 	$Queries[]='@taglist '.implode(' ',$TagList);
 } else {
 	$_GET['tags_type'] = '1';
 }
-
-
-
 
 foreach(array('artistname','groupname', 'recordlabel', 'cataloguenumber', 
 				'remastertitle', 'remasteryear', 'remasterrecordlabel', 'remastercataloguenumber',
@@ -140,21 +159,24 @@ foreach(array('artistname','groupname', 'recordlabel', 'cataloguenumber',
 			$Queries[]='@filelist "'.$SS->EscapeString($_GET['filelist']).'"~20';
 		} else {
 			$Words = explode(' ', $_GET[$Search]);
-			foreach($Words as &$Word) {
+			foreach($Words as $Key => &$Word) {
 				if($Word[0] == '!' && strlen($Word) > 2) {
 					if(strpos($Word,'!',1) === false) {
 						$Word = '!'.$SS->EscapeString(substr($Word,1));
 					} else {
 						$Word = $SS->EscapeString($Word);
 					}
+				} elseif(strlen($Word) >= 2) {
+					$Word = $SS->EscapeString($Word);
 				} else {
-					$Word = $SS->escape_string($Word);
+					unset($Words[$Key]);
 				}
 			}
 			$Queries[]="@$Search ".implode(' ', $Words);
 		}
 	}
 }
+
 if(!empty($_GET['year'])) {
 	$Years = explode('-', $_GET['year']);
 	if(is_number($Years[0]) || (empty($Years[0]) && !empty($Years[1]) && is_number($Years[1]))) {

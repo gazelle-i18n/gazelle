@@ -127,9 +127,9 @@ if($_POST['id'] && is_number($_POST['id'])){
 		WHERE ID='".db_string($_POST['id'])."' AND UserID='$LoggedUser[ID]'");
 } else {
 	$DB->query("INSERT INTO users_notify_filters 
-		(UserID, Label, Artists, ExcludeVA, Tags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear)
+		(UserID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear)
 		VALUES
-		('$LoggedUser[ID]','".db_string($_POST['label'])."','$ArtistList','$ExcludeVA','$TagList','$ReleaseTypeList','$CategoryList','$FormatList','$EncodingList','$MediaList', '$FromYear', '$ToYear')");
+		('$LoggedUser[ID]','".db_string($_POST['label'])."','$ArtistList','$ExcludeVA','$NewGroupsOnly','$TagList','$ReleaseTypeList','$CategoryList','$FormatList','$EncodingList','$MediaList', '$FromYear', '$ToYear')");
 }
 
 $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);

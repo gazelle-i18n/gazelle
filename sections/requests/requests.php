@@ -57,18 +57,22 @@ if($Submitted && empty($_GET['show_filled'])) {
 
 if(!empty($_GET['search'])) {
 	$Words = explode(' ', $_GET['search']);
-	foreach($Words as &$Word) {
+	foreach($Words as $Key => &$Word) {
 		if($Word[0] == '!' && strlen($Word) > 2) {
 			if(strpos($Word,'!',1) === false) {
 				$Word = '!'.$SS->EscapeString(substr($Word,1));
 			} else {
 				$Word = $SS->EscapeString($Word);
 			}
+		} elseif(strlen($Word) >= 2) {
+			$Word = $SS->EscapeString($Word);
 		} else {
-			$Word = $SS->escape_string($Word);
+			unset($Words[$Key]);
 		}
 	}
-	$Queries[] = "@* ".implode(' ', $Words);
+	if(!empty($Words)) {
+		$Queries[] = "@* ".implode(' ', $Words);
+	}
 }
 
 $TagMatcher = (!empty($_GET['tagmatcher']) && $_GET['tagmatcher'] == "any") ? "any" : "all";

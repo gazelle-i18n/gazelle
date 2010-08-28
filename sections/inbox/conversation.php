@@ -12,6 +12,7 @@ $DB->query("SELECT InInbox, InSentbox FROM pm_conversations_users WHERE UserID='
 if($DB->record_count() == 0) {
 	error(403);
 }
+list($InInbox, $InSentbox) = $DB->next_record();
 
 
 

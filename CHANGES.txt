@@ -1,4 +1,7 @@
 CHANGELOG
+2010-08-28
+-Upgrade Sphinx to 1.10b
+
 2010-08-25
 -Better handling of special characters in torrent searches
 -Improved file name search

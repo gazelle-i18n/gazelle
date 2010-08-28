@@ -92,7 +92,7 @@ class TEXT {
 	}
 	
 	
-	function valid_url($Str, $Extension = '') {
+	function valid_url($Str, $Extension = '', $Inline = false) {
 		$Regex = '/^';
 		$Regex .= '(https?|ftps?|irc):\/\/'; // protocol
 		$Regex .= '(\w+(:\w+)?@)?'; // user:pass@
@@ -106,15 +106,16 @@ class TEXT {
 		if(!empty($Extension)) {
 			$Regex.=$Extension;
 		} else {
-			$Regex .= '(\?[0-9a-z\-_.,%\/\@[\]~&=:;()+*\^$!]*)?'; // query string
+			// query string
+			if ($Inline) {
+				$Regex .= '(\?([0-9a-z\-_.,%\/\@~&=:;()+*\^$!]|\[\d*\])*)?';
+			} else {
+				$Regex .= '(\?[0-9a-z\-_.,%\/\@[\]~&=:;()+*\^$!]*)?';
+			}
 			$Regex .= '(#[a-z0-9\-_.,%\/\@[\]~&=:;()+*\^$!]*)?'; // #anchor
 		}
 		$Regex .= '$/i';
-		if(preg_match($Regex, $Str, $Matches)) {
-			return true;
-		} else {
-			return false;
-		}
+		return preg_match($Regex, $Str, $Matches);
 	}
 	
 	function local_url($Str) {
@@ -185,7 +186,7 @@ EXPLANATION OF PARSER LOGIC
 			
 			// 1) Find the next tag (regex)
 			// [name(=attribute)?]|[[wiki-link]]
-			$IsTag = preg_match("/((\[[a-zA-Z*]+)(=[^\n'\"\[\]]+)?\])|(\[\[[^\n\"'\[\]]+\]\])/", $Str, $Tag, PREG_OFFSET_CAPTURE, $i);
+			$IsTag = preg_match("/((\[[a-zA-Z*]+)(=(?:[^\n'\"\[\]]|\[\d*\])+)?\])|(\[\[[^\n\"'\[\]]+\]\])/", $Str, $Tag, PREG_OFFSET_CAPTURE, $i);
 			
 			// 1a) If there aren't any tags left, write everything remaining to a block
 			if(!$IsTag) {
@@ -246,7 +247,7 @@ EXPLANATION OF PARSER LOGIC
 			} elseif($TagName == 'inlineurl') { // We did a big replace early on to turn http:// into [inlineurl]http://
 				
 				// Let's say the block can stop at a newline or a space
-				$CloseTag = strcspn($Str, " \n\r[", $i);
+				$CloseTag = strcspn($Str, " \n\r", $i);
 				if($CloseTag === false) { // block finishes with URL
 					$CloseTag = $Len;
 				}
@@ -533,7 +534,7 @@ EXPLANATION OF PARSER LOGIC
 					break;
 					
 				case 'inlineurl':
-					if(!$this->valid_url($Block['Attr'])) {
+					if(!$this->valid_url($Block['Attr'], '', true)) {
 						$Array = $this->parse($Block['Attr']);
 						$Block['Attr'] = $Array;
 						$Str.=$this->to_html($Block['Attr']);
@@ -604,7 +605,7 @@ EXPLANATION OF PARSER LOGIC
 					break;
 					
 				case 'inlineurl':
-					if(!$this->valid_url($Block['Attr'])) {
+					if(!$this->valid_url($Block['Attr'], '', true)) {
 						$Array = $this->parse($Block['Attr']);
 						$Block['Attr'] = $Array;
 						$Str.=$this->raw_text($Block['Attr']);
