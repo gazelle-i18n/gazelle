@@ -172,7 +172,10 @@ foreach(array('artistname','groupname', 'recordlabel', 'cataloguenumber',
 					unset($Words[$Key]);
 				}
 			}
-			$Queries[]="@$Search ".implode(' ', $Words);
+			$Words = trim(implode(' ',$Words));
+			if(!empty($Words)) {
+				$Queries[]="@$Search ".$Words;
+			}
 		}
 	}
 }
