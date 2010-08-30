@@ -1,9 +1,6 @@
 <?
 enforce_login();
 
-$CollageCats = array(0=>'Personal', 1=>'Theme', 2=>'Genre introduction', 3=>'Discography', 4=>'Label', 5=>'Staff picks', 6=>'Charts');
-
-
 if(empty($_REQUEST['action'])) { $_REQUEST['action']=''; }
 
 switch($_REQUEST['action']) {

@@ -1,5 +1,5 @@
 <?
-// Get list of FLAC snatches
+// Get list of FLAC uploads
 
 if(!empty($_GET['userid']) && is_number($_GET['userid'])) {
 	if (check_perms('users_override_paranoia')) {

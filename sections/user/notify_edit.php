@@ -10,7 +10,9 @@ $DB->query("SELECT ID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, ReleaseTy
 $i = 0;
 $NumFilters = $DB->record_count()-1;
 
-while($N = $DB->next_record()){ // $N stands for Notifications
+$Notifications = $DB->to_array();
+
+foreach($Notifications as $N) { //$N stands for Notifications
 	$N['Artists']		= implode(', ', explode('|', substr($N['Artists'],1,-1)));
 	$N['Tags']		= implode(', ', explode('|', substr($N['Tags'],1,-1)));
 	$N['ReleaseTypes'] 	= explode('|', substr($N['ReleaseTypes'],1,-1));
@@ -44,7 +46,9 @@ while($N = $DB->next_record()){ // $N stands for Notifications
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" class="center"><strong>All fields below here are optional</strong></td>
+				<td colspan="2" class="center">
+					<strong>All fields below here are optional</strong>
+				</td>
 			</tr>
 <?	} else { ?>
 			<input type="hidden" name="id" value="<?=$N['ID']?>" />

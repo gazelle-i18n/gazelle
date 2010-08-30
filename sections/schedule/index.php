@@ -244,7 +244,7 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 
 	//------------- Remove dead peers ---------------------------------------//
 	sleep(3);
-	$DB->query("DELETE FROM xbt_files_users WHERE mtime<unix_timestamp(now()-interval 1 hour)");
+	$DB->query("DELETE FROM xbt_files_users WHERE mtime<unix_timestamp(now()-interval 6 hour)");
 
 	//------------- Remove dead sessions ---------------------------------------//
 	sleep(3);
@@ -586,8 +586,7 @@ if($Day != next_day() || $_GET['runday']){
 	
 	sleep(10);
 	//remove dead torrents that were never announced to -- XBTT will not delete those with a pid of 0, only those that belong to them (valid pids)
-	//XBTT is now modified to delete torrents with pid = 0
-//	$DB->query("DELETE FROM torrents WHERE flags = 1 AND pid = 0");
+	$DB->query("DELETE FROM torrents WHERE flags = 1 AND pid = 0");
 	sleep(10);
 	$i = 0;
 	$DB->query("SELECT

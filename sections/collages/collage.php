@@ -128,7 +128,7 @@ foreach ($TorrentList as $GroupID=>$Group) {
 	if($GroupYear>0) { $DisplayName = $DisplayName. ' ['. $GroupYear .']';}
 	
 	// Start an output buffer, so we can store this output in $TorrentTable
-	ob_start(); 
+	ob_start();
 	if(count($Torrents)>1 || $GroupCategoryID==1) {
 			 // Grouped torrents
 ?>

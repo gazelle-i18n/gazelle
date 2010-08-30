@@ -165,7 +165,6 @@ show_message();
 			</table>
 		</div>
 	</div>
-	<br />
 	<div class="main_column">
 		<table>
 			<tr>

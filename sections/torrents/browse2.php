@@ -1,4 +1,24 @@
 <?
+/************************************************************************
+*-------------------- Browse page ---------------------------------------
+* Welcome to one of the most complicated pages in all of gazelle - the
+* browse page. 
+* 
+* This is the page that is displayed when someone visits torrents.php
+* 
+* It offers normal and advanced search, as well as enabled/disabled
+* grouping. 
+*
+* For an outdated non-Sphinx version, use /sections/torrents/browse.php.
+*
+* Don't blink.
+* Blink and you're dead.
+* Don't turn your back.
+* Don't look away.
+* And don't blink.
+* Good Luck.
+*
+*************************************************************************/
 
 include(SERVER_ROOT.'/sections/torrents/functions.php');
 

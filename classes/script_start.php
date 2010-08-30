@@ -1161,12 +1161,12 @@ function warn_user($UserID, $Duration, $Reason) {
 	}
 }
 
-/*-- update_hash function -----------------------------------------------*/
-/*-----------------------------------------------------------------------*/
-/* This function is to update the cache and sphinx delta index to keep   */
-/* everything up to date						 */
-/*-- TODO ---------------------------------------------------------------*/
-/* Add in tag sorting based on positive negative votes algo	      */
+/*-- update_hash function ------------------------------------------------*/
+/*------------------------------------------------------------------------*/
+/* This function is to update the cache and sphinx delta index to keep    */
+/* everything up to date                                                  */
+/*-- TODO ----------------------------------------------------------------*/
+/* Add in tag sorting based on positive negative votes algo               */
 /**************************************************************************/
 
 function update_hash($GroupID) {
@@ -1436,7 +1436,6 @@ function get_artists($GroupIDs, $Escape = array()) {
 		}
 	}
 	return $Results;
-	return display_array($Results,$Escape);
 }
 
 /**

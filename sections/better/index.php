@@ -16,11 +16,14 @@ if(isset($_GET['method'])) {
 		case 'tags':
 			include(SERVER_ROOT.'/sections/better/tags.php');
 			break;			
+		case 'folders':
+			include(SERVER_ROOT.'/sections/better/folders.php');
+			break;
 		case 'upload':
 			include(SERVER_ROOT.'/sections/better/upload.php');
 			break;
 		default:
-			include(SERVER_ROOT.'/sections/better/better.php');
+			error(404);
 			break;
 	}
 } else {

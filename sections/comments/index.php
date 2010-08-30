@@ -14,22 +14,20 @@ if(!empty($_REQUEST['action'])) {
 
 if(isset($_GET['id'])) {
 	$UserID = $_GET['id'];
+	if(!is_number($UserID)) {
+		error(404);
+	}
 	$UserInfo = (user_info($UserID));
 	$Username = $UserInfo['Username'];
-	if($LoggedUser['ID'] == $_GET['id']) {
+	if($LoggedUser['ID'] == $UserID) {
 		$Self = true;
 	} else {
 		$Self = false;
 	}
-}
-else {
+} else {
 	$UserID = $LoggedUser['ID'];
 	$Username = $LoggedUser['Username'];
 	$Self = true;
-}
-
-if(!is_number($UserID)) {
-	error(0);
 }
 
 if (isset($LoggedUser['PostsPerPage'])) {

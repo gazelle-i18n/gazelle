@@ -123,7 +123,6 @@ $OrderVals = array('inarray'=>array('Username', 'Ratio', 'IP', 'Email', 'Joined'
 $WayVals = array('inarray'=>array('Ascending', 'Descending'));
 
 if(count($_GET)){
-
 	$DateRegex = array('regex'=>'/\d{4}-\d{2}-\d{2}/');
 
 	$ClassIDs = array();

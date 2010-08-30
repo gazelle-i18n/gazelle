@@ -83,8 +83,11 @@ if(!empty($Tags)) {
 	$SQL .= "%'";
 }
 
-if(!empty($_GET['userid']) && is_number($_GET['userid'])) {
+if(!empty($_GET['userid'])) {
 	$UserID = $_GET['userid'];
+	if(!is_number($UserID)) {
+		error(404);
+	}
 	$User = user_info($UserID);
 	$UserLink = '<a href="user.php?id='.$UserID.'">'.$User['Username'].'</a>';
 	if(!empty($_GET['contrib'])) {
@@ -214,7 +217,7 @@ foreach ($Collages as $Collage) {
 	}
 	$Tags = implode(', ', $Tags);
 	
-	// Print renults
+	//Print results
 ?>
 	<tr class="row<?=$Row?>">
 		<td>

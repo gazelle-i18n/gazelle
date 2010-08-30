@@ -26,7 +26,7 @@ $Zip = new ZIP('FileName');
 
 $Zip->unlimit();
 
-	A simply shortcut function for raising the basic PHP limits, time and memory for larger archives.
+	A simple shortcut function for raising the basic PHP limits, time and memory for larger archives.
 
 -----
 

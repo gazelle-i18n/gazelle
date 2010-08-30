@@ -145,4 +145,6 @@ show_header('Edit torrent group');
 	</div>
 <?	} ?> 
 </div>
-<? show_footer() ?>
+<?
+show_footer();
+?>

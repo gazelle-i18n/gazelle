@@ -4,12 +4,17 @@
 * Welcome to one of the most complicated pages in all of gazelle - the
 * browse page. 
 * 
-* This is the page that is displayed when someone visits torrents.php.
+* This is the page that is displayed when someone visits torrents.php, if
+* you're not using sphinx.
 * 
 * It also handle snatch lists, and seeding/leeching/uploaded lists.
 * 
 * It offers normal and advanced search, as well as enabled/disabled
 * grouping. 
+*
+* For the Sphinx version, see sections/torrents/browse2.php
+*
+* This version is a little outdated. You should probably set up Sphinx.
 *
 * Don't blink.
 *************************************************************************/

@@ -1,6 +1,6 @@
 <?
 if (!check_perms('site_collages_recover')) {
-		error(403);
+	error(403);
 }
 
 if($_POST['collage_id'] && is_number($_POST['collage_id'])) {

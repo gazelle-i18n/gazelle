@@ -73,9 +73,9 @@ discovered that floats aren't accurate enough to use. :(
 
 *******************************************************************************/
 class BENCODE {
-	var $Val;
+	var $Val; // Decoded array
 	var $Pos = 1; // Pointer that indicates our position in the string
-	var $Str = '';
+	var $Str = ''; // Torrent string
 	
 	function BENCODE($Val){
 		$this->Str = $Val;
@@ -225,7 +225,7 @@ class BENCODE_DICT extends BENCODE {
 
 
 class TORRENT extends BENCODE_DICT {
-	function dump(){
+	function dump() {
 		// Convenience function used for testing and figuring out how we store the data
 		print_r($this->Val);
 	}
@@ -283,27 +283,4 @@ class TORRENT extends BENCODE_DICT {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ?>

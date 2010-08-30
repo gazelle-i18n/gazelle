@@ -30,9 +30,6 @@ if ($SiteOptions) {
 	$SiteOptions=array();
 }
 
-include(SERVER_ROOT.'/classes/class_text.php'); // Text formatting class
-$Text = new TEXT;
-
 show_header($Username.' > Settings','validate');
 echo $Val->GenerateJS('userform');
 
@@ -71,12 +68,12 @@ show_message();
 				<td class="label"><strong>Paranoia Level</strong></td>
 				<td>
 					<select name="paranoia" id="paranoia">
-						<option value="0"<? if ($Paranoia == "0") { ?>selected="selected"<? } ?>>0 - Standard (Nothing Hidden)</option>
-						<option value="1"<? if ($Paranoia == "1") { ?>selected="selected"<? } ?>>1 - Hidden: Seeding, Leeching.</option>
-						<option value="2"<? if ($Paranoia == "2") { ?>selected="selected"<? } ?>>2 - Hidden: Seeding, Leeching, Snatched.</option>
-						<option value="3"<? if ($Paranoia == "3") { ?>selected="selected"<? } ?>>3 - Hidden: Seeding, Leeching, Snatched, Uploaded.</option>
-						<option value="4"<? if ($Paranoia == "4") { ?>selected="selected"<? } ?>>4 - Hidden: Seeding, Leeching, Snatched, Uploaded, Stats.</option>
-						<option value="5"<? if ($Paranoia == "5") { ?>selected="selected"<? } ?>>5 - Tinfoil Hat (Everything Hidden)</option>
+						<option value="0"<? if ($Paranoia == 0) { ?>selected="selected"<? } ?>>0 - Standard (Nothing Hidden)</option>
+						<option value="1"<? if ($Paranoia == 1) { ?>selected="selected"<? } ?>>1 - Hidden: Seeding, Leeching.</option>
+						<option value="2"<? if ($Paranoia == 2) { ?>selected="selected"<? } ?>>2 - Hidden: Seeding, Leeching, Snatched.</option>
+						<option value="3"<? if ($Paranoia == 3) { ?>selected="selected"<? } ?>>3 - Hidden: Seeding, Leeching, Snatched, Uploaded.</option>
+						<option value="4"<? if ($Paranoia == 4) { ?>selected="selected"<? } ?>>4 - Hidden: Seeding, Leeching, Snatched, Uploaded, Stats.</option>
+						<option value="5"<? if ($Paranoia == 5) { ?>selected="selected"<? } ?>>5 - Tinfoil Hat (Everything Hidden)</option>
 					</select>
 					<br/>
 					<span class="warning">Note: Paranoia has nothing to do with your security on this site, the only thing affected by this setting is other users ability to see your taste in music.</span>
@@ -87,8 +84,8 @@ show_message();
 				<td class="label"><strong>Default Search Type</strong></td>
 				<td>
 					<select name="searchtype" id="searchtype">
-						<option value="0"<? if ($SiteOptions['SearchType'] == "0") { ?>selected="selected"<? } ?>>Simple</option>
-						<option value="1"<? if ($SiteOptions['SearchType'] == "1") { ?>selected="selected"<? } ?>>Advanced</option>
+						<option value="0"<? if ($SiteOptions['SearchType'] == 0) { ?>selected="selected"<? } ?>>Simple</option>
+						<option value="1"<? if ($SiteOptions['SearchType'] == 1) { ?>selected="selected"<? } ?>>Advanced</option>
 					</select>
 				</td>
 			</tr>
@@ -97,12 +94,12 @@ show_message();
 				<td class="label"><strong>Torrent Grouping</strong></td>
 				<td>
 					<select name="disablegrouping" id="disablegrouping">
-						<option value="0"<? if ($SiteOptions['DisableGrouping']=="0") { ?>selected="selected"<? } ?>>Group torrents by default</option>
-						<option value="1"<? if ($SiteOptions['DisableGrouping']=="1") { ?>selected="selected"<? } ?>>DO NOT Group torrents by default</option>
+						<option value="0"<? if ($SiteOptions['DisableGrouping'] == 0) { ?>selected="selected"<? } ?>>Group torrents by default</option>
+						<option value="1"<? if ($SiteOptions['DisableGrouping'] == 1) { ?>selected="selected"<? } ?>>DO NOT Group torrents by default</option>
 					</select>&nbsp;
 					<select name="torrentgrouping" id="torrentgrouping">
-						<option value="0"<? if ($SiteOptions['TorrentGrouping']=="0") { ?>selected="selected"<? } ?>>Groups are open by default</option>
-						<option value="1"<? if ($SiteOptions['TorrentGrouping']=="1") { ?>selected="selected"<? } ?>>Groups are closed by default</option>
+						<option value="0"<? if ($SiteOptions['TorrentGrouping'] == 0) { ?>selected="selected"<? } ?>>Groups are open by default</option>
+						<option value="1"<? if ($SiteOptions['TorrentGrouping'] == 1) { ?>selected="selected"<? } ?>>Groups are closed by default</option>
 					</select>
 				</td>
 			</tr>
@@ -110,8 +107,8 @@ show_message();
 				<td class="label"><strong>Discography View</strong></td>
 				<td>
 					<select name="discogview" id="discogview">
-						<option value="0"<? if ($SiteOptions['DiscogView'] == "0") { ?>selected="selected"<? } ?>>Open by default</option>
-						<option value="1"<? if ($SiteOptions['DiscogView'] == "1") { ?>selected="selected"<? } ?>>Closed by default</option>
+						<option value="0"<? if ($SiteOptions['DiscogView'] == 0) { ?>selected="selected"<? } ?>>Open by default</option>
+						<option value="1"<? if ($SiteOptions['DiscogView'] == 1) { ?>selected="selected"<? } ?>>Closed by default</option>
 					</select>
 				</td>
 			</tr>
@@ -119,9 +116,9 @@ show_message();
 				<td class="label"><strong>Posts per page (Forum)</strong></td>
 				<td>
 					<select name="postsperpage" id="postsperpage">
-						<option value="25"<? if ($SiteOptions['PostsPerPage'] == "25") { ?>selected="selected"<? } ?>>25 (Default)</option>
-						<option value="50"<? if ($SiteOptions['PostsPerPage'] == "50") { ?>selected="selected"<? } ?>>50</option>
-						<option value="100"<? if ($SiteOptions['PostsPerPage'] == "100") { ?>selected="selected"<? } ?>>100</option>
+						<option value="25"<? if ($SiteOptions['PostsPerPage'] == 25) { ?>selected="selected"<? } ?>>25 (Default)</option>
+						<option value="50"<? if ($SiteOptions['PostsPerPage'] == 50) { ?>selected="selected"<? } ?>>50</option>
+						<option value="100"<? if ($SiteOptions['PostsPerPage'] == 100) { ?>selected="selected"<? } ?>>100</option>
 					</select>
 				</td>
 			</tr>
@@ -144,8 +141,8 @@ show_message();
 				<td class="label"><strong>Collage album art view</strong></td>
 				<td>
 					<select name="hidecollage" id="hidecollage">
-						<option value="0"<? if ($SiteOptions['HideCollage'] == "0") { ?>selected="selected"<? } ?>>Show album art</option>
-						<option value="1"<? if ($SiteOptions['HideCollage'] == "1") { ?>selected="selected"<? } ?>>Hide album art</option>
+						<option value="0"<? if ($SiteOptions['HideCollage'] == 0) { ?>selected="selected"<? } ?>>Show album art</option>
+						<option value="1"<? if ($SiteOptions['HideCollage'] == 1) { ?>selected="selected"<? } ?>>Hide album art</option>
 					</select>
 				</td>
 			</tr>
@@ -153,8 +150,8 @@ show_message();
 				<td class="label"><strong>Browse Page Tag list</strong></td>
 				<td>
 					<select name="showtags" id="showtags">
-						<option value="1"<? if ($SiteOptions['ShowTags'] == "1") { ?>selected="selected"<? } ?>>Open by default.</option>
-						<option value="0"<? if ($SiteOptions['ShowTags'] == "0") { ?>selected="selected"<? } ?>>Closed by default.</option>
+						<option value="1"<? if ($SiteOptions['ShowTags'] == 1) { ?>selected="selected"<? } ?>>Open by default.</option>
+						<option value="0"<? if ($SiteOptions['ShowTags'] == 0) { ?>selected="selected"<? } ?>>Closed by default.</option>
 					</select>
 				</td>
 			</tr>

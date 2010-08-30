@@ -5,7 +5,9 @@ if (!empty($_GET['userid']) && is_number($_GET['userid'])) {
 	error(0);
 }
 
-if(!check_perms('zip_downloader')){ error(403); }
+if(!check_perms('zip_downloader')) {
+	error(403);
+}
 
 if ($UserID != $LoggedUser['ID']) {
 	$DB->query("SELECT Paranoia FROM users_main WHERE ID='".$UserID."'");

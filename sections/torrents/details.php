@@ -4,9 +4,8 @@ function compare($X, $Y){
 	return($Y['score'] - $X['score']);
 }
 
-
 include(SERVER_ROOT.'/classes/class_text.php');
-$Text=NEW TEXT;
+$Text = NEW TEXT;
 
 $GroupID=ceil($_GET['id']);
 if(!empty($_GET['revisionid']) && is_number($_GET['revisionid'])) {
@@ -44,6 +43,23 @@ if($GroupCategoryID == 1) {
 	$DisplayName.=' ['.$ReleaseTypes[$ReleaseType].']';
 	$AltName.=' ['.$ReleaseTypes[$ReleaseType].']';
 }
+
+$Tags = array();
+if ($TorrentTags != '') {
+	$TorrentTags=explode('|',$TorrentTags);
+	$TorrentTagIDs=explode('|',$TorrentTagIDs);
+	$TorrentTagUserIDs=explode('|',$TorrentTagUserIDs);
+	$TagPositiveVotes=explode('|',$TagPositiveVotes);
+	$TagNegativeVotes=explode('|',$TagNegativeVotes);
+	
+	foreach ($TorrentTags as $TagKey => $TagName) {
+		$Tags[$TagKey]['name'] = $TagName;
+		$Tags[$TagKey]['score'] = ($TagPositiveVotes[$TagKey] - $TagNegativeVotes[$TagKey]);
+		$Tags[$TagKey]['id']=$TorrentTagIDs[$TagKey];
+		$Tags[$TagKey]['userid']=$TorrentTagUserIDs[$TagKey];
+	}
+	uasort($Tags, 'compare');
+}	
 
 // Start output
 
@@ -198,25 +214,10 @@ if($Categories[$GroupCategoryID-1] == 'Music') {
 		<div class="box box_tags">
 			<div class="head"><strong>Tags</strong></div>
 <?
-if ($TorrentTags!="") {
+if(count($Tags) > 0) {
 ?>
 			<ul class="stats nobullet">
 <?
-	$TorrentTags=explode('|',$TorrentTags);
-	$TorrentTagIDs=explode('|',$TorrentTagIDs);
-	$TorrentTagUserIDs=explode('|',$TorrentTagUserIDs);
-	$TagPositiveVotes=explode('|',$TagPositiveVotes);
-	$TagNegativeVotes=explode('|',$TagNegativeVotes);
-	
-	$Tags = array();
-	foreach ($TorrentTags as $TagKey => $TagName) {
-		$Tags[$TagKey]['name'] = $TagName;
-		$Tags[$TagKey]['score'] = ($TagPositiveVotes[$TagKey] - $TagNegativeVotes[$TagKey]);
-		$Tags[$TagKey]['id']=$TorrentTagIDs[$TagKey];
-		$Tags[$TagKey]['userid']=$TorrentTagUserIDs[$TagKey];
-	}
-	uasort($Tags, 'compare');
-	
 	foreach($Tags as $TagKey=>$Tag) {
 			
 ?>

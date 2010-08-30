@@ -14,12 +14,17 @@ $ToYear = 0;
 $HasFilter = false;
 
 if($_POST['artists']){
-	$ArtistList = '|';
 	$Artists = explode(',', $_POST['artists']);
+	$ParsedArtists = array();
 	foreach($Artists as $Artist){
-		$ArtistList.=db_string(trim($Artist)).'|';
+		if(trim($Artist) != "") {
+			$ParsedArtists[] = db_string(trim($Artist));
+		}
 	}
-	$HasFilter = true;
+	if(count($ParsedArtists) > 0) {
+		$ArtistList = '|'.implode("|", $ParsedArtists).'|';
+		$HasFilter = true;
+	}
 }
 
 if($_POST['excludeva']){
