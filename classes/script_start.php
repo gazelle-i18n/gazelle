@@ -1200,7 +1200,7 @@ function update_hash($GroupID) {
 		GROUP_CONCAT(DISTINCT t.Format SEPARATOR ' ') AS Format,
 		GROUP_CONCAT(DISTINCT t.Encoding SEPARATOR ' ') AS Encoding,
 		GROUP_CONCAT(DISTINCT t.RemasterTitle SEPARATOR ' ') AS RemasterTitle,
-		GROUP_CONCAT(REPLACE(REPLACE(REPLACE(FileList, '|||', '\n '), '_', ' '), '.', ' ') SEPARATOR '\n ') AS FileList
+		GROUP_CONCAT(REPLACE(REPLACE(FileList, '|||', '\n '), '_', ' ') SEPARATOR '\n ') AS FileList
 		FROM torrents AS t
 		JOIN torrents_group AS g ON g.ID=t.GroupID
 		WHERE g.ID=$GroupID
@@ -1729,6 +1729,31 @@ function error($Error, $Ajax=false) {
 	require(SERVER_ROOT.'/sections/error/index.php');
 	$Debug->profile();
 	die();
+}
+
+function disable_users($UserIDs, $AdminComment, $BanReason = 1) {
+	global $Cache, $DB;
+	if(!is_array($UserIDs)) {
+		$UserIDs = array($UserIDs);
+	}
+	$DB->query("UPDATE users_info AS i JOIN users_main AS m ON m.ID=i.UserID
+		SET m.Enabled='2',
+		m.can_leech='0',".($AdminComment ? "
+		i.AdminComment = CONCAT('".sqltime()." - ".$AdminComment."', i.AdminComment),
+		" : '')."
+		i.BanDate='".sqltime()."',
+		i.BanReason='".$BanReason."',
+		i.RatioWatchDownload='0',
+		i.RatioWatchEnds='0000-00-00 00:00:00'
+		WHERE m.ID IN(".implode(',',$UserIDs).") ");
+	$Cache->decrement('stats_user_count',$DB->affected_rows());
+	foreach($UserIDs as $UserID) {
+		$Cache->cache_value('enabled_'.$UserID, 2, 2592000);
+		$Cache->begin_transaction('user_info_'.$UserID);
+		$Cache->update_row(false, array('Enabled' => 2));
+		$Cache->commit_transaction(0);
+	}
+	
 }
 
 

@@ -82,10 +82,11 @@ if(!empty($_REQUEST['confirm'])) {
 				('".db_string(trim($_POST['username']))."','".db_string($_POST['email'])."','".db_string(make_hash($_POST['password'],$Secret))."','".db_string($Secret)."','".db_string($torrent_pass)."','".db_string($_SERVER['REMOTE_ADDR'])."','".$Class."','".$Enabled."','".STARTING_INVITES."', '524288000')");
 			
 
+			$UserID = $DB->inserted_id();
+
 			$DB->query("SELECT ID FROM stylesheets WHERE `Default`='1'");
 			list($StyleID) = $DB->next_record();
-			
-			$UserID = $DB->inserted_id();
+
 			$AuthKey = make_secret();
 			
 			$DB->query("INSERT INTO users_info (UserID,StyleID,AuthKey, Inviter, JoinDate) VALUES ('$UserID','$StyleID','".db_string($AuthKey)."', '$InviterID', '".sqltime()."')");

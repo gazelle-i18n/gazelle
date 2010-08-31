@@ -978,6 +978,13 @@ CREATE TABLE `user_avatar_warnings` (
   KEY `Time` (`Time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `user_stat_backup` (
+  `userid` int(10) NOT NULL DEFAULT '0',
+  `uploaded` bigint(20) DEFAULT NULL,
+  `downloaded` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `users_downloads` (
   `UserID` int(10) NOT NULL,
   `TorrentID` int(1) NOT NULL,
@@ -1370,6 +1377,7 @@ CREATE TABLE `xbt_files_users` (
   `fid` int(11) NOT NULL,
   `ipa` int(12) unsigned NOT NULL,
   `mtime` int(11) NOT NULL,
+  `ip` varchar(15) NOT NULL DEFAULT '',
   UNIQUE KEY `uid_2` (`uid`,`fid`,`ipa`),
   KEY `uid` (`uid`),
   KEY `remaining_idx` (`remaining`),

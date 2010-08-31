@@ -111,8 +111,8 @@ class TORRENT_FORM {
 		</div>
 	
 		<table cellpadding="3" cellspacing="1" border="0" class="border slice" width="100%">
-<?
-		if(check_perms('torrents_freeleech')) {
+<?		if(!$this->NewTorrent) {
+			if(check_perms('torrents_freeleech')) {
 ?>
 			<tr id="freetorrent">
 				<td class="label">Freeleech</td>
@@ -121,6 +121,7 @@ class TORRENT_FORM {
 				</td>
 			</tr>
 <?
+			}
 		}
 ?>
 			<tr>

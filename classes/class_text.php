@@ -428,7 +428,7 @@ EXPLANATION OF PARSER LOGIC
 					$Str.='<a href="user.php?action=search&search='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
 					break;
 				case 'artist':
-					$Str.='<a href="artist.php?artistname='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
+					$Str.='<a href="artist.php?artistname='.urlencode(mb_convert_encoding($Block['Val'],"UTF-8","HTML-ENTITIES")).'">'.$Block['Val'].'</a>';
 					break;
 				case 'wiki':
 					$Str.='<a href="wiki.php?action=article&amp;name='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';

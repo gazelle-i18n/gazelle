@@ -1,19 +1,3 @@
-/*
-function AutoFill() {
-	try {
-		xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-	} catch(e) {
-		xmlDoc = document.implementation.createDocument("","",null);
-	}
-	xmlDoc.async = false;
-	xmlDoc.load("ajax.php?action=torrent_info&artist=" + $('#artist').raw().value + "&album=" + $('#title').raw().value);
-	$("year").raw().value = xmlDoc.getElementsByTagName("year")[0].childNodes[0].nodeValue;
-	$("album_desc").raw().value = xmlDoc.getElementsByTagName("description")[0].childNodes[0].nodeValue;
-	$("image").raw().value = xmlDoc.getElementsByTagName("image")[0].childNodes[0].nodeValue;
-	$("tags").raw().value = xmlDoc.getElementsByTagName("tags")[0].childNodes[0].nodeValue;
-	$('#auto').raw().innerHTML = 'Autofill has done all that it can, please ensure that the contents are correct since Auto-Fill is still a Beta.';
-}
-*/
 function Categories() {
 	ajax.get('ajax.php?action=upload_section&section=' + $('#categories').raw().options[$('#categories').raw().selectedIndex].value, function (response) {
 		$('#dynamic_form').raw().innerHTML = response;
@@ -25,9 +9,9 @@ function Remaster() {
 }
 
 function Format() {
-	if ($('#format').raw().options[$('#format').raw().selectedIndex].value == 'FLAC') {
+	if($('#format').raw().options[$('#format').raw().selectedIndex].value == 'FLAC') {
 		for (var i = 0; i<$('#bitrate').raw().options.length; i++) {
-			if ($('#bitrate').raw().options[i].value == 'Lossless') {
+			if($('#bitrate').raw().options[i].value == 'Lossless') {
 				$('#bitrate').raw()[i].selected = true;
 			}
 		}
@@ -41,7 +25,7 @@ function Format() {
 
 function Bitrate() {
 	$('#other_bitrate').raw().value = '';
-	if ($('#bitrate').raw().options[$('#bitrate').raw().selectedIndex].value == 'Other') {
+	if($('#bitrate').raw().options[$('#bitrate').raw().selectedIndex].value == 'Other') {
 		$('#other_bitrate_span').show();
 	} else {
 		$('#other_bitrate_span').hide();
@@ -49,7 +33,7 @@ function Bitrate() {
 }
 
 function AltBitrate() {
-	if ($('#other_bitrate').raw().value >= 320) {
+	if($('#other_bitrate').raw().value >= 320) {
 		$('#vbr').raw().disabled = true;
 		$('#vbr').raw().checked = false;
 	} else {
@@ -58,18 +42,18 @@ function AltBitrate() {
 }
 
 function add_tag() {
-	if ($('#tags').raw().value == "") {
+	if($('#tags').raw().value == "") {
 		$('#tags').raw().value = $('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value;
-	} else if ($('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value == "---") {
+	} else if($('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value == '---') {
 	} else {
-		$('#tags').raw().value = $('#tags').raw().value + ", " + $('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value;
+		$('#tags').raw().value = $('#tags').raw().value + ', ' + $('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value;
 	}
 }
 
 var LogCount = 1;
 
 function AddLogField() {
-		if (LogCount >= 200) { return; }
+		if(LogCount >= 200) { return; }
 		var LogField = document.createElement("input");
 		LogField.type = "file";
 		LogField.id = "file";
@@ -82,7 +66,7 @@ function AddLogField() {
 }
 
 function RemoveLogField() {
-		if (LogCount == 1) { return; }
+		if(LogCount == 1) { return; }
 		var x = $('#logfields').raw();
 		for (i=0; i<2; i++) { x.removeChild(x.lastChild); }
 		LogCount--;
@@ -91,7 +75,7 @@ function RemoveLogField() {
 var FormatCount = 0;
 
 function AddFormat() {
-	if (FormatCount >= 10) { return; }
+	if(FormatCount >= 10) { return; }
 	FormatCount++;
 	$('#extras').raw().value = FormatCount;
 	
@@ -163,7 +147,7 @@ function AddFormat() {
 }
 
 function RemoveFormat() {
-	if (FormatCount == 0) { return; }
+	if(FormatCount == 0) { return; }
 	$('#extras').raw().value = FormatCount;
 	
 	var x = $('#new_torrent_row'+FormatCount).raw();
@@ -180,7 +164,7 @@ function RemoveFormat() {
 }
 
 function Media() {
-	if ($('#media').raw().options[$('#media').raw().selectedIndex].text == 'Cassette') {
+	if($('#media').raw().options[$('#media').raw().selectedIndex].text == 'Cassette') {
 		$('#cassette_true').show();
 	} else {
 		$('#cassette_true').hide();
@@ -191,37 +175,37 @@ function Media() {
 var ArtistCount = 1;
 
 function AddArtistField() {
-		if (ArtistCount >= 100) { return; }
-		var ArtistField = document.createElement("input");
-		ArtistField.type = "text";
-		ArtistField.id = "artist";
-		ArtistField.name = "artists[]";
-		ArtistField.size = 45;
-		
-		var ImportanceField = document.createElement("select");
-		ImportanceField.id = "importance";
-		ImportanceField.name = "importance[]";
-		ImportanceField.options[0] = new Option("Main", "1");
-		ImportanceField.options[1] = new Option("Guest", "2");
-		ImportanceField.options[2] = new Option("Remixer", "3");
-		
-		var x = $('#artistfields').raw();
-		x.appendChild(document.createElement("br"));
-		x.appendChild(ArtistField);
-		x.appendChild(ImportanceField);
-		ArtistCount++;
+	if(ArtistCount >= 100) { return; }
+	var ArtistField = document.createElement("input");
+	ArtistField.type = "text";
+	ArtistField.id = "artist";
+	ArtistField.name = "artists[]";
+	ArtistField.size = 45;
+	
+	var ImportanceField = document.createElement("select");
+	ImportanceField.id = "importance";
+	ImportanceField.name = "importance[]";
+	ImportanceField.options[0] = new Option("Main", "1");
+	ImportanceField.options[1] = new Option("Guest", "2");
+	ImportanceField.options[2] = new Option("Remixer", "3");
+	
+	var x = $('#artistfields').raw();
+	x.appendChild(document.createElement("br"));
+	x.appendChild(ArtistField);
+	x.appendChild(ImportanceField);
+	ArtistCount++;
 }
 
 function RemoveArtistField() {
-		if (ArtistCount == 1) { return; }
-		var x = $('#artistfields').raw();
-		for (i=0; i<3; i++) { x.removeChild(x.lastChild); }
-		ArtistCount--;
+	if(ArtistCount == 1) { return; }
+	var x = $('#artistfields').raw();
+	for (i=0; i<3; i++) { x.removeChild(x.lastChild); }
+	ArtistCount--;
 }
 
 function CheckVA() {
 	var x = $('#artist').raw();
-	if(x.value.toLowerCase() == "various artists" || x.value.toLowerCase() == "va" || x.value.toLowerCase() == "various") {
+	if(x.value.toLowerCase() == 'various artists' || x.value.toLowerCase() == 'va' || x.value.toLowerCase() == 'various') {
 		$('#vawarning').show();
 	} else {
 		$('#vawarning').hide();

@@ -31,19 +31,6 @@ function next_hour() {
 	return date('H', $Hour);
 }
 
-function disable_users($Users) {
-	global $Cache;
-	if(is_array($Users)) {
-		foreach($Users as $UserID) {
-			$Cache->cache_value('enabled_'.$UserID, 2, 2592000);
-			$Cache->begin_transaction('user_info_'.$UserID);
-			$Cache->update_row(false, array('Enabled' => 2));
-			$Cache->commit_transaction(0);
-			echo "Disabled user $UserID\n";
-		}
-	}
-}
-
 if ((!isset($argv[1]) || $argv[1]!=SCHEDULE_KEY) && !check_perms('admin_schedule')) { // authorization, Fix to allow people with perms hit this page.
 	error(403);
 }
@@ -293,20 +280,7 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 
         $UserIDs = $DB->collect('ID');
         if(count($UserIDs) > 0) {
-                disable_users($UserIDs);
-
-                $DB->query("UPDATE users_info AS i JOIN users_main AS m ON m.ID=i.UserID
-                        SET m.Enabled='2',
-                        i.BanDate='$sqltime',
-                        i.BanReason='3',
-                        i.RatioWatchDownload='0',
-                        i.RatioWatchEnds='0000-00-00 00:00:00',
-                        m.can_leech='0',
-                        i.AdminComment=CONCAT('$sqltime - Disabled by ratio watch system for downloading more than 10 gigs on ratio watch
-
-'                       , i.AdminComment)
-                        WHERE m.ID IN(".implode(',',$UserIDs).") ");
-                $Cache->decrement('stats_user_count',$DB->affected_rows());
+                disable_users($UserIDs, "Disabled by ratio watch system for downloading more than 10 gigs on ratio watch", 3);
         }
 
 }
@@ -395,7 +369,7 @@ if($Day != next_day() || $_GET['runday']){
 	$OnRatioWatch = array();
 	
 	// Take users off ratio watch
-	$DB->query("SELECT m.ID FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
+	$DB->query("SELECT m.ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 		WHERE m.Uploaded/m.Downloaded >= m.RequiredRatio
 		AND (i.RatioWatchEnds!='0000-00-00 00:00:00' OR m.can_leech='0')
 		AND m.Enabled='1'");
@@ -416,6 +390,7 @@ if($Day != next_day() || $_GET['runday']){
 		send_pm($UserID, 0, db_string("You have been taken off Ratio Watch"), db_string("Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=http://what.cd/rules.php?p=ratio]here[/url].\n"), '');
 		echo "Ratio watch off: $UserID\n";
 	}
+	
 	
 	// Put user on ratio watch if he doesn't meet the standards
 	sleep(10);
@@ -447,7 +422,7 @@ if($Day != next_day() || $_GET['runday']){
 	//------------- Disable downloading ability of users on ratio watch
 	
 	
-	$DB->query("SELECT ID FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
+	$DB->query("SELECT ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 		WHERE i.RatioWatchEnds!='0000-00-00 00:00:00'
 		AND i.RatioWatchEnds<'$sqltime'
 		And m.Enabled='1'");
@@ -472,6 +447,8 @@ if($Day != next_day() || $_GET['runday']){
 		send_pm($UserID, 0, db_string("Your downloading rights have been disabled"), db_string("As you did not raise your ratio in time, your downloading rights have been revoked. You will not be able to download any torrents until your ratio is above your new required ratio."), '');
 		echo "Ratio watch disabled: $ID\n";
 	}
+
+	
 	
 	//------------- Disable inactive user accounts --------------------------//
 	sleep(5);
@@ -494,26 +471,8 @@ if($Day != next_day() || $_GET['runday']){
 		AND um.LastAccess!='0000-00-00 00:00:00'
 		AND ui.Donor='0'
 		AND um.Enabled!='2'");
-	disable_users($DB->collect('ID'));
-	
-	echo 'set cache';
-	
-	$DB->query("UPDATE users_info AS ui JOIN users_main AS um ON um.ID=ui.UserID
-		SET um.Enabled='2',
-		ui.BanDate='$sqltime',
-		ui.BanReason='3',
-		ui.AdminComment=CONCAT('$sqltime - Disabled for inactivity
 
-', ui.AdminComment)
-		WHERE um.PermissionID IN ('".USER."', '".MEMBER	."')
-		AND um.LastAccess<'".time_minus(3600*24*30*4)."'
-		AND um.LastAccess!='0000-00-00 00:00:00'
-		AND ui.Donor='0'
-		AND um.Enabled!='2'");
-	
-	echo 'wrote db for inactive users';
-	
-	$Cache->decrement('stats_user_count',$DB->affected_rows());
+	disable_users($DB->collect('ID'), "Disabled for inactivity", 3);
 	
 	//------------- Disable unconfirmed users ------------------------------//
 	sleep(10);

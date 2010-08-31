@@ -129,6 +129,7 @@ if ($_POST['UserStatus']=="delete" && check_perms('users_delete_users')) {
 	$DB->query("DELETE FROM users_main WHERE id=".$UserID);
 	$DB->query("DELETE FROM users_info WHERE UserID=".$UserID);
 	$Cache->delete_value('user_info_'.$UserID);
+	
 	header("Location: log.php?search=User+".$UserID);
 	die();
 }
@@ -306,6 +307,7 @@ if ($DisableLeech!=$Cur['can_leech'] && check_perms('users_disable_any')) {
 	if (!empty($UserReason)) {
 		send_pm($UserID, 0, db_string('Your leeching privileges have been disabled'),db_string("Your leeching privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
+	
 }
 
 if ($DisableInvites!=$Cur['DisableInvites'] && check_perms('users_disable_any')) {
@@ -384,21 +386,19 @@ if ($DisableIRC!=$Cur['DisableIRC'] && check_perms('users_disable_any')) {
 }
 
 if ($EnableUser!=$Cur['Enabled'] && check_perms('users_disable_users')) {
-	$UpdateSet[]="Enabled='$EnableUser'";
-	$CanLeech = ($EnableUser == 1) ? 1 : 0;
-	$UpdateSet[]="m.can_leech='$CanLeech'";
 	$EditSummary[]='account '.translateUserStatus($Cur['Enabled']).'->'.translateUserStatus($EnableUser);
 	if($EnableUser == '2') {
-		$Cache->decrement('stats_user_count');
-		$UpdateSet[]="i.BanDate='".sqltime()."'";
-		$UpdateSet[]="i.BanReason='1'";
+		disable_users($UserID, '', '1');
 	} elseif($EnableUser == '1') {
 		$Cache->increment('stats_user_count');
 		$UpdateSet[]="i.RatioWatchDownload='0'";
 		$UpdateSet[]="i.RatioWatchEnds='0000-00-00 00:00:00'";
+		$UpdateSet[]="Enabled='1'";
+		$CanLeech = 1;
+		$UpdateSet[]="m.can_leech='1'";
+		$LightUpdates['Enabled'] = 1;
 	}
 	$Cache->replace_value('enabled_'.$UserID, $EnableUser, 0);
-	$LightUpdates['Enabled'] = $EnableUser;
 }
 
 if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
@@ -406,6 +406,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
 	$UpdateSet[]="torrent_pass='$Passkey'";
 	$EditSummary[]="passkey reset";
 	$HeavyUpdates['torrent_pass']=$Passkey;
+	
 }
 
 if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {

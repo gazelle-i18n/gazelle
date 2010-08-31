@@ -126,7 +126,7 @@ if(!empty($_GET['searchstr'])) {
 	$Words = array_diff($Words, $FilterBitrates, $FilterFormats);
 	if(!empty($Words)) {
 		foreach($Words as $Key => &$Word) {
-			if($Word[0] == '!' && strlen($Word) > 2) {
+			if($Word[0] == '!' && strlen($Word) >= 3 && count($Words) >= 2) {
 				if(strpos($Word,'!',1) === false) {
 					$Word = '!'.$SS->EscapeString(substr($Word,1));
 				} else {
@@ -176,11 +176,11 @@ foreach(array('artistname','groupname', 'recordlabel', 'cataloguenumber',
 	if(!empty($_GET[$Search])) {
 		$_GET[$Search] = str_replace(array('%'), '', $_GET[$Search]);
 		if($Search == 'filelist') {
-			$Queries[]='@filelist "'.$SS->EscapeString($_GET['filelist']).'"~20';
+			$Queries[]='@filelist "'.$SS->EscapeString(strtr($_GET['filelist'], '.', " ")).'"~20';
 		} else {
 			$Words = explode(' ', $_GET[$Search]);
 			foreach($Words as $Key => &$Word) {
-				if($Word[0] == '!' && strlen($Word) > 2) {
+				if($Word[0] == '!' && strlen($Word) >= 3 && count($Words) >= 2) {
 					if(strpos($Word,'!',1) === false) {
 						$Word = '!'.$SS->EscapeString(substr($Word,1));
 					} else {
@@ -748,25 +748,25 @@ foreach($Results as $GroupID=>$Data) {
 					$Pass = true;
 				} elseif (($_GET['haslog'] == '-1') && ($Data['LogScore'] < 100) && ($Data['HasLog'] == '1')) {
  					$Pass = true;
- 				} elseif(($_GET['haslog'] == '1' || $_GET['haslog'] == '0') && $Data['HasLog']==$_GET['haslog']) {
+ 				} elseif(($_GET['haslog'] == '1' || $_GET['haslog'] == '0') && (int)$Data['HasLog']==$_GET['haslog']) {
 					$Pass = true;
 				}
 			}
 			if(isset($_GET['hascue']) && $_GET['hascue']!=='') {
 				$Filter = true;
-				if($Data['HasCue']==$_GET['hascue']) {
+				if((int)$Data['HasCue']==$_GET['hascue']) {
 					$Pass = true;
 				}
 			}
 			if(isset($_GET['scene']) && $_GET['scene']!=='') {
 				$Filter = true;
-				if($Data['Scene']==$_GET['scene']) {
+				if((int)$Data['Scene']==$_GET['scene']) {
 					$Pass = true;
 				}
 			}
 			if(isset($_GET['freetorrent']) && $_GET['freetorrent']!=='') {
 				$Filter = true;
-				if($Data['FreeTorrent']==$_GET['freetorrent']) {
+				if((int)$Data['FreeTorrent']==$_GET['freetorrent']) {
 					$Pass = true;
 				}
 			}

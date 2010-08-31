@@ -265,6 +265,8 @@ if (isset($_POST['resetpasskey'])) {
 	$Cache->begin_transaction('user_info_heavy_'.$UserID);
 	$Cache->update_row(false, array('torrent_pass'=>$NewPassKey));
 	$Cache->commit_transaction(0);
+	
+	
 }
 
 $SQL.="WHERE m.ID='".db_string($UserID)."'";

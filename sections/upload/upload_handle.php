@@ -66,11 +66,6 @@ if($_POST['album_desc']) {
 } elseif($_POST['desc']){
 	$Properties['GroupDescription'] = trim($_POST['desc']);
 }
-if($_POST['freeleech'] && check_perms('torrents_freeleech')) {
-	$Properties['FreeLeech'] = (isset($_POST['freeleech'])) ? 1 : 0;
-} else {
-	$Properties['FreeLeech'] = 0;
-}
 $Properties['GroupID'] = $_POST['groupid'];
 if(empty($_POST['artists'])) {
 	$Err = "You didn't enter any artists";
@@ -593,17 +588,16 @@ $DB->query("INSERT IGNORE INTO users_points (UserID, GroupID, Points) VALUES ('$
 	$T['FreeLeech']="'0'";
 	$T['FreeLeechType']="'0'";
 }*/
-$T['FreeLeech'] = "'0'";
-$T['FreeLeechType'] = "'0'";
 
 // Torrent
 $DB->query("
 	INSERT INTO torrents
 	(GroupID, UserID, Media, Format, Encoding, Remastered, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, HasLog, HasCue, info_hash, FileCount, FileList, FilePath, Size, Time, Description, LogScore, freetorrent, FreeLeechType) VALUES
-	($GroupID, $LoggedUser[ID], $T[Media], $T[Format], $T[Encoding], $T[Remastered], $T[RemasterYear], $T[RemasterTitle], $T[RemasterRecordLabel], $T[RemasterCatalogueNumber], $T[Scene], $HasLog, $HasCue, '$InfoHash', $NumFiles, $FileString, '".$FilePath."', $TotalSize, '".sqltime()."', $T[TorrentDescription], '".(($HasLog=="'1'")?$LogScoreAverage:0)."', $T[FreeLeech], $T[FreeLeechType])");
+	($GroupID, $LoggedUser[ID], $T[Media], $T[Format], $T[Encoding], $T[Remastered], $T[RemasterYear], $T[RemasterTitle], $T[RemasterRecordLabel], $T[RemasterCatalogueNumber], $T[Scene], $HasLog, $HasCue, '$InfoHash', $NumFiles, $FileString, '".$FilePath."', $TotalSize, '".sqltime()."', $T[TorrentDescription], '".(($HasLog=="'1'")?$LogScoreAverage:0)."', '0', '0')");
 
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
+
 
 
 //******************************************************************************//

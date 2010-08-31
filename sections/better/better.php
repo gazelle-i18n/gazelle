@@ -62,6 +62,22 @@ show_header('Better');
 					Torrents you've uploaded that could be improved.
 				</td>
 			</tr>
+			<tr class="rowb">
+				<td class="nobr">
+					<a href="better.php?method=tags">Tags</a>
+				</td>
+				<td class="nobr">
+					Torrents that have been marked as having 'Very bad tags' or 'No tags at all'.
+				</td>
+			</tr>
+			<tr class="rowb">
+				<td class="nobr">
+					<a href="better.php?method=folders">Folder Names</a>
+				</td>
+				<td class="nobr">
+					Torrents that have been marked as having 'Very bad folder names' or 'No folder names at all'.
+				</td>
+			</tr>
 
 		</table>
 	</div>
