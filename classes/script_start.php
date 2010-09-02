@@ -980,6 +980,7 @@ function delete_torrent($ID, $GroupID=0) {
 	
 	
 	$DB->query("UPDATE torrents SET flags=1 WHERE ID = '$ID'"); // Let xbtt delete the torrent
+	
 	$Cache->decrement('stats_torrent_count');
 
 	$DB->query("SELECT COUNT(ID) FROM torrents WHERE GroupID='$GroupID' AND flags <> 1");

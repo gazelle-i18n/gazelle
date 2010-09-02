@@ -314,10 +314,10 @@ class DB_MYSQL {
 	}
 
 	//  Loops through the result set, collecting the $Key column into an array
-	function collect($Key) {
+	function collect($Key, $Escape = true) {
 		$Return = array();
 		while($Row = mysqli_fetch_array($this->QueryID)){
-			$Return[]=display_str($Row[$Key]);
+			$Return[] = $Escape ? display_str($Row[$Key]) : $Row[$Key];
 		}
 		mysqli_data_seek($this->QueryID, 0);
 		return $Return;
