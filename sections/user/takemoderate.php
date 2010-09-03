@@ -397,6 +397,7 @@ if ($EnableUser!=$Cur['Enabled'] && check_perms('users_disable_users')) {
 		$CanLeech = 1;
 		$UpdateSet[]="m.can_leech='1'";
 		$LightUpdates['Enabled'] = 1;
+		
 	}
 	$Cache->replace_value('enabled_'.$UserID, $EnableUser, 0);
 }

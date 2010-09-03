@@ -7,6 +7,8 @@ show_message();
 ?>
 <div class="thin">
 	<div class="sidebar">
+<?
+?>
 		<div class="box">
 			<div class="head colhead_dark"><strong>Stats</strong></div>
 			<ul class="stats nobullet">
