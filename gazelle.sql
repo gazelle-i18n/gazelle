@@ -186,6 +186,7 @@ CREATE TABLE `drives` (
 CREATE TABLE `featured_albums` (
   `GroupID` int(10) NOT NULL DEFAULT '0',
   `ThreadID` int(10) NOT NULL DEFAULT '0',
+  `Title` varchar(35) NOT NULL DEFAULT '',
   `Started` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `Ended` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
