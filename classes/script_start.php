@@ -79,8 +79,8 @@ define('TORRENT_GROUP_REGEX', SITELINK_REGEX.'\/torrents.php\?id=\d{1,10}\&(torr
 
 $Browser = $UA->browser($_SERVER['HTTP_USER_AGENT']);
 $OperatingSystem = $UA->operating_system($_SERVER['HTTP_USER_AGENT']);
-//$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
-$Mobile = false;
+$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
+//$Mobile = false;
 
 /*
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR']) {
@@ -1201,7 +1201,7 @@ function update_hash($GroupID) {
 		GROUP_CONCAT(DISTINCT t.Format SEPARATOR ' ') AS Format,
 		GROUP_CONCAT(DISTINCT t.Encoding SEPARATOR ' ') AS Encoding,
 		GROUP_CONCAT(DISTINCT t.RemasterTitle SEPARATOR ' ') AS RemasterTitle,
-		GROUP_CONCAT(REPLACE(REPLACE(FileList, '|||', '\n '), '_', ' ') SEPARATOR '\n ') AS FileList
+		GROUP_CONCAT(REPLACE(REPLACE(REPLACE(FileList, '|||', '\n '), '_', ' '), '.', ' ') SEPARATOR '\n ') AS FileList
 		FROM torrents AS t
 		JOIN torrents_group AS g ON g.ID=t.GroupID
 		WHERE g.ID=$GroupID

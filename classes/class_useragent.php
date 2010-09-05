@@ -125,7 +125,7 @@ class USER_AGENT {
 			return false;
 		}
 	
-		if (strpos($UserAgentString, 'Mobile') || strpos($UserAgentString, 'Device') || strpos($UserAgentString, 'Mobi') || strpos($UserAgentString, 'Mini')) {
+		if (strpos($UserAgentString, 'Mobile') || strpos($UserAgentString, 'Device') || strpos($UserAgentString, 'Mobi') || strpos($UserAgentString, 'Mini') || strpos($UserAgentString, 'webOS')) {
 			return true;
 		}
 		return false;
