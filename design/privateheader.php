@@ -138,6 +138,22 @@ if(check_perms('site_send_unlimited_invites')) {
 $Alerts = array();
 $ModBar = array();
 
+// News
+$MyNews = $LoggedUser['LastReadNews'];
+$CurrentNews = $Cache->get_value('news_latest_id');
+if ($CurrentNews === false) {
+	$DB->query("SELECT ID FROM news ORDER BY Time DESC LIMIT 1");
+	if ($DB->record_count() == 1) {
+		list($CurrentNews) = $DB->next_record();
+	} else {
+		$CurrentNews = -1;
+	}
+	$Cache->cache_value('news_latest_id', $CurrentNews, 0);
+}
+if ($MyNews < $CurrentNews) {
+	$Alerts[] = '<a href="index.php">'.'New Announcement!'.'</a>';
+}
+
 //Inbox
 $NewMessages = $Cache->get_value('inbox_new_'.$LoggedUser['ID']);
 if ($NewMessages === false) {

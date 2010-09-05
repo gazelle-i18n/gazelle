@@ -375,8 +375,8 @@ $TorrentText = $Tor->enc();
 
 // Infohash
 
-$InfoHash = $DB->escape_str(pack("H*", sha1($Tor->Val['info']->enc())));
-$DB->query("SELECT ID FROM torrents WHERE info_hash='".$InfoHash."'");
+$InfoHash = pack("H*", sha1($Tor->Val['info']->enc()));
+$DB->query("SELECT ID FROM torrents WHERE info_hash='".db_string($InfoHash)."'");
 if($DB->record_count()>0) {
 	list($ID) = $DB->next_record();
 	$Err = '<a href="torrents.php?torrentid='.$ID.'">The exact same torrent file already exists on the site!</a>';
@@ -600,7 +600,7 @@ $DB->query("
 	VALUES
 		(".$GroupID.", ".$LoggedUser['ID'].", ".$T['Media'].", ".$T['Format'].", ".$T['Encoding'].", 
 		".$T['Remastered'].", ".$T['RemasterYear'].", ".$T['RemasterTitle'].", ".$T['RemasterRecordLabel'].", ".$T['RemasterCatalogueNumber'].", 
-		".$T['Scene'].", ".$HasLog.", ".$HasCue.", '".$InfoHash."', ".$NumFiles.", ".$FileString.", '".$FilePath."', ".$TotalSize.", '".sqltime()."',
+		".$T['Scene'].", ".$HasLog.", ".$HasCue.", '".db_string($InfoHash)."', ".$NumFiles.", ".$FileString.", '".$FilePath."', ".$TotalSize.", '".sqltime()."',
 		".$T['TorrentDescription'].", '".(($HasLog == "'1'") ? $LogScoreAverage : 0)."', '0', '0')");
 
 $Cache->increment('stats_torrent_count');
