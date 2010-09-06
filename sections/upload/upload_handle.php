@@ -380,7 +380,6 @@ $DB->query("SELECT ID FROM torrents WHERE info_hash='".db_string($InfoHash)."'")
 if($DB->record_count()>0) {
 	list($ID) = $DB->next_record();
 	$Err = '<a href="torrents.php?torrentid='.$ID.'">The exact same torrent file already exists on the site!</a>';
-	send_irc("PRIVMSG NightOath :Failed upload incoming");
 }
 
 

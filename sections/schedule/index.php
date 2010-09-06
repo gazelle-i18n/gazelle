@@ -645,8 +645,39 @@ if($Day != next_day() || $_GET['runday']){
 			$Format,$Encoding,$Media,$Scene,$HasLog,$HasCue,$LogScore,$Year,$GroupYear,
 			$RemasterTitle,$Snatched,$Seeders,$Leechers,$Data) = $Torrent;
 
-		$TitleString = display_artists(get_artist($GroupID), false, false).' - '.$GroupName.' ['.$Year.'] - ['.$Format.' / '.$Encoding.' / '.$Media.']';
-		$TagString = str_replace("|", ", ", $TorrentTags);
+		$DisplayName='';
+		
+		$Artists = get_artist($GroupID);
+		
+		if(!empty($Artists)) {
+			$DisplayName = display_artists($Artists, false, true);
+		}
+		
+		$DisplayName.= $GroupName;
+
+		if($GroupCategoryID==1 && $GroupYear>0) {
+			$DisplayName.= " [$GroupYear]";
+		}
+
+		// append extra info to torrent title
+		$ExtraInfo='';
+		$AddExtra='';
+		if($Format) { $ExtraInfo.=$Format; $AddExtra=' / '; }
+		if($Encoding) { $ExtraInfo.=$AddExtra.$Encoding; $AddExtra=' / '; }
+		"FLAC / Lossless / Log (100%) / Cue / CD";
+		if($HasLog) { $ExtraInfo.=$AddExtra."Log (".$LogScore."%)"; $AddExtra=' / '; }
+		if($HasCue) { $ExtraInfo.=$AddExtra."Cue"; $AddExtra=' / '; }
+		if($Media) { $ExtraInfo.=$AddExtra.$Media; $AddExtra=' / '; }
+		if($Scene) { $ExtraInfo.=$AddExtra.'Scene'; $AddExtra=' / '; }
+		if($Year>0) { $ExtraInfo.=$AddExtra.$Year; $AddExtra=' '; }
+		if($RemasterTitle) { $ExtraInfo.=$AddExtra.$RemasterTitle; }
+		if($ExtraInfo!='') {
+			$ExtraInfo = "- [$ExtraInfo]";
+		}
+
+		$TitleString = $DisplayName.' '.$ExtraInfo;
+
+		$TagString = str_replace("|", " ", $TorrentTags);
 
 		$DB->query("INSERT INTO top10_history_torrents
 			(HistoryID, Rank, TorrentID, TitleString, TagString)
@@ -699,8 +730,39 @@ if($Day != next_day() || $_GET['runday']){
 				$Format,$Encoding,$Media,$Scene,$HasLog,$HasCue,$LogScore,$Year,$GroupYear,
 				$RemasterTitle,$Snatched,$Seeders,$Leechers,$Data) = $Torrent;
 
-			$TitleString = display_artists(get_artist($GroupID), false, false).' - '.$GroupName.' ['.$Year.'] - ['.$Format.' / '.$Encoding.' / '.$Media.']';
-			$TagString = str_replace("|", ", ", $TorrentTags);
+			$DisplayName='';
+			
+			$Artists = get_artist($GroupID);
+			
+			if(!empty($Artists)) {
+				$DisplayName = display_artists($Artists, false, true);
+			}
+			
+			$DisplayName.= $GroupName;
+
+			if($GroupCategoryID==1 && $GroupYear>0) {
+				$DisplayName.= " [$GroupYear]";
+			}
+
+			// append extra info to torrent title
+			$ExtraInfo='';
+			$AddExtra='';
+			if($Format) { $ExtraInfo.=$Format; $AddExtra=' / '; }
+			if($Encoding) { $ExtraInfo.=$AddExtra.$Encoding; $AddExtra=' / '; }
+			"FLAC / Lossless / Log (100%) / Cue / CD";
+			if($HasLog) { $ExtraInfo.=$AddExtra."Log (".$LogScore."%)"; $AddExtra=' / '; }
+			if($HasCue) { $ExtraInfo.=$AddExtra."Cue"; $AddExtra=' / '; }
+			if($Media) { $ExtraInfo.=$AddExtra.$Media; $AddExtra=' / '; }
+			if($Scene) { $ExtraInfo.=$AddExtra.'Scene'; $AddExtra=' / '; }
+			if($Year>0) { $ExtraInfo.=$AddExtra.$Year; $AddExtra=' '; }
+			if($RemasterTitle) { $ExtraInfo.=$AddExtra.$RemasterTitle; }
+			if($ExtraInfo!='') {
+				$ExtraInfo = "- [$ExtraInfo]";
+			}
+
+			$TitleString = $DisplayName.' '.$ExtraInfo;
+
+			$TagString = str_replace("|", " ", $TorrentTags);
 
 			$DB->query("INSERT INTO top10_history_torrents
 				(HistoryID, Rank, TorrentID, TitleString, TagString)

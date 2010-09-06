@@ -79,8 +79,9 @@ define('TORRENT_GROUP_REGEX', SITELINK_REGEX.'\/torrents.php\?id=\d{1,10}\&(torr
 
 $Browser = $UA->browser($_SERVER['HTTP_USER_AGENT']);
 $OperatingSystem = $UA->operating_system($_SERVER['HTTP_USER_AGENT']);
-$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
-//$Mobile = false;
+//$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
+$Mobile = in_array($_SERVER['HTTP_HOST'], array('m.'.NONSSL_SITE_URL, 'm.'.NONSSL_SITE_URL));
+
 
 /*
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR']) {
@@ -207,11 +208,6 @@ if(isset($LoginCookie)) {
 	
 	// Because we <3 our staff
 	if (check_perms('site_disable_ip_history')) { $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; }
-
-	//Dik-dik temporary access
-	if (check_perms('users_mod')|| $LoggedUser['ID'] == 236) {
-		$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
-	}
 
 	// Update LastUpdate every 10 minutes
 	if(strtotime($UserSessions[$SessionID]['LastUpdate'])+600<time()) {

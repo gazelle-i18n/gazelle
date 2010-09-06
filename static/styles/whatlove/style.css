@@ -350,7 +350,8 @@ ul.thin li {
         top: 1em;
 	left: 0;
         z-index: 1000;
-        border : 1px solid #000;
+        border: none;
+        background: #fff;
         width: 12em;
         margin-top: 12px;
 }
@@ -362,6 +363,9 @@ ul.thin li {
         width: 100%;
 }
 
+#searchbars ul li ul li.highlight {
+	color: #FE448B;
+}
 
 #searchbars ul li form {
 	display: inline;
@@ -878,3 +882,13 @@ form tr {
 }
 
 #site_debug .hidden { display: none; }
+
+.center {
+	text-align: center;
+}
+
+.spellcheck { 
+	margin: 25px 0;
+	font-size: 1.25em;
+	font-weight: bold;
+}
