@@ -60,7 +60,7 @@ show_header('Search articles');
 	<div class="linkbox">
 		[<a href="wiki.php?action=create&amp;alias=<?=display_str($Alias->convert($_GET['search']))?>">Create an article</a>] [<a  href="wiki.php?action=link&amp;alias=<?=display_str($Alias->convert($_GET['search']))?>">Link this search</a>]
 	</div>
-	<div class="center">
+	<div>
 		<form action="" method="get">
 			<div>
 				<input type="hidden" name="action" value="search" />

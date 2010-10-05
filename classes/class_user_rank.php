@@ -25,7 +25,7 @@ class USER_RANK {
 		$Table = $DB->to_array();
 		
 		// Give a little variation to the cache length, so all the tables don't expire at the same time
-		$Cache->cache_value($MemKey, $Table, 3600*24*rand(900,110)*0.001); 
+		$Cache->cache_value($MemKey, $Table, 3600*24*rand(800,1000)*0.001); 
 		
 		return $Table;
 	}

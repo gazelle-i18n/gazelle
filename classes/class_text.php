@@ -64,9 +64,9 @@ class TEXT {
 		$Str = preg_replace('/(?<!(\[url\]|\[url\=|\[img\=|\[img\]))http(s)?:\/\//i', '$1[inlineurl]http$2://', $Str);
 		// For anonym.to links. We can't have this in the regex because php freaks out at the ?, even if it's escaped
 		$Str = strtr($Str, array('?[inlineurl]http'=>'?http', '=[inlineurl]http'=>'=http')); 
-		$Str = preg_replace('/\=\=\=\=(.*)\=\=\=\=/i', '[inlinesize=3]$1[/inlinesize]', $Str);
-		$Str = preg_replace('/\=\=\=(.*)\=\=\=/i', '[inlinesize=5]$1[/inlinesize]', $Str);
-		$Str = preg_replace('/\=\=(.*)\=\=/i', '[inlinesize=7]$1[/inlinesize]', $Str);
+		$Str = preg_replace('/\=\=\=\=([^=].*)\=\=\=\=/i', '[inlinesize=3]$1[/inlinesize]', $Str);
+		$Str = preg_replace('/\=\=\=([^=].*)\=\=\=/i', '[inlinesize=5]$1[/inlinesize]', $Str);
+		$Str = preg_replace('/\=\=([^=].*)\=\=/i', '[inlinesize=7]$1[/inlinesize]', $Str);
 		
 		
 		$Str = $this->parse($Str);

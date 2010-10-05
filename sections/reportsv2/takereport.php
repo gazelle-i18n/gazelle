@@ -122,25 +122,7 @@ $DB->query("INSERT INTO reportsv2
 
 $ReportID = $DB->inserted_id();
 
-$ReportArray = $Cache->get_value('reports_torrent_'.$TorrentID);
-if(!$ReportArray) {
-	$DB->query("SELECT r.ID,
-					r.ReporterID,
-					reporter.Username,
-					r.Type,
-					r.UserComment,
-					r.ReportedTime
-			FROM reportsv2 AS r
-			LEFT JOIN users_main AS reporter ON reporter.ID=r.ReporterID
-			WHERE TorrentID = $TorrentID
-			AND Type != 'edited'
-			AND Status != 'Resolved'");
-	$ReportArray = $DB->to_array();
-	// let's not cache twice...
-	//$Cache->cache_value('reports_torrent_'.$TorrentID, $ReportArray, 0);
-}	
-//$ReportArray[] = array($ReportID, $LoggedUser['ID'], $LoggedUser['Username'], $Type, $Extra, sqltime());
-$Cache->cache_value('reports_torrent_'.$TorrentID, $ReportArray, 0);
+$Cache->delete_value('reports_torrent_'.$TorrentID);
 
 $Cache->increment('num_torrent_reportsv2');
 

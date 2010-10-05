@@ -109,19 +109,34 @@ if(!isset($Escaped['resolve_type'])) {
 	die();
 }
 
+
+$DB->query("SELECT ID FROM torrents WHERE ID = ".$TorrentID);
+$TorrentExists = ($DB->record_count() > 0);
+if(!$TorrentExists) {
+	$DB->query("UPDATE reportsv2 
+		SET Status='Resolved',
+		LastChangeTime='".sqltime()."',
+		ModComment='Report already dealt with (Torrent deleted)'
+	WHERE ID=".$ReportID);
+
+	$Cache->decrement('num_torrent_reportsv2');
+}
+
 if($Report) {
 	//Resolve with a parallel check
-	$DB->query("UPDATE reportsv2 SET
-		Status='Resolved',
-		LastChangeTime='".sqltime()."',
-		ResolverID='".$LoggedUser['ID']."'
+	$DB->query("UPDATE reportsv2 
+		SET Status='Resolved',
+			LastChangeTime='".sqltime()."',
+			ResolverID='".$LoggedUser['ID']."'
 		WHERE ID=".$ReportID."
-		AND Status <> 'Resolved'");
+			AND Status <> 'Resolved'");
 }
+
 //See if it we managed to resolve
 if($DB->affected_rows() > 0 || !$Report) {
 	//We did, lets do all our shit
 	if($Report) { $Cache->decrement('num_torrent_reportsv2'); }
+
 	
 	if(isset($Escaped['upload'])) {
 		$Upload = true;
@@ -131,7 +146,7 @@ if($DB->affected_rows() > 0 || !$Report) {
 
 
 	if($_POST['resolve_type'] == "tags_lots") {
-		$DB->query("INSERT INTO torrents_bad_tags (TorrentID, UserID, TimeAdded) VALUES (".$TorrentID.", ".$LoggedUser['ID']." , '".sqltime()."')");
+		$DB->query("INSERT IGNORE INTO torrents_bad_tags (TorrentID, UserID, TimeAdded) VALUES (".$TorrentID.", ".$LoggedUser['ID']." , '".sqltime()."')");
 		$DB->query("SELECT GroupID FROM torrents WHERE ID = ".$TorrentID);
 		list($GroupID) = $DB->next_record();
 		$Cache->delete_value('torrents_details_'.$GroupID);
@@ -139,7 +154,7 @@ if($DB->affected_rows() > 0 || !$Report) {
 	}
 
 	if($_POST['resolve_type'] == "folders_bad") {
-		$DB->query("INSERT into torrents_bad_folders (TorrentID, UserID, TimeAdded) VALUES (".$TorrentID.", ".$LoggedUser['ID'].", '".sqltime()."')");
+		$DB->query("INSERT IGNORE INTO torrents_bad_folders (TorrentID, UserID, TimeAdded) VALUES (".$TorrentID.", ".$LoggedUser['ID'].", '".sqltime()."')");
 		$DB->query("SELECT GroupID FROM torrents WHERE ID = ".$TorrentID);
 		list($GroupID) = $DB->next_record();
 		$Cache->delete_value('torrents_details_'.$GroupID);
@@ -149,7 +164,9 @@ if($DB->affected_rows() > 0 || !$Report) {
 	
 	//Log and delete
 	if(isset($Escaped['delete'])) {
-		$Log = "Torrent ".$TorrentID." (".$RawName.") was deleted by ".$LoggedUser['Username'];
+		$DB->query("SELECT Username FROM users_main WHERE ID = ".$UploaderID);
+		list($UpUsername) = $DB->next_record();
+		$Log = "Torrent ".$TorrentID." (".$RawName.") uploaded by ".$UpUsername." was deleted by ".$LoggedUser['Username'];
 		$Log .= ($Escaped['resolve_type'] == 'custom' ? "" : " for the reason: ".$ResolveType['title'].".");
 		if(isset($Escaped['log_message']) && $Escaped['log_message'] != "") {
 			$Log .= " ( ".$Escaped['log_message']." )";

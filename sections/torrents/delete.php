@@ -55,7 +55,7 @@ show_header('Delete torrent', 'reportsv2');
 <?
 if(check_perms('admin_reports')) {
 ?>
-<div id="all_reports" class="center" style="width: 80%; margin-left: auto; margin-right: auto">
+<div id="all_reports" style="width: 80%; margin-left: auto; margin-right: auto">
 <?
 	require(SERVER_ROOT.'/sections/reportsv2/array.php');
 	require(SERVER_ROOT.'/classes/class_text.php');

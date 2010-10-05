@@ -17,6 +17,10 @@ var listener = {
 
 /* Site wide functions */
 
+// http://www.thefutureoftheweb.com/blog/adddomloadevent
+// retrieved 2010-08-12
+var addDOMLoadEvent=(function(){var e=[],t,s,n,i,o,d=document,w=window,r='readyState',c='onreadystatechange',x=function(){n=1;clearInterval(t);while(i=e.shift())i();if(s)s[c]=''};return function(f){if(n)return f();if(!e[0]){d.addEventListener&&d.addEventListener("DOMContentLoaded",x,false);/*@cc_on@*//*@if(@_win32)d.write("<script id=__ie_onload defer src=//0><\/scr"+"ipt>");s=d.getElementById("__ie_onload");s[c]=function(){s[r]=="complete"&&x()};/*@end@*/if(/WebKit/i.test(navigator.userAgent))t=setInterval(function(){/loaded|complete/.test(d[r])&&x()},10);o=w.onload;w.onload=function(){x();o&&o()}}e.push(f)}})();
+
 //PHP ports
 function isset(variable) {
 	return (typeof(variable) === 'undefined') ? false : true;
@@ -142,10 +146,15 @@ var util = function (selector, context) {
 	return new util.fn.init(selector, context);
 }
 
+
 util.fn = util.prototype = {
 	objects: new Array(),
 	init: function (selector, context) {
-		this.objects = Sizzle(selector, context);
+		if(typeof(selector) == 'object') {
+			this.objects[0] = selector;
+		} else {
+			this.objects = Sizzle(selector, context);
+		}
 		return this;
 	},
 	results: function () {
@@ -199,12 +208,28 @@ util.fn = util.prototype = {
 		for (var i=0,il=this.objects.length;i<il;i++) {
 			var object = this.objects[i];
 			var classes = object.className.split(' ');
-			var result = array_search(class_name, classes);
-			if (result === false) { 
+			var result = array_search(class_name, classes)
+			if (result === false) {
 				return this;
 			}
 			delete classes[result];
 			object.className = classes.join(' ');
+		}
+		return this;
+	},
+	has_class: function(class_name) {
+		for (var i=0,il=this.objects.length;i<il;i++) {
+			var object = this.objects[i];
+			var classes = object.className.split(' ');
+			if(array_search(class_name, classes)) {
+				return true;
+			}
+		}
+		return false;
+	},
+	disable : function () {
+		for (var i=0,il=this.objects.length;i<il;i++) {
+			this.objects[i].disabled = true;
 		}
 		return this;
 	},
@@ -219,8 +244,29 @@ util.fn = util.prototype = {
 			number = 0;
 		}
 		return this.objects[number];
+	},
+	nextElementSibling: function () {
+		here = this.objects[0];
+		if (here.nextElementSibling) { 
+			return $(here.nextElementSibling);
+		}
+		do {
+			here = here.nextSibling;
+		} while (here.nodeType != 1);
+		return $(here);
+	},
+	previousElementSibling: function () {
+		here = this.objects[0];
+		if (here.previousElementSibling) { 
+			return $(here.previousElementSibling);
+		}
+		do {
+			here = here.nextSibling;
+		} while (here.nodeType != 1);
+		return $(here);
 	}
 }
+
 
 util.fn.init.prototype = util.fn;
 var $ = util;

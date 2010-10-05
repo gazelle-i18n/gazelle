@@ -55,6 +55,7 @@ $DisableWiki = (isset($_POST['DisableWiki']))? 1 : 0;
 $DisablePM = (isset($_POST['DisablePM']))? 1 : 0;
 $DisableIRC = (isset($_POST['DisableIRC']))? 1 : 0;
 $DisableLeech = (isset($_POST['DisableLeech'])) ? 0 : 1;
+
 $EnableUser = (int)$_POST['UserStatus'];
 $ResetRatioWatch = (isset($_POST['ResetRatioWatch']))? 1 : 0;
 $ResetPasskey = (isset($_POST['ResetPasskey']))? 1 : 0;
@@ -134,6 +135,7 @@ if ($_POST['UserStatus']=="delete" && check_perms('users_delete_users')) {
 	header("Location: log.php?search=User+".$UserID);
 	die();
 }
+
 
 // User was not deleted. Perform other stuff.
 
@@ -385,6 +387,8 @@ if ($DisableIRC!=$Cur['DisableIRC'] && check_perms('users_disable_any')) {
 		send_pm($UserID, 0, db_string('Your IRC privileges have been disabled'),db_string("Your IRC privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]. This loss of privileges does not affect the ability to join and talk to staff in #what.cd-disabled."));
 	}
 }
+
+
 
 if ($EnableUser!=$Cur['Enabled'] && check_perms('users_disable_users')) {
 	$EditSummary[]='account '.translateUserStatus($Cur['Enabled']).'->'.translateUserStatus($EnableUser);

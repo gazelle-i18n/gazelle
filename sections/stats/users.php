@@ -11,8 +11,9 @@ if (!list($Countries,$Rank,$CountryUsers,$CountryMax,$CountryMin,$LogIncrements)
 		$CountryMinThreshold = 30;
 	}
 	
-	$CountryMax = ceil(log($Data[0][1])/log(2))+1;
+	$CountryMax = ceil(log(Max(1,$Data[0][1]))/log(2))+1;
 	$CountryMin = floor(log($Data[$CountryMinThreshold][1])/log(2));
+
 	foreach ($Data as $Key => $Item) {
 		list($Country,$UserCount) = $Item;
 		$Countries[] = $Country;
@@ -92,6 +93,8 @@ if (!list($Labels,$InFlow,$OutFlow,$Max) = $Cache->get_value('users_timeline')) 
 			$Max = $Amount;
 		}
 	}
+
+	$Labels = array();
 	foreach($TimelineIn as $Month) {
 		list($Label,$Amount) = $Month;
 		$Labels[] = $Label;

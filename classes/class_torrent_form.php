@@ -400,7 +400,7 @@ class TORRENT_FORM {
 					<input type="checkbox" id="flac_cue" name="flac_cue"<? if($HasCue) { echo " checked='checked'";}?>/> Check this box if the torrent has (or should have) a cue file.
 				</td>
 			</tr>
-<?			if($HasLog) { ?>
+<?/*			if($HasLog) { ?>
 			<tr>
 				<td class="label">Log Score</td>
 				<td>
@@ -414,7 +414,7 @@ class TORRENT_FORM {
 					<p class="min_padding">Contains reason for adjusting a score. <b>This field is displayed on the torrent page</b>.</p> 
 				</td>
 			</tr>
-<?			}?>
+<?			}*/?>
 			<tr>
 				<td class="label">Bad Tags</td>
 				<td>
@@ -600,8 +600,9 @@ class TORRENT_FORM {
 					<textarea name="desc" id="desc" cols="60" rows="8"><?=display_str($Torrent['GroupDescription']); ?></textarea>
 				</td>
 			</tr>
-		</table>
 <?		 }//if
-	}//function simple_form
+?>
+		</table>
+<?	}//function simple_form
 }//class
 ?>

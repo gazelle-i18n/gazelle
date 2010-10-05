@@ -1,5 +1,5 @@
 <?
-global $Rippy;
+if(empty($LoggedUser['Rippy'])) $LoggedUser['Rippy'] = 'PM';
 define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
 $HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
 ?>
@@ -54,10 +54,10 @@ $HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
 	<script src="<?=STATIC_SERVER?>functions/sizzle.js" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/script_start.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/script_start.js')?>" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/class_ajax.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/class_ajax.js')?>" type="text/javascript" async="async"></script>
-	<script type="text/javascript">
+	<script type="text/javascript">//<![CDATA[
 		var authkey = "<?=$LoggedUser['AuthKey']?>";
 		var userid = <?=$LoggedUser['ID']?>;
-	</script>
+	//]]></script>
 	<script src="<?=STATIC_SERVER?>functions/global.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/global.js')?>" type="text/javascript"></script>
 <?
 
@@ -71,7 +71,7 @@ if ($Mobile) { ?>
 	<script src="<?=STATIC_SERVER?>styles/mobile/style.js" type="text/javascript" async="async"></script>
 <? } ?>
 </head>
-<body id="<?=$Document == 'collages' ? 'collage' : $Document?>" <?= (($Rippy) ? 'onload="say()"' : '') ?>>
+<body id="<?=$Document == 'collages' ? 'collage' : $Document?>" <?= ((!$Mobile && $LoggedUser['Rippy'] == 'On') ? 'onload="say()"' : '') ?>>
 <div id="wrapper">
 <h1 class="hidden"><?=SITE_NAME?></h1>
 
@@ -138,6 +138,7 @@ if(check_perms('site_send_unlimited_invites')) {
 $Alerts = array();
 $ModBar = array();
 
+/*
 // News
 $MyNews = $LoggedUser['LastReadNews'];
 $CurrentNews = $Cache->get_value('news_latest_id');
@@ -153,6 +154,7 @@ if ($CurrentNews === false) {
 if ($MyNews < $CurrentNews) {
 	$Alerts[] = '<a href="index.php">'.'New Announcement!'.'</a>';
 }
+*/
 
 //Inbox
 $NewMessages = $Cache->get_value('inbox_new_'.$LoggedUser['ID']);
@@ -233,15 +235,41 @@ if (!empty($Alerts) || !empty($ModBar)) {
 }
 //Done handling alertbars
 
-if($Rippy) { ?>
+if(!$Mobile && $LoggedUser['Rippy'] != 'Off') {
+	switch($LoggedUser['Rippy']) {
+		case 'PM' :
+			$Says = $Cache->get_value('rippy_message_'.$LoggedUser['ID']);
+			if($Says === false) {
+				$Says = $Cache->get_value('global_rippy_message');
+			}
+			$Show = ($Says !== false);
+			$Cache->delete_value('rippy_message_'.$LoggedUser['ID']);
+			break;
+		case 'On' :
+			$Show = true;
+			$Says = '';
+			break;
+		/* Uncomment to always show globals
+		case 'Off' :
+			$Says = $Cache->get_value('global_rippy_message');
+			$Show = ($Says !== false);
+			break;
+		*/
+	}
+
+	if($Show) {
+?>
 	<div class="rippy">
-		<div id="bubble" style="display: none;">
+		<div id="bubble" style="display: <?=($Says ? 'block' : 'none')?>">
 			<span class="rbt"></span>
-			<span id="rippy-says" class="rbm"></span>
+			<span id="rippy-says" class="rbm"><?=$Says?></span>
 			<span class="rbb"></span>
 		</div>
 	</div>
-<? } ?>
+<?
+	}
+}
+?>
 
 	<div id="searchbars">
 		<ul>

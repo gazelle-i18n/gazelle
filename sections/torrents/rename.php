@@ -7,6 +7,12 @@ $NewName = db_string($_POST['name']);
 
 if(!$GroupID || !is_number($GroupID)) { error(404); }
 
+if(empty($NewName)) {
+	error_message("Albums can't have no name");
+	header('Location: torrents.php?action=editgroup&groupid='.$GroupID);
+	die();
+}
+
 if(!check_perms('torrents_edit')) { error(403); }
 
 $DB->query("SELECT Name FROM torrents_group WHERE ID = ".$GroupID);

@@ -172,9 +172,11 @@ class DB_MYSQL {
 			preg_match("Table '(\S+)' is marked as crashed and should be repaired", $this->Error, $Matches);
 		} */
 		$Debug->analysis('!dev DB Error',$DBError,3600*24);
-		if (DEBUG_MODE || check_perms('site_debug') || $argv[1]==SCHEDULE_KEY) {
+		if (DEBUG_MODE || check_perms('site_debug') || isset($argv[1])) {
 			echo '<pre>'.$DBError.'</pre>';
-			print_r($this->Queries);
+			if(DEBUG_MODE || check_perms('site_debug')) {
+				print_r($this->Queries);
+			}
 			die();
 		} else {
 			error('-1');

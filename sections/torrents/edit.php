@@ -38,12 +38,10 @@ $DB->query("SELECT
 	t.HasLog,
 	t.HasCue,
 	t.LogScore,
-	s.AdjustmentReason,
 	bt.TorrentID AS BadTags,
 	bf.TorrentID AS BadFolders
 	FROM torrents AS t 
-	JOIN torrents_group AS tg ON tg.ID=t.GroupID
-	LEFT JOIN torrents_logs_new AS s ON s.TorrentID=t.ID
+	LEFT JOIN torrents_group AS tg ON tg.ID=t.GroupID
 	LEFT JOIN artists_group AS ag ON ag.ArtistID=tg.ArtistID
 	LEFT JOIN torrents_bad_tags AS bt ON bt.TorrentID=t.ID
 	LEFT JOIN torrents_bad_folders AS bf ON bf.TorrentID=t.ID
@@ -58,7 +56,9 @@ if(($LoggedUser['ID']!=$Properties['UserID'] && !check_perms('torrents_edit')) |
 	error(403);
 }
 
+
 show_header('Edit torrent', 'upload');
+
 show_message();
 
 if(!($Properties['Remastered'] && !$Properties['RemasterYear']) || check_perms('edit_unknowns')) {
@@ -87,9 +87,13 @@ if(!($Properties['Remastered'] && !$Properties['RemasterYear']) || check_perms('
 	$TorrentForm->foot();
 }
 
-if(check_perms('torrents_edit') && $Properties['CategoryID'] == 1){
+
+if(check_perms('torrents_edit') && $Properties['CategoryID'] == 1) {
 ?>
 <div class="thin">
+<?
+
+?>
 	<h2>Change Group</h2>
 	<form action="torrents.php" method="post">
 		<input type="hidden" name="action" value="editgroupid" />
@@ -143,8 +147,10 @@ if(check_perms('torrents_edit') && $Properties['CategoryID'] == 1){
 			</tr>
 		</table>
 	</form>
-		
 	<br />
+<?
+
+?>
 </div>
 <?
 } // if check_perms('torrents_edit')

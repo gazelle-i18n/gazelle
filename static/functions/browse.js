@@ -85,32 +85,99 @@ function add_tag(tag) {
 	}
 }
 
-//Bookmarks
+function toggle_group(groupid, link, event) {
+	var clickedRow = link;
+	while (clickedRow.nodeName != 'TR') {
+		clickedRow = clickedRow.parentNode;
+	}
+	var group_rows = clickedRow.parentNode.children;
+	//var showing = has_class(nextElementSibling(clickedRow), 'hidden'); // nextElementSibling(clickedRow) is a .edition
+	var showing = $(clickedRow).nextElementSibling().has_class('hidden');
+	var allGroups = event.ctrlKey;
+	for (var i = 0; i < group_rows.length; i++) {
+		var row = $(group_rows[i]);
+		if (row.has_class('colhead_dark')) { continue; }
+		if (row.has_class('colhead')) { continue; }
+		var relevantRow = row.has_class('group') ? row.nextElementSibling() : row;
+		if (allGroups || relevantRow.has_class('groupid_' + groupid)) {
+			if (row.has_class('group')) {
+				$('a.show_torrents_link', row).raw().title = (showing) ? 'Collapse this group' : 'Expand this group';
+			} else {
+				if (showing) {
+					// show the row depending on whether the edition it's in is collapsed or not
+					if (row.has_class('edition')) {
+						row.show();
+						showRow = ($('a', row.raw()).raw().innerHTML != '+');
+					} else {
+						if (showRow) {
+							row.show();
+						} else {
+							row.hide();
+						}
+					}
+				} else {
+					row.hide();
+				}
+			}
+		}
+	}
+	if (event.preventDefault) { event.preventDefault(); } else { event.returnValue = false; }
+}
+
+function toggle_edition(groupid, editionid, lnk, event) {
+	var clickedRow = lnk;
+	while (clickedRow.nodeName != 'TR') {
+		clickedRow = clickedRow.parentNode;
+	}
+	//var showing = has_class(nextElementSibling(clickedRow), 'hidden');
+	var showing = $(clickedRow).nextElementSibling().has_class('hidden');
+	var allEditions = event.ctrlKey;
+	var group_rows = $('tr.groupid_' + groupid);
+	for (var i = 0; i < group_rows.results(); i++) {
+		var row = $(group_rows.raw(i));
+		if (row.has_class('edition') && (allEditions || row == clickedRow)) {
+			$('a', row.raw()).raw().innerHTML = (showing) ? '&minus;' : '+';
+			$('a', row.raw()).raw().title = (showing) ? 'Collapse this edition' : 'Expand this edition';
+			continue;
+		}
+		if (allEditions || row.has_class('edition_' + editionid)) {
+			if (showing && !row.has_class('torrentdetails')) {
+				row.show();
+			} else {
+				row.hide();
+			}
+		}
+	}
+	if (event.preventDefault) { event.preventDefault(); } else { event.returnValue = false; }
+}
+
+// Bookmarks
 function Bookmark(groupid,newname) {
-	var lnk = $('#bookmarklink'+groupid).raw();
-	lnk.setAttribute('newname', lnk.innerHTML);
-	ajax.get("bookmarks.php?action=add&auth=" + authkey + "&groupid=" + groupid, function() {
-		lnk.onclick = function() { unbookmark(groupid,this.getAttribute('newname')); return false; };
-		lnk.innerHTML = newname;
-	});
+        var lnk = $('#bookmarklink'+groupid).raw();
+        lnk.setAttribute('newname', lnk.innerHTML);
+        ajax.get("bookmarks.php?action=add&auth=" + authkey + "&groupid=" + groupid, function() {
+                lnk.onclick = function() { unbookmark(groupid,this.getAttribute('newname')); return false; };
+                lnk.innerHTML = newname;
+        });
 }
 
 function unbookmark(groupid,newname) {
-	if(window.location.pathname.indexOf('bookmarks.php') != -1) {
-		ajax.get("bookmarks.php?action=remove&auth=" + authkey + "&groupid=" + groupid,function() {
-			$('#group_' + groupid).remove();
-			$('.groupid_' + groupid).remove();
-		});
-	} else {
-		var lnk = $('#bookmarklink'+groupid).raw();
-		lnk.setAttribute('newname', lnk.innerHTML);
-		ajax.get("bookmarks.php?action=remove&auth=" + authkey + "&groupid=" + groupid, function() {
-			lnk.onclick = function() { Bookmark(groupid,this.getAttribute('newname')); return false; };
-			lnk.innerHTML = newname;
-		});
-	}
+        if(window.location.pathname.indexOf('bookmarks.php') != -1) {
+                ajax.get("bookmarks.php?action=remove&auth=" + authkey + "&groupid=" + groupid,function() {
+                        $('#group_' + groupid).remove();
+                        $('.groupid_' + groupid).remove();
+                });
+        } else {
+                var lnk = $('#bookmarklink'+groupid).raw();
+                lnk.setAttribute('newname', lnk.innerHTML);
+                ajax.get("bookmarks.php?action=remove&auth=" + authkey + "&groupid=" + groupid, function() {
+                        lnk.onclick = function() { Bookmark(groupid,this.getAttribute('newname')); return false; };
+                        lnk.innerHTML = newname;
+                });
+        }
 }
 
+// For /sections/torrents/browse.php (not browse2.php)
 function Bitrate() {
 	$('#other_bitrate').raw().value = '';
 	if ($('#bitrate').raw().options[$('#bitrate').raw().selectedIndex].value == 'Other') {
@@ -143,4 +210,16 @@ function ToggleEditionRows() {
 	$('#edition_title').toggle();
 	$('#edition_label').toggle();
 	$('#edition_catalogue').toggle();
+}
+
+
+function ToggleGroup(groupid) {
+	var show = $('#showimg_' + groupid).has_class('show_torrents')
+	if(show) {
+		$('.groupid_' + groupid).show();
+		$('#showimg_' + groupid).remove_class('show_torrents').add_class('hide_torrents');
+	} else {
+		$('.groupid_' + groupid).hide();
+		$('#showimg_' + groupid).remove_class('hide_torrents').add_class('show_torrents');
+	}
 }

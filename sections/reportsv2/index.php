@@ -49,6 +49,9 @@ if(isset($_REQUEST['action'])) {
 		case 'ajax_update_resolve':
 			require('ajax_update_resolve.php');
 			break;
+		case 'ajax_create_report':
+			require('ajax_create_report.php');
+			break;
 	}
 } else {
 	if(count($_GET)) {

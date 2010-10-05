@@ -141,9 +141,9 @@ class SPHINX_SEARCH extends SphinxClient {
 		$this->Index = $Index;
 	}
 	
-	function set_filter($Name, $Val) {
+	function set_filter($Name, $Val, $Exclude=false) {
 		$this->Filters[$Name] = $Val;
-		$this->SetFilter($Name, $Val);
+		$this->SetFilter($Name, $Val, $Exclude);
 	}
 	
 	function escape_string($String) {

@@ -17,7 +17,7 @@ if(!empty($Err)) {
 show_header('Edit '.$Title);
 show_message();
 ?>
-<div class="center thin">
+<div class="thin">
 	<div class="box pad">
 		<form action="wiki.php" method="post">
 			<input type="hidden" name="action" value="edit" />

@@ -272,10 +272,6 @@ switch ($_REQUEST['action']){
 		include('misc/manipulate_tree.php');
 		break;
 
-	case 'lsearch':
-		include('misc/sandbox8.php');
-		break;
-
 	case 'recommendations':
 		include('misc/recommendations.php');
 		break;

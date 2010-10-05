@@ -51,6 +51,8 @@ if ($RequestVotes['TotalBounty'] > $Uploaded) {
 }
 send_pm($FillerID, 0, db_string("A request you filled has been unfilled"), db_string("The request '".$FullName."' was unfilled by [url=http://".NONSSL_SITE_URL."/user.php?id=".$LoggedUser['ID']."]".$LoggedUser['Username']."[/url] for the reason: ".$_POST['reason']));
 
+$Cache->delete_value('user_stats_'.$FillerID);
+
 if($UserID != $LoggedUser['ID']) {
 	send_pm($UserID, 0, db_string("A request you created has been unfilled"), db_string("The request '".$FullName."' was unfilled by [url=http://".NONSSL_SITE_URL."/user.php?id=".$LoggedUser['ID']."]".$LoggedUser['Username']."[/url] for the reason: ".$_POST['reason']));
 }

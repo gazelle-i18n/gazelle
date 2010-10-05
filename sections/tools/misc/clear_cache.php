@@ -7,10 +7,15 @@ show_header('Clear a cache key');
 
 //Make sure the form was sent
 if(!empty($_GET['key']) && $_GET['type'] == "clear") {
-	
-	$Cache->delete_value($_GET['key']);
-	echo '<div class="save_message">Key '.display_str($_GET['key']).' cleared!</div>';
-
+	if(preg_match('/(.*?)(\d+)\.\.(\d+)$/', $_GET['key'], $Matches) && is_number($Matches[2]) && is_number($Matches[3])) {
+		for($i=$Matches[2]; $i<=$Matches[3]; $i++) {
+			$Cache->delete_value($Matches[1].$i);
+		}
+		echo '<div class="save_message">Keys '.display_str($_GET['key']).' cleared!</div>';
+	} else {
+		$Cache->delete_value($_GET['key']);
+		echo '<div class="save_message">Key '.display_str($_GET['key']).' cleared!</div>';
+	}
 }
 ?>
 	<h2>Clear a cache key</h2>

@@ -26,13 +26,13 @@ $DB->query("SELECT
 	tg.Year,
 	tg.RecordLabel,
 	tg.CatalogueNumber,
-	tg.ReleaseType
+	tg.ReleaseType,
+	tg.CategoryID
 	FROM torrents_group AS tg
 	LEFT JOIN wiki_torrents AS wt ON wt.RevisionID=tg.RevisionID
 	WHERE tg.ID='$GroupID'");
-list($Name, $Image, $Body, $WikiImage, $WikiBody, $Year, $RecordLabel, $CatalogueNumber, $ReleaseType) = $DB->next_record();
-
-if(!$Name) { error(404); }
+if($DB->record_count() == 0) { error(404); }
+list($Name, $Image, $Body, $WikiImage, $WikiBody, $Year, $RecordLabel, $CatalogueNumber, $ReleaseType, $CategoryID) = $DB->next_record();
 
 if(!$Body) { $Body = $WikiBody; $Image = $WikiImage; }
 
@@ -40,7 +40,7 @@ show_header('Edit torrent group');
 
 // Start printing form
 ?>
-<div class="center thin">
+<div class="thin">
 	<h2>Edit <a href="torrents.php?id=<?=$GroupID?>"><?=$Name?></a></h2>
 	<div class="box pad">
 		<form action="torrents.php" method="post">
@@ -51,19 +51,16 @@ show_header('Edit torrent group');
 				<h3>Image</h3>
 				<input type="text" name="image" size="92" value="<?=$Image?>" /><br />
 				<h3>Description</h3>
-				<textarea name="body" cols="91" rows="20"><?=$Body?></textarea> <br />
+				<textarea name="body" cols="91" rows="20"><?=$Body?></textarea><br />
+<? if($CategoryID == 1) { ?>
 				<select id="releasetype" name="releasetype">
-<?
-			foreach ($ReleaseTypes as $Key => $Val) {
-				echo "<option value='$Key'";
-				if($Key == $ReleaseType){ echo " selected='selected'"; }
-				echo ">";
-				echo $Val;
-				echo "</option>\n";
-			}
-
-?>
+<?	foreach ($ReleaseTypes as $Key => $Val) { ?>
+					<option value='<?=$Key?>' <?=($Key == $ReleaseType ? " selected='selected'" : '')?>>
+						<?=$Val?>
+					</option>
+<?	} ?>
 				</select><br />
+<? } ?>
 				<h3>Edit summary</h3>
 				<input type="text" name="summary" size="92" /><br />
 				<div style="text-align: center;">

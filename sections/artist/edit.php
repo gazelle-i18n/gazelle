@@ -35,7 +35,7 @@ list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, true);
 // Start printing form
 show_header('Edit artist');
 ?>
-<div class="center thin">
+<div class="thin">
 	<h2>Edit <a href="artist.php?id=<?=$ArtistID?>"><?=$Name?></a></h2>
 	<div class="box pad">
 		<form action="artist.php" method="post">

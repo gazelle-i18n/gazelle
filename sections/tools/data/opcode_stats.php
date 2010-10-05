@@ -51,7 +51,7 @@ $CachedScripts = eaccelerator_cached_scripts();
 show_header("Opcode Stats");
 ?>
 <div class="thin">
-	<div class="center">
+	<div>
 		<form action="" method="post">
 			<div>
 				<input type="hidden" name="action" value="opcode_stats" />

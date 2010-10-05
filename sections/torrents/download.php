@@ -77,6 +77,18 @@ $DB->query("INSERT INTO users_downloads (UserID, TorrentID, Time) VALUES ('$User
 
 
 $DB->query("SELECT File FROM torrents_files WHERE TorrentID='$TorrentID'");
+if($DB->record_count() == 0) {
+	show_header();
+?>
+	<div class="box pad thin">
+		<h1>This torrent was lost in the recent downtime.</h1>
+		<br />
+		<p>If you have a copy of this .torrent, please add it at <a href="better.php?method=missing">http://what.cd/better.php?method=missing</a></p>
+	</div>
+<?
+	show_footer();
+	die();
+}
 list($Contents) = $DB->next_record(MYSQLI_NUM, array(0));
 $Contents = unserialize(base64_decode($Contents));
 $Tor = new TORRENT($Contents, true); // New TORRENT object
@@ -117,20 +129,17 @@ if(!empty($_GET['mode']) && $_GET['mode'] == 'bbb'){
 
 if (!$TorrentName) { $TorrentName="No Name"; }
 
+$FileName = ($Browser == 'Internet Explorer') ? urlencode(file_string($TorrentName)) : file_string($TorrentName);
+$MaxLength = $DownloadAlt ? 213 : 209;
+$FileName = cut_string($FileName, $MaxLength, true, false);
+$FileName = $DownloadAlt ? $FileName.'.txt' : $FileName.'.torrent';
+
+
 if($DownloadAlt) {
 	header('Content-Type: text/plain; charset=utf-8');
-	if ($Browser == 'Internet Explorer') {
-		header('Content-disposition: attachment; filename="'.urlencode(file_string($TorrentName)).'.txt"');
-	} else {
-		header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.txt"');
-	}
 } elseif(!$DownloadAlt || $Failed) {
 	header('Content-Type: application/x-bittorrent; charset=utf-8');
-	if ($Browser == 'Internet Explorer') {
-		header('Content-disposition: attachment; filename="'.urlencode(file_string($TorrentName)).'.torrent"');
-	} else {
-		header('Content-disposition: attachment; filename="'.file_string($TorrentName).'.torrent"');
-	}
 }
+header('Content-disposition: attachment; filename="'.$FileName.'"');
 
 echo $Tor->enc();

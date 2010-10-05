@@ -66,11 +66,11 @@ $sql.="
 	p.TopicID,
 	t.Title,
 	t.LastPostID,
-	CEIL((SELECT COUNT(ID) 
+	(SELECT COUNT(ID) 
 		FROM forums_posts 
 		WHERE forums_posts.TopicID = p.TopicID 
-		AND forums_posts.ID <= p.ID)/$PerPage) 
-		AS Page,
+		AND forums_posts.ID <= p.ID)
+		AS Post,
 	t.IsLocked,
 	t.IsSticky
 	FROM forums_posts as p
@@ -111,8 +111,8 @@ if($UserID == $LoggedUser['ID']){
 	if($TopicIDs) {
 		$DB->query("SELECT 
 			l.TopicID, 
-			l.PostID ,
-			CEIL((SELECT COUNT(ID) FROM forums_posts WHERE forums_posts.TopicID = l.TopicID AND forums_posts.ID<=l.PostID)/$PerPage) AS Page
+			l.PostID,
+			(SELECT COUNT(ID) FROM forums_posts WHERE forums_posts.TopicID = l.TopicID AND forums_posts.ID<=l.PostID) AS Post
 			FROM forums_last_read_topics AS l
 			WHERE TopicID IN($TopicIDs)
 			AND UserID='$LoggedUser[ID]'");
@@ -132,7 +132,7 @@ $DB->set_query_id($Posts);
 
 ?>
 <div class="thin">
-	<h2 class="center">
+	<h2>
 <?
 	if($ShowGrouped) {
 		echo "Grouped ".($ShowUnread?"unread ":"")."post history for <a href=\"user.php?id=$UserID\">$Username</a>";
@@ -191,21 +191,21 @@ if(empty($Results)) {
 ?>
 	</div>
 <?
-	while(list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $Page, $Locked, $Sticky) = $DB->next_record()){
+	while(list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $Post, $Locked, $Sticky) = $DB->next_record()){
 ?>
 	<table class='forum_post vertical_margin' id='post<?=$PostID ?>'>
 		<tr class='colhead_dark'>
 			<td  colspan="2">
 				<span style="float:left;">
 					<?=time_diff($AddedTime) ?>
-					in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;page=<?=$Page?>#post<?=$PostID?>" title="<?=display_str($ThreadTitle)?>"><?=cut_string($ThreadTitle, 75)?></a>
+					in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;post=<?=$Post?>#post<?=$PostID?>" title="<?=display_str($ThreadTitle)?>"><?=cut_string($ThreadTitle, 75)?></a>
 <?
 		if(isset($ViewingOwn)){
 			if ((!$Locked  || $Sticky) && (!$LastRead[$TopicID] || $LastRead[$TopicID]['PostID'] < $LastPostID)) { ?> 
 					<span style="color: red;">(New!)</span>
 <?			}
 			if(!empty($LastRead[$TopicID])) { ?>
-					<a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;page=<?=$LastRead[$TopicID]['Page']?>#post<?=$LastRead[$TopicID]['PostID']?>">
+					<a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;post=<?=$LastRead[$TopicID]['Post']?>#post<?=$LastRead[$TopicID]['PostID']?>">
 					<img src="<?=STATIC_SERVER?>/styles/<?=$LoggedUser['StyleName']?>/images/go_last_read.png" alt="Last read post" title="Go to last read post" />
 					</a>
 <?			}

@@ -1,5 +1,5 @@
 <?
-$Letter = strtoupper(substr($_GET['letter'],0,1)); //Anyone who can do an SQL/XSS injection with a single char has my respect
+$Letter = strtoupper(substr($_GET['letter'],0,1));
 
 $sql = "SELECT SQL_CALC_FOUND_ROWS 
 	w.ID, 
@@ -11,7 +11,7 @@ $sql = "SELECT SQL_CALC_FOUND_ROWS
 	LEFT JOIN users_main AS u ON u.ID=w.Author 
 	WHERE w.MinClassRead <= '".$LoggedUser['Class']."'";
 if($Letter!=='1') {
-	$sql .= " AND UPPER(LEFT(w.Title,1)) = '$Letter'";
+	$sql .= " AND UPPER(LEFT(w.Title,1)) = '".db_string($Letter)."'";
 } else {
 	$Letter = 'All';
 }

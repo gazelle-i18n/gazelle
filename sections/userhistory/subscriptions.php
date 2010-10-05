@@ -91,7 +91,7 @@ if(!empty($UserSubscriptions)) {
 }
 ?>
 <div class="thin">
-	<h2 class="center"><?='Subscribed topics'.($ShowUnread?' with unread posts':'')?></h2>
+	<h2><?='Subscribed topics'.($ShowUnread?' with unread posts':'')?></h2>
 
 	<div class="linkbox">
 <?

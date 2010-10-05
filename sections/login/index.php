@@ -4,7 +4,7 @@
 Add the javascript validation into the display page using the class
 //-----------------------------------*/
 
-if(isset($LoggedUser['ID'])) {
+if(!empty($LoggedUser['ID'])) {
 	header('Location: index.php');
 	die();
 }

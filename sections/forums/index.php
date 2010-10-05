@@ -60,6 +60,7 @@ if(!empty($_POST['action'])){
 			require(SERVER_ROOT.'/sections/forums/forum.php');
 			break;
 		case 'viewthread':
+		case 'viewtopic':
 			// Page that displays threads	
 			require(SERVER_ROOT.'/sections/forums/thread.php');
 			break;

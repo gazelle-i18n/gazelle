@@ -43,8 +43,6 @@ $Properties['HasLog'] = (isset($_POST['flac_log']))? 1 : 0;
 $Properties['HasCue'] = (isset($_POST['flac_cue']))? 1 : 0;
 $Properties['BadTags'] = (isset($_POST['bad_tags']))? 1 : 0;
 $Properties['BadFolders'] = (isset($_POST['bad_folders']))? 1 : 0;
-$Properties['LogScore'] = $_POST['log_score'];
-$Properties['AdjustmentReason'] = $_POST['adjustment_reason'];
 $Properties['Format'] = $_POST['format'];
 $Properties['Media'] = $_POST['media'];
 $Properties['Bitrate'] = $_POST['bitrate'];
@@ -245,25 +243,12 @@ if(check_perms('users_mod')) {
 		$SQL .= "
 	                HasLog='0',
 	                HasCue='0',
-	                LogScore=0,
 	        ";
 	} else {
 		$SQL .= "
 			HasLog=$T[HasLog],
 			HasCue=$T[HasCue],
-			LogScore=$T[LogScore],
 		";
-	}
-
-	$DB->query("SELECT LogScore FROM torrents WHERE ID='$TorrentID'");
-	list($LogScore) = $DB->next_record();
-	
-	if($LogScore!=$Properties['LogScore']) {
-		$DB->query("UPDATE torrents_logs_new SET
-				Adjusted=1,
-				AdjustedBy='$LoggedUser[ID]',
-				AdjustmentReason=$T[AdjustmentReason]
-				WHERE TorrentID='$TorrentID'");
 	}
 
 	$DB->query("SELECT TorrentID FROM torrents_bad_tags WHERE TorrentID='$TorrentID'");

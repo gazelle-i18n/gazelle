@@ -58,7 +58,7 @@ if (empty($_GET['search']) && !isset($_GET['page'])) {
 </div>
 <br / >
 <? } ?>
-<div class="center">
+<div>
 	<form action="" method="get">
 		<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 			<tr>

@@ -98,6 +98,9 @@ switch ($Type) {
 
 			$Validate->SetFields('catalogue_number',
 				'0','string','Catalogue Number must be between 2 and 80 characters.',array('maxlength'=>80, 'minlength'=>2));
+
+			$Validate->SetFields('album_desc',
+				'1','string','The album description has a minimum length of 10 characters.',array('maxlength'=>1000000, 'minlength'=>10));
 		}
 
 		if($Properties['Remastered'] && !$Properties['UnknownRelease']){
@@ -379,7 +382,14 @@ $InfoHash = pack("H*", sha1($Tor->Val['info']->enc()));
 $DB->query("SELECT ID FROM torrents WHERE info_hash='".db_string($InfoHash)."'");
 if($DB->record_count()>0) {
 	list($ID) = $DB->next_record();
-	$Err = '<a href="torrents.php?torrentid='.$ID.'">The exact same torrent file already exists on the site!</a>';
+	$DB->query("SELECT TorrentID FROM torrents_files WHERE TorrentID = ".$ID);
+	if($DB->record_count() > 0) {
+		$Err = '<a href="torrents.php?torrentid='.$ID.'">The exact same torrent file already exists on the site!</a>';
+	} else {
+		//One of the lost torrents.
+		$DB->query("INSERT INTO torrents_files (TorrentID, File) VALUES ($ID, '".db_string($Tor->dump_data())."')");
+		$Err = '<a href="torrents.php?torrentid='.$ID.'">Thankyou for fixing this torrent</a>';
+	}
 }
 
 
@@ -590,17 +600,18 @@ $DB->query("INSERT IGNORE INTO users_points (UserID, GroupID, Points) VALUES ('$
 }*/
 
 // Torrent
+
 $DB->query("
 	INSERT INTO torrents
 		(GroupID, UserID, Media, Format, Encoding, 
 		Remastered, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, 
 		Scene, HasLog, HasCue, info_hash, FileCount, FileList, FilePath, Size, Time, 
-		Description, LogScore, freetorrent, FreeLeechType) 
+		Description, LogScore) 
 	VALUES
 		(".$GroupID.", ".$LoggedUser['ID'].", ".$T['Media'].", ".$T['Format'].", ".$T['Encoding'].", 
 		".$T['Remastered'].", ".$T['RemasterYear'].", ".$T['RemasterTitle'].", ".$T['RemasterRecordLabel'].", ".$T['RemasterCatalogueNumber'].", 
 		".$T['Scene'].", ".$HasLog.", ".$HasCue.", '".db_string($InfoHash)."', ".$NumFiles.", ".$FileString.", '".$FilePath."', ".$TotalSize.", '".sqltime()."',
-		".$T['TorrentDescription'].", '".(($HasLog == "'1'") ? $LogScoreAverage : 0)."', '0', '0')");
+		".$T['TorrentDescription'].", '".(($HasLog == "'1'") ? $LogScoreAverage : 0)."')");
 
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
@@ -639,8 +650,10 @@ if($DB->record_count() > 0) {
 //--------------- Add the log scores to the DB ---------------------------------//
 
 if (!empty($LogScores) && $HasLog) {
-	$LogQuery = 'INSERT INTO torrents_logs_new (TorrentID,Log,Details,NotEnglish,Revision,Adjusted,AdjustedBy,AdjustmentReason) VALUES (';
-	foreach ($LogScores as $LogKey => $LogScore) { $LogScores[$LogKey] = "$TorrentID,$LogScore,1,0,0,NULL"; }
+	$LogQuery = 'INSERT INTO torrents_logs_new (TorrentID,Log,Details,NotEnglish,Score,Revision,Adjusted,AdjustedBy,AdjustmentReason) VALUES (';
+	foreach ($LogScores as $LogKey => $LogScore) { 
+		$LogScores[$LogKey] = "$TorrentID,$LogScore,1,0,0,NULL"; 
+	}
 	$LogQuery .= implode('),(', $LogScores).')';
 	$DB->query($LogQuery);
 	$LogInDB = true;
@@ -658,7 +671,9 @@ if(trim($Properties['Image']) != "") {
 			}
 
 			// Only reached if no matching GroupIDs in the cache already.
-			array_pop($RecentUploads);
+			if(count($RecentUploads) == 5) {
+				array_pop($RecentUploads);
+			}
 			array_unshift($RecentUploads, array('ID'=>$GroupID,'Name'=>trim($Properties['Title']),'Artist'=>display_artists($ArtistForm, false, true),'WikiImage'=>trim($Properties['Image'])));
 			$Cache->cache_value('recent_uploads_'.$UserID, $RecentUploads, 0);
 		} while (0);

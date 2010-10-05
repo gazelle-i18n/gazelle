@@ -199,7 +199,7 @@ include('header.php');
 <div class="linkbox">
 <?=$PageLinks?>
 </div>
-<div id="all_reports" class="center" style="width: 80%; margin-left: auto; margin-right: auto">
+<div id="all_reports" style="width: 80%; margin-left: auto; margin-right: auto">
 
 <?
 if(count($Reports) == 0) {
@@ -439,7 +439,7 @@ if(count($Reports) == 0) {
 									<?=($First ? "" : "<br />")?>
 									<?=$ExtraLinkName?>
 									<a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download">[DL]</a>
-									uploaded by <a href="user.php?id=<?=$ExtraUploaderID?>"><?=$ExtraUploaderName?></a>  <?=time_diff($ExtraTime)?>
+									uploaded by <a href="user.php?id=<?=$ExtraUploaderID?>"><?=$ExtraUploaderName?></a>  <?=time_diff($ExtraTime)?> [<a href="#" onclick="Switch(<?=$ReportID?>, <?=$TorrentID?>, <?=$ExtraID?>); return false;">Switch</a>]
 				<?
 							$First = false;
 						}
@@ -581,7 +581,7 @@ if(count($Reports) == 0) {
 								| <input id="grab<?=$ReportID?>" type="button" value="Grab!" onclick="Grab(<?=$ReportID?>);" />
 			<?		}	?>
 								| Multi-Resolve <input type="checkbox" name="multi" id="multi<?=$ReportID?>" checked="checked">
-								| <input type="button" value="Submit" onclick="TakeResolve(<?=$ReportID?>);" />
+								| <input type="button" id="submit_<?=$ReportID?>" value="Submit" onclick="TakeResolve(<?=$ReportID?>);" />
 							</td>
 						</tr>
 			<?

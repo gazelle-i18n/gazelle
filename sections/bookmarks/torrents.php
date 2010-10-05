@@ -243,9 +243,11 @@ foreach ($TorrentList as $GroupID=>$Group) {
 ?>
 <div class="thin">
 	<h2><?=$Username?>'s Bookmarks</h2>
+<?/*
 	<div class="linkbox">
 		<a href="bookmarks.php?action=remove_snatched&amp;auth=<?=$LoggedUser['AuthKey']?>" onclick="return confirm('Are you sure you want to remove the bookmarks for all items you've snatched?');">[Remove Snatched]</a>
 	</div>
+*/?>
 	<div class="sidebar">
 <?
 

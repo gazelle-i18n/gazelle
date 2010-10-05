@@ -18,7 +18,10 @@ include(SERVER_ROOT.'/sections/reports/array.php');
 // Header
 show_header('Reports');
 
-if(empty($_GET['view'])) {
+if($_GET['id'] && is_number($_GET['id'])) {
+	$View = "Single report";
+	$Where = "r.ID = ".$_GET['id'];
+} else if(empty($_GET['view'])) {
 	$View = "New";
 	$Where = "Status='New'";
 } else {
@@ -44,7 +47,8 @@ $Reports = $DB->query("SELECT SQL_CALC_FOUND_ROWS
 		r.ThingID, 
 		r.Type, 
 		r.ReportedTime, 
-		r.Reason 
+		r.Reason, 
+		r.Status
 	FROM reports AS r 
 		JOIN users_main AS um ON r.UserID=um.ID 
 	WHERE ".$Where." 
@@ -75,10 +79,9 @@ $DB->set_query_id($Reports);
 ?>
 </div>
 <?
-while(list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason) = $DB->next_record()) {
+while(list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status) = $DB->next_record()) {
 	$Type = $Types[$Short];
-	$URL = get_url();
-	$Reference = "reports.php".(empty($URL) ? '' : '?'.$URL)."#report".$ReportID;
+	$Reference = "reports.php?id=".$ReportID."#report".$ReportID;
 ?>
 <div id="report<?=$ReportID?>">
 <form action="reports.php" method="post">
@@ -87,7 +90,7 @@ while(list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $
 		<input type="hidden" name="action" value="takeresolve" />
 		<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 	</div>
-	<table cellpadding="5" class="center" id="report_<?=$ReportID?>">
+	<table cellpadding="5" id="report_<?=$ReportID?>">
 		<tr>
 			<td><strong><a href="<?=$Reference?>">Report</a></strong></td>
 			<td><strong><?=$Type['title']?></strong> was reported by <a href="user.php?id=<?=$SnitchID?>"><?=$SnitchName?></a> <?=time_diff($ReportedTime)?></td>
@@ -188,7 +191,7 @@ while(list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $
 		<tr>
 			<td colspan="2"><?=$Text->full_format($Reason)?></td>
 		</tr>
-<? if($View != "old") { ?>
+<? if($Status != "Resolved") { ?>
 		<tr>
 			<td class="center" colspan="2">
 				<input type="submit" name="submit" value="Resolved" />

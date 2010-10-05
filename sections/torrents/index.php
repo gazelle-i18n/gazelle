@@ -326,6 +326,36 @@ if(!empty($_REQUEST['action'])) {
 			$Cache->delete('torrentcomments_count_'.$GroupID);
 			break;
 
+		case 'regen_filelist' :
+			if(check_perms('users_mod') && !empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+				$TorrentID = $_GET['torrentid'];
+				$DB->query("SELECT tg.ID, 
+						tf.File 
+					FROM torrents_files AS tf 
+						JOIN torrents AS t ON t.ID=tf.TorrentID 
+						JOIN torrents_group AS tg ON tg.ID=t.GroupID 
+						WHERE tf.TorrentID = ".$TorrentID);
+				if($DB->record_count() > 0) {
+					require(SERVER_ROOT.'/classes/class_torrent.php');
+					list($GroupID, $Contents) = $DB->next_record(MYSQLI_NUM, false);
+					$Contents = unserialize(base64_decode($Contents));
+					$Tor = new TORRENT($Contents, true);
+					list($TotalSize, $FileList) = $Tor->file_list();
+					foreach($FileList as $File) {
+						list($Size, $Name) = $File;
+						$TmpFileList []= $Name .'{{{'.$Size.'}}}'; // Name {{{Size}}}
+					}
+					$FilePath = $Tor->Val['info']->Val['files'] ? db_string($Tor->Val['info']->Val['name']) : "";
+					$FileString = db_string(implode('|||', $TmpFileList));
+					$DB->query("UPDATE torrents SET Size = ".$TotalSize.", FilePath = '".db_string($FilePath)."', FileList = '".db_string($FileString)."' WHERE ID = ".$TorrentID);
+					$Cache->delete_value('torrents_details_'.$GroupID);
+				}
+				header('Location: torrents.php?torrentid='.$TorrentID);
+				die();
+			} else {
+				error(403);
+			}
+			break;
 		default:
 			enforce_login();
 		
@@ -351,7 +381,7 @@ if(!empty($_REQUEST['action'])) {
 		$DB->query("SELECT GroupID FROM torrents WHERE ID=".$_GET['torrentid']);
 		list($GroupID) = $DB->next_record();
 		if($GroupID) {
-			header("Location: torrents.php?id=".$GroupID."&torrentid=".$_GET['torrentid']);
+			header("Location: torrents.php?id=".$GroupID."&torrentid=".$_GET['torrentid']."#torrent".$_GET['torrentid']);
 		} else {
 			header("Location: log.php?search=Torrent+".$_GET['torrentid']);
 		}

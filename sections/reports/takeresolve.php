@@ -28,7 +28,7 @@ $DB->query("UPDATE reports
 $Channel = (($Type == "request_update") ? "#requestedits" : ADMIN_CHAN);
 $DB->query("SELECT COUNT(ID) FROM reports WHERE Status = 'New'");
 list($Remaining) = $DB->next_record();
-send_irc("PRIVMSG ".$Channel." :Report ".$ReportID." resolved by ".preg_replace("/^(.{2})/", "$1·", $LoggedUser['Username'])." on site (".$Remaining." remaining).");
+send_irc("PRIVMSG ".$Channel." :Report ".$ReportID." resolved by ".preg_replace("/^(.{2})/", "$1·", $LoggedUser['Username'])." on site (".(int)$Remaining." remaining).");
 
 $Cache->delete_value('num_other_reports');
 

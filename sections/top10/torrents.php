@@ -51,7 +51,7 @@ show_header('Top 10 Torrents');
 
 if(check_perms('site_advanced_top10')) {
 ?>
-	<div class="center">
+	<div>
 		<form action="" method="get">
 			<input type="hidden" name="advanced" value="1" />
 			<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">

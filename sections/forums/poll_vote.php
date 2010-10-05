@@ -114,9 +114,9 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
 ?>
 					<li><?=display_str($Answers[$i])?> (<?=number_format($Percent*100,2)?>%)</li>
 					<li class="graph">
-						<span id="left_poll"></span>
-						<span id="center_poll" style="width:<?=round($Ratio*$Size)?>px;"></span>
-						<span id="right_poll"></span>
+						<span class="left_poll"></span>
+						<span class="center_poll" style="width:<?=round($Ratio*$Size)?>px;"></span>
+						<span class="right_poll"></span>
 					</li>
 <?			}
 		} else {

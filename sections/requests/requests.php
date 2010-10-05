@@ -153,7 +153,7 @@ if(!empty($_GET['bitrates'])) {
 		$BitrateNameArray = array();
 		foreach($BitrateArray as $Index => $MasterIndex) {
 			if(array_key_exists($Index, $Bitrates)) {
-				$BitrateNameArray[$Index] = $Bitrates[$MasterIndex];
+				$BitrateNameArray[$Index] = $SS->EscapeString($Bitrates[$MasterIndex]);
 			} else {
 				//Hax
 				error(0);
@@ -286,7 +286,7 @@ show_header($Title, 'requests');
 		<a href="requests.php?type=voted">[Requests I've voted on]</a>
 <?	} ?> 
 	</div>
-	<div class="center">
+	<div>
 		<form action="" method="get">
 			<input type="hidden" name="submit" value="true" />
 			<input type="hidden" name="type" value="<?=$_GET['type']?>" />
@@ -313,7 +313,7 @@ show_header($Title, 'requests');
 				<tr>
 					<td class="label">Include filled:</td>
 					<td>
-						<input type="checkbox" name="show_filled" <? if(($Submitted && !empty($_GET['show_filled'])) || (!$Submitted && !empty($_GET['type']) && $_GET['type'] == "filled")) { ?>checked="checked"<? } ?> />
+						<input type="checkbox" name="show_filled" <? if(!$Submitted || !empty($_GET['show_filled']) || (!$Submitted && !empty($_GET['type']) && $_GET['type'] == "filled")) { ?>checked="checked"<? } ?> />
 					</td>
 				</tr>
 <?	if(check_perms('site_see_old_requests')){ ?> 

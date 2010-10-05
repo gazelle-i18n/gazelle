@@ -42,6 +42,7 @@ $DB->query("SELECT UserID, Username, PermissionID, Enabled, Donor, Warned
 	WHERE pm.ConvID='$ConvID'");
 
 while(list($PMUserID, $Username, $PermissionID, $Enabled, $Donor, $Warned) = $DB->next_record()) {
+	$PMUserID = (int)$PMUserID;
 	$Users[$PMUserID]['UserStr'] = format_username($PMUserID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $PermissionID);
 	$Users[$PMUserID]['Username'] = $Username;
 }
@@ -77,7 +78,7 @@ $DB->query("SELECT SentDate, SenderID, Body, ID FROM pm_messages AS m WHERE Conv
 while(list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) { ?>
 	<div class="box vertical_space">
 		<div class="head">
-			<strong><?=$Users[$SenderID]['UserStr']?></strong> <?=time_diff($SentDate)?> - <a href="#quickpost" onclick="Quote('<?=$MessageID?>','<?=$Users[$SenderID]['Username']?>');">[Quote]</a>	
+			<strong><?=$Users[(int)$SenderID]['UserStr']?></strong> <?=time_diff($SentDate)?> - <a href="#quickpost" onclick="Quote('<?=$MessageID?>','<?=$Users[(int)$SenderID]['Username']?>');">[Quote]</a>	
 		</div>
 		<div class="body" id="message<?=$MessageID?>"><?=$Text->full_format($Body)?></div>
 	</div>

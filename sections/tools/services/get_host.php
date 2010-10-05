@@ -13,16 +13,16 @@ $Octets = explode(".", $_GET['ip']);
 if(
 	empty($_GET['ip']) ||
 	!preg_match('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $_GET['ip']) ||
-	$Octets[0] < 1 ||
+	$Octets[0] < 0 ||
 	$Octets[0] > 255 ||
-	$Octets[1] < 1 ||
+	$Octets[1] < 0 ||
 	$Octets[1] > 255 ||
-	$Octets[2] < 1 ||
+	$Octets[2] < 0 ||
 	$Octets[2] > 255 ||
-	$Octets[3] < 1 ||
+	$Octets[3] < 0 ||
 	$Octets[3] > 255 ||
 	$Octets[0] == 127 ||
-	$Octets[0] == 192
+	($Octets[0] == 192 && $Octets[1] == 168)
 ) {
 	die('Invalid IP.');
 }

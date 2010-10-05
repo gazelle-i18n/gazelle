@@ -18,7 +18,7 @@ show_header('Report a '.$Type['title']);
 show_message();
 ?>
 <div class="thin">
-	<h2 class="center">Report <?=$Type['title']?></h2>
+	<h2>Report <?=$Type['title']?></h2>
 	<h3>Reporting guidelines</h3>
 	<div class="box pad">
 		<p>Following these guidelines will help the moderators deal with your report in a timely fashion. </p>

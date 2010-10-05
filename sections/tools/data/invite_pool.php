@@ -45,7 +45,7 @@ $DB->set_query_id($RS);
 		<p><?=number_format($Results)?> unused invites have been sent. </p>
 	</div>
 	<br />
-	<div class="center">
+	<div>
 		<form action="" method="get">
 			<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 				<tr>

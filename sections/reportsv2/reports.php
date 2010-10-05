@@ -19,7 +19,7 @@ include('header.php');
 	| <span title="Un-In Progress all the reports currently displayed"><input type="button" onclick="GiveBack();" value="Give back all" /></span>
 </div>
 <br />
-<div id="all_reports" class="center" style="width: 80%; margin-left: auto; margin-right: auto">
+<div id="all_reports" style="width: 80%; margin-left: auto; margin-right: auto">
 </div>
 <?
 show_footer();

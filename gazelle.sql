@@ -36,6 +36,7 @@ CREATE TABLE `artists_group` (
   `ArtistID` int(10) NOT NULL AUTO_INCREMENT,
   `Name` varchar(200) NOT NULL,
   `RevisionID` int(12) DEFAULT NULL,
+  `VanityHouse` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`ArtistID`),
   KEY `Name` (`Name`),
   KEY `RevisionID` (`RevisionID`)
@@ -88,6 +89,30 @@ CREATE TABLE `blog` (
   KEY `UserID` (`UserID`),
   KEY `Time` (`Time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `bookmarks_artists` (
+  `UserID` int(10) NOT NULL,
+  `ArtistID` int(10) NOT NULL,
+  `Time` datetime NOT NULL,
+  KEY `UserID` (`UserID`),
+  KEY `ArtistID` (`ArtistID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `bookmarks_collages` (
+  `UserID` int(10) NOT NULL,
+  `CollageID` int(10) NOT NULL,
+  `Time` datetime NOT NULL,
+  KEY `UserID` (`UserID`),
+  KEY `CollageID` (`CollageID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `bookmarks_requests` (
+  `UserID` int(10) NOT NULL,
+  `RequestID` int(10) NOT NULL,
+  `Time` datetime NOT NULL,
+  KEY `UserID` (`UserID`),
+  KEY `RequestID` (`RequestID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `bookmarks_torrents` (
   `UserID` int(10) NOT NULL,
@@ -477,7 +502,8 @@ CREATE TABLE `reportsv2` (
   PRIMARY KEY (`ID`),
   KEY `Status` (`Status`),
   KEY `Type` (`Type`(1)),
-  KEY `LastChangeTime` (`LastChangeTime`)
+  KEY `LastChangeTime` (`LastChangeTime`),
+  KEY `TorrentID` (`TorrentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `requests` (
@@ -515,7 +541,7 @@ CREATE TABLE `requests_artists` (
   `RequestID` int(10) unsigned NOT NULL,
   `ArtistID` int(10) NOT NULL,
   `AliasID` int(10) NOT NULL,
-  `Importance` enum('1','2') NOT NULL DEFAULT '1',
+  `Importance` enum('1','2','3') NOT NULL DEFAULT '1',
   PRIMARY KEY (`RequestID`,`AliasID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -615,6 +641,7 @@ CREATE TABLE `sphinx_delta` (
   `Leechers` int(10) DEFAULT NULL,
   `LogScore` int(3) DEFAULT NULL,
   `Scene` tinyint(1) NOT NULL DEFAULT '0',
+  `VanityHouse` tinyint(1) NOT NULL DEFAULT '0',
   `HasLog` tinyint(1) DEFAULT NULL,
   `HasCue` tinyint(1) DEFAULT NULL,
   `FreeTorrent` tinyint(1) DEFAULT NULL,
@@ -646,6 +673,7 @@ CREATE TABLE `sphinx_hash` (
   `Leechers` int(10) DEFAULT NULL,
   `LogScore` int(3) DEFAULT NULL,
   `Scene` tinyint(1) NOT NULL DEFAULT '0',
+  `VanityHouse` tinyint(1) NOT NULL DEFAULT '0',
   `HasLog` tinyint(1) DEFAULT NULL,
   `HasCue` tinyint(1) DEFAULT NULL,
   `FreeTorrent` tinyint(1) DEFAULT NULL,
@@ -861,6 +889,13 @@ CREATE TABLE `torrents_artists` (
   KEY `GroupID` (`GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `torrents_bad_filenames` (
+  `TorrentID` int(10) NOT NULL DEFAULT '0',
+  `UserID` int(10) NOT NULL DEFAULT '0',
+  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  KEY `TimeAdded` (`TimeAdded`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `torrents_bad_folders` (
   `TorrentID` int(11) NOT NULL,
   `UserID` int(11) NOT NULL,
@@ -880,13 +915,19 @@ CREATE TABLE `torrents_balance_history` (
   `GroupID` int(10) NOT NULL,
   `balance` bigint(20) NOT NULL,
   `Time` datetime NOT NULL,
-  `last` enum('0','1','2') DEFAULT NULL,
+  `Last` enum('0','1','2') DEFAULT '0',
   UNIQUE KEY `TorrentID_2` (`TorrentID`,`Time`),
   UNIQUE KEY `TorrentID_3` (`TorrentID`,`balance`),
   KEY `TorrentID` (`TorrentID`),
-  KEY `Time` (`Time`),
-  KEY `last` (`last`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `Time` (`Time`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `torrents_cassette_approved` (
+  `TorrentID` int(10) NOT NULL DEFAULT '0',
+  `UserID` int(10) NOT NULL DEFAULT '0',
+  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  KEY `TimeAdded` (`TimeAdded`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `torrents_comments` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
@@ -924,6 +965,7 @@ CREATE TABLE `torrents_group` (
   `WikiBody` text NOT NULL,
   `WikiImage` varchar(255) NOT NULL,
   `SearchText` varchar(500) NOT NULL,
+  `VanityHouse` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `ArtistID` (`ArtistID`),
   KEY `CategoryID` (`CategoryID`),
@@ -947,6 +989,13 @@ CREATE TABLE `torrents_logs_new` (
   PRIMARY KEY (`LogID`),
   KEY `TorrentID` (`TorrentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `torrents_lossymaster_approved` (
+  `TorrentID` int(10) NOT NULL DEFAULT '0',
+  `UserID` int(10) NOT NULL DEFAULT '0',
+  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  KEY `TimeAdded` (`TimeAdded`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `torrents_peerlists` (
   `GroupID` int(10) NOT NULL,
@@ -1001,13 +1050,6 @@ CREATE TABLE `user_avatar_warnings` (
   KEY `Time` (`Time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `user_stat_backup` (
-  `userid` int(10) NOT NULL DEFAULT '0',
-  `uploaded` bigint(20) DEFAULT NULL,
-  `downloaded` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`userid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `users_downloads` (
   `UserID` int(10) NOT NULL,
   `TorrentID` int(1) NOT NULL,
@@ -1041,7 +1083,8 @@ CREATE TABLE `users_history_ips` (
   KEY `UserID` (`UserID`),
   KEY `IP` (`IP`),
   KEY `StartTime` (`StartTime`),
-  KEY `EndTime` (`EndTime`)
+  KEY `EndTime` (`EndTime`),
+  KEY `IP_2` (`IP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `users_history_passkeys` (
@@ -1066,7 +1109,6 @@ CREATE TABLE `users_info` (
   `Avatar` varchar(255) NOT NULL,
   `Country` int(10) unsigned NOT NULL,
   `AdminComment` text NOT NULL,
-  `LastReadNews` int(10) DEFAULT NULL,
   `SiteOptions` text NOT NULL,
   `ViewAvatars` enum('0','1') NOT NULL DEFAULT '1',
   `Donor` enum('0','1') NOT NULL DEFAULT '0',
@@ -1100,6 +1142,8 @@ CREATE TABLE `users_info` (
   `BanDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `BanReason` enum('0','1','2','3','4') NOT NULL DEFAULT '0',
   `CatchupTime` datetime DEFAULT NULL,
+  `LastReadNews` int(10) NOT NULL DEFAULT '0',
+  `HideCountryChanges` enum('0','1') NOT NULL DEFAULT '0',
   UNIQUE KEY `UserID` (`UserID`),
   KEY `SupportFor` (`SupportFor`),
   KEY `DisableInvites` (`DisableInvites`),
@@ -1143,10 +1187,11 @@ CREATE TABLE `users_main` (
   `fid_end` int(11) NOT NULL COMMENT 'useless column',
   `name` char(8) NOT NULL COMMENT 'useless column',
   `OldPassHash` char(32) DEFAULT NULL,
+  `Cursed` enum('1','0') NOT NULL DEFAULT '0',
   `CookieID` varchar(32) DEFAULT NULL,
   `RequiredRatio` double(10,8) NOT NULL DEFAULT '0.00000000',
   `RequiredRatioWork` double(10,8) NOT NULL DEFAULT '0.00000000',
-  `Language` char(2) DEFAULT NULL,
+  `Language` char(2) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Username` (`Username`),
   KEY `Email` (`Email`),
@@ -1158,6 +1203,7 @@ CREATE TABLE `users_main` (
   KEY `Downloaded` (`Downloaded`),
   KEY `Enabled` (`Enabled`),
   KEY `Invites` (`Invites`),
+  KEY `Cursed` (`Cursed`),
   KEY `torrent_pass` (`torrent_pass`),
   KEY `RequiredRatio` (`RequiredRatio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1167,6 +1213,8 @@ CREATE TABLE `users_notify_filters` (
   `UserID` int(10) NOT NULL,
   `Label` varchar(128) NOT NULL DEFAULT '',
   `Artists` mediumtext NOT NULL,
+  `RecordLabels` mediumtext NOT NULL,
+  `Users` mediumtext NOT NULL,
   `Tags` varchar(500) NOT NULL DEFAULT '',
   `Categories` varchar(500) NOT NULL DEFAULT '',
   `Formats` varchar(500) NOT NULL DEFAULT '',
@@ -1209,7 +1257,7 @@ CREATE TABLE `users_sessions` (
   `SessionID` char(32) NOT NULL,
   `KeepLogged` enum('0','1') NOT NULL DEFAULT '0',
   `Browser` varchar(40) DEFAULT NULL,
-  `OperatingSystem` varchar(20) DEFAULT NULL,
+  `OperatingSystem` varchar(8) DEFAULT NULL,
   `IP` varchar(15) NOT NULL,
   `LastUpdate` datetime NOT NULL,
   PRIMARY KEY (`UserID`,`SessionID`),
@@ -1250,15 +1298,6 @@ CREATE TABLE `users_torrent_history_temp` (
   `SeedingAvg` int(6) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `users_watch` (
-  `UserID` int(10) unsigned NOT NULL,
-  `EmailTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `PasswordTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`UserID`),
-  KEY `EmailTime` (`EmailTime`),
-  KEY `PasswordTime` (`PasswordTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `wiki_aliases` (
   `Alias` varchar(50) NOT NULL,

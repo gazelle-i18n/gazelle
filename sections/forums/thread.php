@@ -17,8 +17,15 @@ include(SERVER_ROOT.'/sections/forums/functions.php');
 $Text = new TEXT;
 
 // Check for lame SQL injection attempts
-if(!isset($_GET['threadid']) || !is_number($_GET['threadid'])) { error(0); }
-$ThreadID = $_GET['threadid'];
+if(!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
+	if(!isset($_GET['topicid']) || !is_number($_GET['topicid'])) {
+		error('404');
+	} else {
+		$ThreadID = $_GET['topicid'];
+	}
+} else {
+	$ThreadID = $_GET['threadid'];
+}
 
 
 
@@ -102,11 +109,7 @@ show_message();
 	</h2>
 	<div class="linkbox">
 		<div class="center">
-<?
-if(!$ThreadInfo['IsLocked']) {
-?>
 			<a href="reports.php?action=report&amp;type=thread&amp;id=<?=$ThreadID?>">[Report Thread]</a>
-<? } ?>
 			<a href="#" onclick="Subscribe(<?=$ThreadID?>);return false;" id="subscribelink<?=$ThreadID?>">[<?=(in_array($ThreadID, $UserSubscriptions) ? 'Unsubscribe' : 'Subscribe')?>]</a>
 		</div>
 <?
@@ -129,7 +132,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
 			$Votes[$Key] = $Value;
 		}
 		
-		for ($i = 1, $il = count($Answers); $i <= $il; ++$i) {
+		foreach(array_keys($Answers) as $i) {
 			if (!isset($Votes[$i])) {
 				$Votes[$i] = 0;
 			}
@@ -165,7 +168,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
 			<ul class="poll nobullet">
 <?		
 		if($ForumID != STAFF_FORUM) {
-			for ($i = 1, $il = count($Answers); $i <= $il; $i++) {
+			foreach($Answers as $i => $Answer) {
 				if (!empty($Votes[$i]) && $TotalVotes > 0) {
 					$Ratio = $Votes[$i]/$MaxVotes;
 					$Percent = $Votes[$i]/$TotalVotes;
@@ -174,19 +177,19 @@ if ($ThreadInfo['NoPoll'] == 0) {
 					$Percent=0;
 				}
 ?>
-					<li><?=display_str($Answers[$i])?> (<?=number_format($Percent*100,2)?>%)</li>
+					<li><?=display_str($Answer)?> (<?=number_format($Percent*100,2)?>%)</li>
 					<li class="graph">
 						<span class="left_poll"></span>
 						<span class="center_poll" style="width:<?=round($Ratio*750)?>px;"></span>
 						<span class="right_poll"></span>
 					</li>
 <?			}
-			if ($Votes[''] > 0) {
+			if ($Votes[0] > 0) {
 ?>
-				<li>(Blank) (<?=number_format((float)($Votes['']/$TotalVotes*100),2)?>%)</li>
+				<li>(Blank) (<?=number_format((float)($Votes[0]/$TotalVotes*100),2)?>%)</li>
 				<li class="graph">
 					<span class="left_poll"></span>
-					<span class="center_poll" style="width:<?=round(($Votes['']/$MaxVotes)*750)?>px;"></span>
+					<span class="center_poll" style="width:<?=round(($Votes[0]/$MaxVotes)*750)?>px;"></span>
 					<span class="right_poll"></span>
 				</li>
 <?			} ?>
@@ -227,11 +230,11 @@ if ($ThreadInfo['NoPoll'] == 0) {
 ?>			<ul style="list-style: none;" id="poll_options">
 <?
 
-			for ($i = 1, $il = count($Answers); $i <= $il; $i++) {
+			foreach($Answers as $i => $Answer) {
 ?>
-				<li><a href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;vote=<?=(int) $i?>"><?=display_str(empty($Answers[$i]) ? "Blank" : $Answers[$i])?></a> - <?=$StaffVotes[$i]?>&nbsp;(<?=number_format(((float) $Votes[$i]/$TotalVotes)*100, 2)?>%)</li>
+				<li><a href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;vote=<?=(int) $i?>"><?=display_str($Answer == '' ? "Blank" : $Answer)?></a> - <?=$StaffVotes[$i]?>&nbsp;(<?=number_format(((float) $Votes[$i]/$TotalVotes)*100, 2)?>%)</li>
 <?			} ?>
-				<li><a href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;vote=0">Blank</a> - <?=$StaffVotes['']?>&nbsp;(<?=number_format(((float) $Votes['']/$TotalVotes)*100, 2)?>%)</li>
+				<li><a href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;vote=0">Blank</a> - <?=$StaffVotes[0]?>&nbsp;(<?=number_format(((float) $Votes[0]/$TotalVotes)*100, 2)?>%)</li>
 			</ul>
 			<br />
 			<strong>Votes:</strong> <?=number_format($TotalVotes)?> / <?=$StaffCount ?>
@@ -252,10 +255,10 @@ if ($ThreadInfo['NoPoll'] == 0) {
 				<input type="hidden" name="large" value="1"/>
 				<input type="hidden" name="topicid" value="<?=$ThreadID?>" />
 				<ul style="list-style: none;" id="poll_options">
-<? for ($i = 1, $il = count($Answers); $i <= $il; $i++) { ?>
+<? foreach($Answers as $i => $Answer) { //for ($i = 1, $il = count($Answers); $i <= $il; $i++) { ?>
 					<li>
 						<input type="radio" name="vote" id="answer_<?=$i?>" value="<?=$i?>" />
-						<label for="answer_<?=$i?>"><?=display_str($Answers[$i])?></label>
+						<label for="answer_<?=$i?>"><?=display_str($Answer)?></label>
 					</li>
 <? } ?>
 					<li>
@@ -360,7 +363,7 @@ if($PostID == $ThreadInfo['StickyPostID']) { ?>
 <? } ?>
 		<td class="body" valign="top"<? if(!empty($HeavyInfo['DisableAvatars'])) { echo ' colspan="2"'; } ?>>
 			<div id="content<?=$PostID?>">
-				<?=$Text->full_format($Body)?>
+				<?=$Text->full_format($Body) ?>
 <? if($EditedUserID){ ?>
 				<br />
 				<br />
@@ -448,7 +451,9 @@ if(!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 	}
 }
 
+
 if(check_perms('site_moderate_forums')) {
+*/
 ?>
 	<br />
 	<h3>Edit thread</h3>
@@ -461,6 +466,10 @@ if(check_perms('site_moderate_forums')) {
 		<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 		</div>
 		<table cellpadding="6" cellspacing="1" border="0" width="100%" class="border">
+		
+			<?
+			 
+			?>
 			<tr>
 				<td class="label">Sticky</td>
 				<td>
@@ -473,12 +482,18 @@ if(check_perms('site_moderate_forums')) {
 					<input type="checkbox" name="locked"<? if($ThreadInfo['IsLocked']) { echo ' checked="checked"'; } ?> tabindex="2" />
 				</td>
 			</tr>
+			<?
+			
+			?>
 			<tr>
 				<td class="label">Title</td>
 				<td>
 					<input type="text" name="title" size="50" value="<?=display_str($ThreadInfo['Title'])?>" tabindex="2" />
 				</td>
 			</tr>
+			<?
+			 
+			?>
 			<tr>
 				<td class="label">Move thread</td>
 				<td>
@@ -513,6 +528,9 @@ foreach ($Forums as $Forum) {
 					<input type="checkbox" name="delete" tabindex="2" />
 				</td>
 			</tr>
+			<?
+			
+			?>
 			<tr>
 				<td colspan="2" class="center">
 					<input type="submit" value="Edit thread" tabindex="2" />

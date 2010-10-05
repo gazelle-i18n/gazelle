@@ -315,6 +315,7 @@ ul#userinfo_minor a:hover {
 #index #nav_index a,
 #collage #nav_collages a,
 #forums #nav_forums a,
+#chat #nav_irc a,
 #rules #nav_rules a,
 #staff #nav_staff a,
 #torrents #nav_torrents a,
@@ -439,22 +440,23 @@ margin-left:20px;
 }
 
 #searchbars ul li ul {
-		display: block;
-        position: absolute;
-        top: 1em;
-        z-index: 1000;
-		border: 1px solid #181818;
-		background: #252525 url('images/content_main_x.png') top left repeat-x;
-        width: 12em;
-        margin-top: 12px;
+	display: block;
+	position: absolute;
+	top: 1em;
+	left: 0;
+	z-index: 1000;
+	border: 1px solid #181818;
+	background: #252525 url('images/content_main_x.png') top left repeat-x;
+	width: 12em;
+	margin-top: 12px;
 }
 
 #searchbars ul li ul li {
-        margin: 1px 0 1px 4px;
-        padding: 0;
-        display: block;
-        width: 100%;
-		color: #878787;
+	margin: 1px 0 1px 4px;
+	padding: 0;
+	display: block;
+	width: 100%;
+	color: #878787;
 	cursor: pointer;
 }
 

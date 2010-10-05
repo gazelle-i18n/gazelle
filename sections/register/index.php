@@ -50,9 +50,11 @@ if(!empty($_REQUEST['confirm'])) {
 			
 			if($_POST['invite']) {
 				$DB->query("SELECT InviterID, Email FROM invites WHERE InviteKey='".db_string($_REQUEST['invite'])."'");
-				list($InviterID, $InviteEmail) = $DB->next_record();
-				if(!$InviterID) {
+				if($DB->record_count() == 0) {
 					$Err = 'Invite does not exist.';
+					$InviterID=0;
+				} else {
+					list($InviterID, $InviteEmail) = $DB->next_record();
 				}
 			} else {
 				$InviterID=0;
@@ -63,8 +65,9 @@ if(!empty($_REQUEST['confirm'])) {
 			$Secret=make_secret();
 			$torrent_pass=make_secret();
 			
-			$DB->query("SELECT COUNT(ID) FROM users_main");
-			list($UserCount) = $DB->next_record();
+			//Previously SELECT COUNT(ID) FROM users_main, which is a lot slower.
+			$DB->query("SELECT ID FROM users_main LIMIT 1");
+			$UserCount = $DB->record_count();
 			if($UserCount == 0) {
 				$NewInstall = true;
 				$Class = SYSOP;
@@ -83,6 +86,9 @@ if(!empty($_REQUEST['confirm'])) {
 			
 
 			$UserID = $DB->inserted_id();
+			
+			//User created, delete invite. If things break after this point then it's better to have a broken account to fix, or a 'free' invite floating around that can be reused
+			$DB->query("DELETE FROM invites WHERE InviteKey='".db_string($_REQUEST['invite'])."'");
 
 			$DB->query("SELECT ID FROM stylesheets WHERE `Default`='1'");
 			list($StyleID) = $DB->next_record();
@@ -112,9 +118,7 @@ if(!empty($_REQUEST['confirm'])) {
 			
 			// Manage invite trees, delete invite
 			
-			if($InviterID) {
-				$DB->query("DELETE FROM invites WHERE InviteKey='".db_string($_REQUEST['invite'])."'");
-				
+			if($InviterID !== NULL) {
 				$DB->query("SELECT 
 					TreePosition, TreeID, TreeLevel 
 					FROM invite_tree WHERE UserID='$InviterID'");
@@ -155,6 +159,11 @@ if(!empty($_REQUEST['confirm'])) {
 						list($TreePosition) = $DB->next_record();
 					}
 					$TreeLevel++;
+					
+					// Create invite tree record
+					$DB->query("INSERT INTO invite_tree 
+						(UserID, InviterID, TreePosition, TreeID, TreeLevel) VALUES
+						('$UserID', '$InviterID', '$TreePosition', '$TreeID', '$TreeLevel')");
 				}
 			} else { // No inviter (open registration)
 				$DB->query("SELECT MAX(TreeID) FROM invite_tree");
@@ -164,11 +173,7 @@ if(!empty($_REQUEST['confirm'])) {
 				$TreePosition=1;
 				$TreeLevel=1;
 			}
-			
-			// Create invite tree record
-			$DB->query("INSERT INTO invite_tree 
-				(UserID, InviterID, TreePosition, TreeID, TreeLevel) VALUES
-				('$UserID', '$InviterID', '$TreePosition', '$TreeID', '$TreeLevel')");
+	
 			
 			include(SERVER_ROOT.'/classes/class_templates.php');
 			$TPL=NEW TEMPLATE;

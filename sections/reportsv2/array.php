@@ -513,6 +513,25 @@ $Types = array(
 					'delete' => '1',
 					'pm' => "Only -q8.x (~256 (VBR)) is allowed on the site for Ogg Vorbis. Torrents encoded with presets other than -q8.x will be deleted."
 				)
+			),
+			'grace_period' => array(
+				'priority' => '990',
+				'title' => 'Grace Period Dupe',
+				'report_messages' => array(
+					"This option is for reporting a torrent that is a duplicate of another because that torrent is still within the one month grace period mentioned in the news.",
+					"You should report the torrent that is in error (The newer one), not the torrent that is 'safe' within it's grace period."
+				),
+				'report_fields' => array(
+					'sitelink' => '1'
+				),
+				'resolve_options' => array(
+					'upload' => '0',
+					'warn' => '0',
+					'delete' => '1',
+					'pm' => "[quote=The front page]Effective immediately, every user will have a grace period of one month to trump their own torrents that have had their scores reduced. 
+					For this month-long grace period, you may not trump others' torrents that have been affected by these new logchecker changes, only your own. 
+					After this month is up, we will open trumping to all users.[/quote]."
+				)
 			)
 		),
 		'2' => array( //Applications Rules Broken

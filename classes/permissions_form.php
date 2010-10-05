@@ -213,6 +213,7 @@ function permissions_form(){ ?>
 					<? display_perm('torrents_search_fast', 'Unlimit search frequency (for scripts).'); ?>
 					<? display_perm('torrents_add_artist', 'Can add artists to any group.'); ?>
 					<? display_perm('edit_unknowns', 'Can edit unknown release information.'); ?>
+					<? display_perm('site_add_logs', 'Can add logs to torrents after upload'); ?>
 				</td>
 			</tr>
 		</table>

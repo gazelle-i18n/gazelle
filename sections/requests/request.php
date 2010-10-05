@@ -75,7 +75,8 @@ if($CategoryName == "Music") {
 $RequestVotes = get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && (($CategoryID == 0) || ($CategoryName == "Music" && $Year == 0)));
-$CanEdit = ((!$IsFilled && $LoggedUser['ID'] == $RequestorID && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+$UserCanEdit = (!$IsFilled && $LoggedUser['ID'] == $RequestorID && $VoteCount < 2);
+$CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
 show_header('View request: '.$FullName, 'comments,requests');
 show_message();
@@ -86,6 +87,8 @@ show_message();
 	<div class="linkbox">
 <? if($CanEdit) { ?> 
 		<a href="requests.php?action=edit&amp;id=<?=$RequestID?>">[Edit]</a>
+<? }
+if($UserCanEdit || check_perms('site_moderate_requests')) { ?>
 		<a href="requests.php?action=delete&amp;id=<?=$RequestID?>">[Delete]</a>
 <? } ?>
 		<a href="reports.php?action=report&amp;type=request&amp;id=<?=$RequestID?>">[Report Request]</a>
@@ -124,6 +127,17 @@ show_message();
 <?			foreach($ArtistForm[2] as $Artist) {
 ?>
 				<li class="artist_guest">
+					<?=display_artist($Artist)?>
+				</li>
+<?
+			}
+		}
+		if(!empty($ArtistForm[3]) && count($ArtistForm[3]) > 0) { 
+?>
+				<li class="artists_remix"><strong>Remixed by:</strong></li>
+<?			foreach($ArtistForm[3] as $Artist) {
+?>
+				<li class="artist_remix">
 					<?=display_artist($Artist)?>
 				</li>
 <?

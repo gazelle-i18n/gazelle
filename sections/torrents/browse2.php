@@ -148,10 +148,12 @@ if(!empty($_GET['searchstr'])) {
 if(!empty($_GET['taglist'])) {
 	$_GET['taglist'] = str_replace('.','_',$_GET['taglist']);
 	$TagList = explode(',',$_GET['taglist']);
+	$TagListEx = array();
 	foreach($TagList as $Key => &$Tag) {
 		if(strlen($Tag) >= 2) {
 			if($Tag[0] == '!' && strlen($Tag) >= 3) {
-				$Tag = '!'.$SS->EscapeString(substr($Tag,1));
+				$TagListEx[] = '!'.$SS->EscapeString(substr($Tag,1));
+				unset($TagList[$Key]);
 			} else {
 				$Tag = $SS->EscapeString($Tag);
 			}
@@ -162,10 +164,14 @@ if(!empty($_GET['taglist'])) {
 }
 
 if(empty($_GET['tags_type']) && !empty($TagList)) {
-	$Queries[]='@taglist ('.implode(' | ', $TagList).')';
+	if(!empty($TagListEx)) {
+		$Queries[]='@taglist ('.implode(' | ', $TagList).') '.implode(' ', $TagListEx);
+	} else {
+		$Queries[]='@taglist ('.implode(' | ', $TagList).')';
+	}
 } elseif(!empty($TagList)) {
 	$_GET['tags_type'] = '1';
-	$Queries[]='@taglist '.implode(' ',$TagList);
+	$Queries[]='@taglist '.implode(' ', array_merge($TagList,$TagListEx));
 } else {
 	$_GET['tags_type'] = '1';
 }
@@ -274,6 +280,9 @@ if(count($Queries)>0) {
 	$Query = implode(' ',$Queries);
 } else {
 	$Query='';
+	if(empty($SS->Filters)) {
+		$SS->set_filter('time', array(0), true);
+	}
 }
 
 $SS->set_index(SPHINX_INDEX.' delta');
@@ -669,8 +678,11 @@ foreach($Results as $GroupID=>$Data) {
 ?>
 	<tr class="group">
 		<td class="center">
-			<div title="View" id="showimg_<?=$GroupID?>" class="show_torrents">
-				<a href="#" class="show_torrents_link" onclick="$('.groupid_<?=$GroupID?>').toggle(); return false;"></a>
+<?
+$ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1)
+?>
+			<div title="View" id="showimg_<?=$GroupID?>" class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
+				<a href="#" class="show_torrents_link" onclick="ToggleGroup(<?=$GroupID?>); return false;"></a>
 			</div>
 		</td>
 		<td class="center cats_col">
@@ -824,7 +836,7 @@ foreach($Results as $GroupID=>$Data) {
 	<tr class="group_torrent groupid_<?=$GroupID?><? if (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping']==1) { echo ' hidden'; }?>">
 		<td colspan="3">
 			<span>
-				[<a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download">DL</a>
+				[<a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
 				| <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" title="Report">RP</a>]
 			</span>
 			&raquo; <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=torrent_info($Data)?></a>

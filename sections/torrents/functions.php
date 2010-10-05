@@ -85,12 +85,14 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0) {
 			tbt.TorrentID,
 			tbf.TorrentID,
 			t.LastReseedRequest,
-			tln.TorrentID AS LogInDB
+			tln.TorrentID AS LogInDB,
+			tf.TorrentID AS HasFile
 			FROM torrents AS t
 			LEFT JOIN users_main AS um ON um.ID=t.UserID
 			LEFT JOIN torrents_bad_tags AS tbt ON tbt.TorrentID=t.ID
 			LEFT JOIN torrents_bad_folders AS tbf on tbf.TorrentID=t.ID
 			LEFT JOIN torrents_logs_new AS tln ON tln.TorrentID=t.ID
+			LEFT JOIN torrents_files AS tf ON tf.TorrentID=t.ID
 			WHERE t.GroupID='".db_string($GroupID)."'
 			AND flags != 1
 			GROUP BY t.ID
@@ -126,7 +128,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0) {
 	}
 }
 
-//Check if a givin string van be validated as a torrenthash
+//Check if a givin string can be validated as a torrenthash
 function is_valid_torrenthash($Str) {
 	//6C19FF4C 6C1DD265 3B25832C 0F6228B2 52D743D5
 	$Str = str_replace(' ', '', $Str);
@@ -135,3 +137,9 @@ function is_valid_torrenthash($Str) {
 	return false;
 }
 
+
+//After adjusting / deleting logs, recalculate the score for the torrent.
+function set_torrent_logscore($TorrentID) {
+	global $DB;
+	$DB->query("UPDATE torrents SET LogScore = (SELECT AVG(Score) FROM torrents_logs_new WHERE TorrentID = ".$TorrentID.") WHERE ID = ".$TorrentID);
+}

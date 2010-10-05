@@ -52,7 +52,7 @@ $DB->set_query_id($Friends);
 // Start printing stuff
 ?>
 <div class="thin">
-	<h2 class="center">Friends list</h2>
+	<h2>Friends list</h2>
 	<div class="linkbox">
 <?
 // Pagination

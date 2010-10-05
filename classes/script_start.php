@@ -19,7 +19,8 @@ if(isset($_REQUEST['info_hash']) && isset($_REQUEST['peer_id'])) { die('d14:fail
 http://www.what.cd/ -> http://what.cd/
 https://www.what.cd/ -> https://ssl.what.cd/
 http://ssl.what.cd/ -> https://ssl.what.cd/
-https://what.cd/ -> http://what.cd/ */
+https://what.cd/ -> http://what.cd/
+http://www.m.what.cd/ -> http://m.what.cd */
 
 require(SERVER_ROOT.'/classes/class_proxies.php');
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && proxyCheck($_SERVER['REMOTE_ADDR'])) {
@@ -35,6 +36,7 @@ if (!isset($argv) && !empty($_SERVER['HTTP_HOST'])) { //Skip this block if runni
 		if (!$SSL && $_SERVER['HTTP_HOST'] == SSL_SITE_URL) { header('Location: https://'.SSL_SITE_URL.$_SERVER['REQUEST_URI']); die(); }
 		if ($SSL && $_SERVER['HTTP_HOST'] == NONSSL_SITE_URL) { header('Location: https://'.SSL_SITE_URL.$_SERVER['REQUEST_URI']); die(); }
 	}
+	if($_SERVER['HTTP_HOST'] == 'www.m.'.NONSSL_SITE_URL) { header('Location: http://m.'.NONSSL_SITE_URL.$_SERVER['REQUEST_URI']); die(); }
 }
 
 
@@ -212,6 +214,7 @@ if(isset($LoginCookie)) {
 	// Update LastUpdate every 10 minutes
 	if(strtotime($UserSessions[$SessionID]['LastUpdate'])+600<time()) {
 		$DB->query("UPDATE users_main SET LastAccess='".sqltime()."' WHERE ID='$LoggedUser[ID]'");
+		
 		$DB->query("UPDATE users_sessions SET IP='".$_SERVER['REMOTE_ADDR']."', Browser='".$Browser."', OperatingSystem='".$OperatingSystem."', LastUpdate='".sqltime()."' WHERE UserID='$LoggedUser[ID]' AND SessionID='".db_string($SessionID)."'");
 		$Cache->begin_transaction('users_sessions_'.$UserID);
 		$Cache->delete_row($SessionID);
@@ -283,6 +286,10 @@ if(isset($LoginCookie)) {
 
 	//A9 TODO: Clean up this messy solution
 	$LoggedUser['StyleName']=$Stylesheets[$LoggedUser['StyleID']]['Name'];
+	
+	if(empty($LoggedUser['Username'])) {
+		logout(); // Ghost
+	}
 }
 
 
@@ -470,6 +477,9 @@ function logout() {
 		$Cache->delete_row($SessionID);
 		$Cache->commit_transaction(0);
 	}
+	$Cache->delete_value('user_info_'.$LoggedUser['ID']);
+	$Cache->delete_value('user_stats_'.$LoggedUser['ID']);
+	$Cache->delete_value('user_info_heavy_'.$LoggedUser['ID']);
 	unset($_SESSION['logged_user']);
 
 	header('Location: login.php');
@@ -590,7 +600,7 @@ function ratio($Dividend, $Divisor, $Color = true) {
 	} elseif($Divisor == 0) {
 		return '<span class="r99">∞</span>';
 	}
-	$Ratio = number_format(($Dividend/$Divisor)-0.005, 2); //Subtract .005 to floor to 2 decimals
+	$Ratio = number_format(max($Dividend/$Divisor-0.005,0), 2); //Subtract .005 to floor to 2 decimals
 	if($Color) {
 		$Class = get_ratio_color($Ratio);
 		if($Class) {
@@ -796,7 +806,7 @@ function human_format($Number) {
 		case 0: return round($Number); break;
 		case 1: return round($Number,2).'k'; break;
 		case 2: return round($Number,2).'M'; break;
-		case 3: return round($Number,2).'B'; break;
+		case 3: return round($Number,2).'G'; break;
 		case 4: return round($Number,2).'T'; break;
 		case 5: return round($Number,2).'P'; break;
 		default:
@@ -818,7 +828,7 @@ function file_string($EscapeStr) {
 
 // This is preferable to htmlspecialchars because it doesn't screw up upon a double escape
 function display_str($Str) {
-	if (empty($Str)) {
+	if ($Str === NULL || $Str === FALSE || is_array($Str)) {
 		return '';
 	}
 	if ($Str!='' && !is_number($Str)) {
@@ -958,6 +968,7 @@ function delete_torrent($ID, $GroupID=0) {
 	if(!$GroupID) {
 		$DB->query("SELECT GroupID, UserID FROM torrents WHERE ID='$ID'");
 		list($GroupID, $UploaderID) = $DB->next_record();
+		
 	}
 	if(empty($UserID)) {
 		$DB->query("SELECT UserID FROM torrents WHERE ID='$ID'");
@@ -1028,13 +1039,11 @@ function delete_group($GroupID) {
 	// Collages
 	$DB->query("SELECT CollageID FROM collages_torrents WHERE GroupID='$GroupID'");
 	if($DB->record_count()>0) {
-		$CollageIDs = implode(', ', $DB->collect('CollageID'));
-		$DB->query("UPDATE collages SET NumTorrents=NumTorrents-1 WHERE ID IN ($CollageIDs)");
+		$CollageIDs = $DB->collect('CollageID');
+		$DB->query("UPDATE collages SET NumTorrents=NumTorrents-1 WHERE ID IN (".implode(', ',$CollageIDs).")");
 		$DB->query("DELETE FROM collages_torrents WHERE GroupID='$GroupID'");
 
-		$CollageIDs = explode(', ', $CollageIDs);
 		foreach($CollageIDs as $CollageID) {
-			$CollageID = trim($CollageID);
 			$Cache->delete_value('collage_'.$CollageID);
 		}
 		$Cache->delete_value('torrent_collages_'.$GroupID);
@@ -1077,6 +1086,7 @@ function delete_group($GroupID) {
 	$DB->query("DELETE FROM torrents_comments WHERE GroupID='$GroupID'");
 	$DB->query("DELETE FROM bookmarks_torrents WHERE GroupID='$GroupID'");
 	$DB->query("DELETE FROM wiki_torrents WHERE PageID='$GroupID'");
+	$DB->query("REPLACE INTO sphinx_delta (ID) VALUES ('$GroupID')"); // Tells Sphinx that the group is removed
 	
 	$Cache->delete_value('torrents_details_'.$GroupID);
 	$Cache->delete_value('torrent_group_'.$GroupID);
@@ -1418,10 +1428,20 @@ function get_artists($GroupIDs, $Escape = array()) {
 		if(empty($IDs)) {
 			$IDs = "null";
 		}
-		$DB->query("SELECT ta.GroupID,ta.ArtistID,aa.Name,ta.Importance FROM torrents_artists AS ta JOIN artists_alias AS aa ON ta.AliasID = aa.AliasID WHERE ta.GroupID IN ($IDs) ORDER BY ta.GroupID ASC,ta.Importance ASC, aa.Name ASC;");
-		while(list($GroupID,$ArtistID,$ArtistName,$ArtistImportance) = $DB->next_record(MYSQLI_BOTH, false)) {
-			$Results[$GroupID][$ArtistImportance][] = array('id' => $ArtistID, 'name' => $ArtistName);
-			$New[$GroupID][$ArtistImportance][] = array('id' => $ArtistID, 'name' => $ArtistName);
+		$DB->query("SELECT ta.GroupID,
+				ta.ArtistID,
+				aa.Name,
+				ta.Importance,
+				ta.AliasID
+			FROM torrents_artists AS ta 
+				JOIN artists_alias AS aa ON ta.AliasID = aa.AliasID 
+			WHERE ta.GroupID IN ($IDs) 
+			ORDER BY ta.GroupID ASC, 
+				ta.Importance ASC, 
+				aa.Name ASC;");
+		while(list($GroupID,$ArtistID,$ArtistName,$ArtistImportance,$AliasID) = $DB->next_record(MYSQLI_BOTH, false)) {
+			$Results[$GroupID][$ArtistImportance][] = array('id' => $ArtistID, 'name' => $ArtistName, 'aliasid' => $AliasID);
+			$New[$GroupID][$ArtistImportance][] = array('id' => $ArtistID, 'name' => $ArtistName, 'aliasid' => $AliasID);
 		}
 		foreach($DBs as $GroupID) {
 			if(isset($New[$GroupID])) {
@@ -1445,16 +1465,16 @@ function get_artist($GroupID) {
 	return $Results[$GroupID];
 }
 
-function display_artists($Artists, $makelink = true, $IncludeHyphen = true) {
+function display_artists($Artists, $MakeLink = true, $IncludeHyphen = true) {
 	if(!empty($Artists)) {
 		switch(count($Artists[1])) {
 			case 0:
 				return '';
 			case 1:
-				$link = display_artist($Artists[1][0], $makelink);
+				$link = display_artist($Artists[1][0], $MakeLink);
 				break;
 			case 2:
-				$link = display_artist($Artists[1][0], $makelink).' & '.display_artist($Artists[1][1], $makelink);
+				$link = display_artist($Artists[1][0], $MakeLink).' '.($MakeLink ? '&amp;' : '&').' '.display_artist($Artists[1][1], $MakeLink);
 				break;
 			default:
 				$link = 'Various Artists';
@@ -1462,10 +1482,10 @@ function display_artists($Artists, $makelink = true, $IncludeHyphen = true) {
 		if(!empty($Artists[2]) && (count($Artists[1]) < 3)) {
 			switch(count($Artists[2])) {
 				case 1:
-					$link .= ' with '.display_artist($Artists[2][0], $makelink);
+					$link .= ' with '.display_artist($Artists[2][0], $MakeLink);
 					break;
 				case 2:
-					$link .= ' with '.display_artist($Artists[2][0], $makelink).' & '.display_artist($Artists[2][1], $makelink);
+					$link .= ' with '.display_artist($Artists[2][0], $MakeLink).' '.($MakeLink ? '&amp;' : '&').' '.display_artist($Artists[2][1], $MakeLink);
 					break;
 			}
 		}
@@ -1475,11 +1495,10 @@ function display_artists($Artists, $makelink = true, $IncludeHyphen = true) {
 	}
 }
 
-function display_artist($Artist, $makelink = true) {
-	if($makelink) {
-		return '<a href="artist.php?id='.$Artist['id'].'">'.$Artist['name'].'</a>';
-	}
-	else {
+function display_artist($Artist, $MakeLink = true) {
+	if($MakeLink) {
+		return '<a href="artist.php?id='.$Artist['id'].'">'.display_str($Artist['name']).'</a>';
+	} else {
 		return $Artist['name'];
 	}
 }
@@ -1520,8 +1539,8 @@ function get_groups($GroupIDs, $Return = true, $GetArtists = true) {
 		}
 	
 		$DB->query("SELECT
-			ID, GroupID, Media, Format, Encoding, RemasterYear, Remastered, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers, Seeders, Snatched, Time
-			FROM torrents WHERE GroupID IN($IDs) ORDER BY GroupID, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Format, Encoding");
+			ID, GroupID, Media, Format, Encoding, RemasterYear, Remastered, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers, Seeders, Snatched, Time, tf.TorrentID AS HasFile
+			FROM torrents AS t LEFT JOIN torrents_files AS tf ON tf.TorrentID = t.ID WHERE GroupID IN($IDs) ORDER BY GroupID, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Format, Encoding");
 		while($Torrent = $DB->next_record(MYSQLI_ASSOC, true)) {
 			$Found[$Torrent['GroupID']]['Torrents'][$Torrent['ID']] = $Torrent;
 	
@@ -1727,6 +1746,10 @@ function error($Error, $Ajax=false) {
 	$Debug->profile();
 	die();
 }
+
+/**
+ * @param BanReason 0 - Unknown, 1 - Manual, 2 - Ratio, 3 - Inactive, 4 - Unused.
+ */
 
 function disable_users($UserIDs, $AdminComment, $BanReason = 1) {
 	global $Cache, $DB;

@@ -58,6 +58,7 @@ function HideErrors() {
 }
 
 function TakeResolve(reportid) {
+	$('#submit_' + reportid).disable();
 	ajax.post("reportsv2.php?action=takeresolve","report_form" + reportid, function (response) {
 		if(response) {
 			ErrorBox(reportid, response);
@@ -231,4 +232,27 @@ function UpdateResolve(reportid) {
 	ajax.get("reportsv2.php?action=ajax_update_resolve&reportid=" + reportid + "&newresolve=" + newresolve + "&categoryid=" + $('#categoryid' + reportid).raw().value, function (response) {
 		$('#update_resolve' + reportid).raw().disabled = true;
 	});
+}
+
+
+function Switch(reportid, torrentid, otherid) {
+	//We want to switch positions of the reported torrent
+	//This entails invalidating the current report and creating a new with the correct preset.
+	Dismiss(reportid);
+
+	var report = new Array();
+	report['auth'] = authkey;
+	report['torrentid'] = otherid
+	report['type'] = $('#type' + reportid).raw().value;
+	report['otherid'] = torrentid
+
+	ajax.post('reportsv2.php?action=ajax_create_report', report, function (response) {
+			//Returns new report ID.
+			if(isNaN(response)) {
+				alert(response);
+			} else {
+				window.location = 'reportsv2.php?view=report&id=' + response;
+			}
+		}
+	);
 }

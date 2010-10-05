@@ -15,6 +15,7 @@ if(!empty($_REQUEST['action'])) {
 			$Cache->delete_value('bookmarks_'.$UserID.'_groups');
 			break;
 		case 'remove_snatched':
+			error(0); // disable this for now as it's the heaviest part of the entire site
 			authorize();
 			$DB->query("DELETE b FROM bookmarks_torrents AS b WHERE b.UserID='".$LoggedUser['ID']."' AND b.GroupID IN(SELECT DISTINCT t.GroupID FROM torrents AS t INNER JOIN xbt_snatched AS s ON s.fid=t.ID AND s.uid='".$LoggedUser['ID']."')");
 			$Cache->delete_value('bookmarks_'.$UserID);
@@ -26,6 +27,6 @@ if(!empty($_REQUEST['action'])) {
 			error(0);
 	}
 } else {
-	require(SERVER_ROOT.'/sections/bookmarks/bookmarks.php');
+	require(SERVER_ROOT.'/sections/bookmarks/torrents.php');
 }
 ?>

@@ -36,7 +36,7 @@ if(empty($_POST['confirm'])) {
 	
 	show_header();
 ?>
-	<div class="center thin">
+	<div class="thin">
 	<h2>Change Group Confirm!</h2>
 	<div class="box pad">
 		<form action="torrents.php" method="post">

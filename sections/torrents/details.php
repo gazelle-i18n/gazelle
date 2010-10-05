@@ -80,7 +80,7 @@ show_message();
 <?	}
 	if(($Bookmarks = $Cache->get_value('bookmarks_'.$LoggedUser['ID'])) === FALSE) {
 		if(($Bookmarks = $Cache->get_value('bookmarks_'.$LoggedUser['ID'].'_groups')) === FALSE) {
-			$DB->query("SELECT GroupID FROM bookmarks_torrents WHERE UserID = $LoggedUser[ID]");
+			$DB->query("SELECT GroupID FROM bookmarks_torrents WHERE UserID = ".$LoggedUser['ID']);
 			$Bookmarks = $DB->collect('GroupID');
 			$Cache->cache_value('bookmarks_'.$LoggedUser['ID'].'_groups', $Bookmarks, 0);
 		}
@@ -133,8 +133,7 @@ if($Categories[$GroupCategoryID-1] == 'Music') {
 				<li class="artist_main">
 					<?=display_artist($Artist)?>
 <?		if(check_perms('torrents_edit')){
-			$DB->query("SELECT AliasID FROM artists_alias WHERE ArtistID = ".$Artist['id']." AND ArtistID != AliasID AND Name = '".db_string($Artist['name'])."'");
-			list($AliasID) = $DB->next_record();
+			$AliasID = $Artist['aliasid'];
 			if (empty($AliasID)) {
 				$AliasID = $Artist['id'];
 			}
@@ -291,7 +290,7 @@ foreach ($TorrentList as $Torrent) {
 	
 	list($TorrentID, $Media, $Format, $Encoding, $Remastered, $RemasterYear, $RemasterTitle, $RemasterRecordLabel, $RemasterCatalogueNumber, 
 		$Scene, $HasLog, $HasCue, $LogScore, $FileCount, $Size, $Seeders, $Leechers, $Snatched, $FreeTorrent, $TorrentTime, $Description, 
-		$FileList, $FilePath, $UserID, $Username, $LastActive, $BadTags, $BadFolders, $LastReseedRequest, $LogInDB) = $Torrent;
+		$FileList, $FilePath, $UserID, $Username, $LastActive, $BadTags, $BadFolders, $LastReseedRequest, $LogInDB, $HasFile) = $Torrent;
 
 	if($Remastered && !$RemasterYear) {
 		if(!isset($FirstUnknown)) {
@@ -303,18 +302,15 @@ foreach ($TorrentList as $Torrent) {
 
 	$Reported = false;
 	unset($ReportedTimes);
-
 	$Reports = $Cache->get_value('reports_torrent_'.$TorrentID);
-	if(!$Reports) {
+	if($Reports === false) {
 		$DB->query("SELECT r.ID,
-						r.ReporterID,
-						reporter.Username,
-						r.Type,
-						r.UserComment,
-						r.ReportedTime
-				FROM reportsv2 AS r
-				LEFT JOIN users_main AS reporter ON reporter.ID=r.ReporterID
-				WHERE TorrentID = $TorrentID
+				r.ReporterID,
+				r.Type,
+				r.UserComment,
+				r.ReportedTime
+			FROM reportsv2 AS r
+			WHERE TorrentID = $TorrentID
 				AND Type != 'edited'
 				AND Status != 'Resolved'");
 		$Reports = $DB->to_array();
@@ -326,7 +322,11 @@ foreach ($TorrentList as $Torrent) {
 		$ReportInfo = "<table><tr class='colhead_dark' style='font-weight: bold;'><td>This torrent has ".count($Reports)." active ".(count($Reports) > 1 ?'reports' : 'report').":</td></tr>";
 
 		foreach($Reports as $Report) {
-			list($ReportID, $ReporterID, $ReporterName, $ReportType, $ReportReason, $ReportedTime) = $Report;
+			list($ReportID, $ReporterID, $ReportType, $ReportReason, $ReportedTime) = $Report;
+
+			$Reporter = user_info($ReporterID);
+			$ReporterName = $Reporter['Username'];
+
 			if (array_key_exists($ReportType, $Types[$GroupCategoryID])) {
 				$ReportType = $Types[$GroupCategoryID][$ReportType];
 			} else if(array_key_exists($ReportType,$Types['master'])) {
@@ -340,13 +340,13 @@ foreach ($TorrentList as $Torrent) {
 		}
 		$ReportInfo .= "</table>";
 	}
-
+	
 	$CanEdit = (check_perms('torrents_edit') || (($UserID == $LoggedUser['ID'] && !$LoggedUser['DisableWiki']) && !($Remastered && !$RemasterYear)));
 	
 	$FileList = str_replace(array('_','-'), ' ', $FileList);
 	$FileList = str_replace('|||','<tr><td>',display_str($FileList));
 	$FileList = preg_replace_callback('/\{\{\{([^\{]*)\}\}\}/i','filelist',$FileList);
-	$FileList = '<table style="overflow-x:auto;"><tr class="colhead_dark"><td><strong><div style="float: left; display: block;">File Name</div></strong><div style="float:right; display:block;">/'.$FilePath.'/</div></td><td><strong>Size</strong></td></tr><tr><td>'.$FileList."</table>";
+	$FileList = '<table style="overflow-x:auto;"><tr class="colhead_dark"><td><strong><div style="float: left; display: block;">File Name'.(check_perms('users_mod') ? ' [<a href="torrents.php?action=regen_filelist&amp;torrentid='.$TorrentID.'">Regenerate</a>]' : '').'</div></strong><div style="float:right; display:block;">/'.$FilePath.'/</div></td><td><strong>Size</strong></td></tr><tr><td>'.$FileList."</table>";
 
 	$ExtraInfo=''; // String that contains information on the torrent, eg. format and encoding
 	$AddExtra=''; // Separator between torrent properties
@@ -356,7 +356,7 @@ foreach ($TorrentList as $Torrent) {
 	if($Format) { $ExtraInfo.=display_str($Format); $AddExtra=' / '; }
 	if($Encoding) { $ExtraInfo.=$AddExtra.display_str($Encoding); $AddExtra=' / '; }
 	if($HasLog) { $ExtraInfo.=$AddExtra.'Log'; $AddExtra=' / '; }
-	if($LogInDB) { $ExtraInfo.=' ('.(int) $LogScore.'%)'; }
+	if($HasLog && $LogInDB) { $ExtraInfo.=' ('.(int) $LogScore.'%)'; }
 	if($HasCue) { $ExtraInfo.=$AddExtra.'Cue'; $AddExtra=' / '; }
 	if($Media) { $ExtraInfo.=$AddExtra.display_str($Media); $AddExtra=' / '; }
 	if($Scene) { $ExtraInfo.=$AddExtra.'Scene'; $AddExtra=' / '; }
@@ -413,10 +413,10 @@ foreach ($TorrentList as $Torrent) {
 	$LastRemasterCatalogueNumber = $RemasterCatalogueNumber;
 ?>
 
-			<tr class="group_torrent" style="font-weight: normal;">
+			<tr class="group_torrent" style="font-weight: normal;" id="torrent<?=$TorrentID?>">
 				<td>
 					<span>[
-						<a href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download">DL</a>
+						<a href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download"><?=$HasFile ? 'DL' : 'Missing'?></a>
 						| <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" title="Report">RP</a>
 <?	if($CanEdit) { ?>
 						| <a href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>" title="Edit">ED</a>
@@ -513,7 +513,7 @@ if(count($Collages)>0) {
 }
 ?>
 		<div class="box">
-			<div class="head"><strong><?=$ReleaseTypes[$ReleaseType]?> info</strong></div>
+			<div class="head"><strong><?=(!empty($ReleaseType) ? $ReleaseTypes[$ReleaseType].' info' : 'Info' )?></strong></div>
 			<div class="body"><? if ($WikiBody!="") { echo $WikiBody; } else { echo "There is no information on this torrent."; } ?></div>
 		</div>
 <?
@@ -656,8 +656,8 @@ if(!$LoggedUser['DisablePosting']) { ?>
 						<input type="hidden" name="groupid" value="<?=$GroupID?>" />
 						<textarea id="quickpost" name="body"  cols="70"  rows="8"></textarea> <br />
 					</div>
-					<input type="submit" value="Post reply" />
 					<input id="post_preview" type="button" value="Preview" onclick="if(this.preview){Quick_Edit();}else{Quick_Preview();}" />
+					<input type="submit" value="Post reply" />
 				</form>
 			</div>
 <? } ?>

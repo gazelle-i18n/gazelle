@@ -124,5 +124,13 @@ switch ($UploadForm) {
 		$TorrentForm->music_form($GenreTags);
 }
 $TorrentForm->foot();
+?>
+<script type="text/javascript">
+	Format();
+	Bitrate();
+	Media();
+</script>
+
+<?
 show_footer();
 ?>

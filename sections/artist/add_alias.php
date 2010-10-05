@@ -6,7 +6,7 @@ $ArtistID = $_POST['artistid'];
 $Redirect = $_POST['redirect'];
 $AliasName = db_string($_POST['name']);
 
-if(!is_number($ArtistID) || !is_number($Redirect) || !$ArtistID) {
+if(!is_number($ArtistID) || !($Redirect == 0 || is_number($Redirect)) || !$ArtistID) {
 	error(0);
 }
 

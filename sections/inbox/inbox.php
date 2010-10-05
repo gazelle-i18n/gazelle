@@ -49,7 +49,7 @@ $sql .= ($Section == 'sentbox')? ' cu.SentDate ' : ' cu.ReceivedDate ';
 $sql .= "AS Date
 	FROM pm_conversations AS c
 	LEFT JOIN pm_conversations_users AS cu ON cu.ConvID=c.ID AND cu.UserID='$UserID'
-	LEFT JOIN pm_conversations_users AS cu2 ON cu2.ConvID=c.ID AND cu2.UserID!='$UserID'
+	LEFT JOIN pm_conversations_users AS cu2 ON cu2.ConvID=c.ID AND cu2.UserID!='$UserID' AND cu2.ForwardedTo=0
 	LEFT JOIN users_main AS um ON um.ID=cu2.UserID
 	LEFT JOIN users_info AS ui ON ui.UserID=um.ID
 	LEFT JOIN users_main AS um2 ON um2.ID=cu.ForwardedTo"

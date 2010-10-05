@@ -22,7 +22,7 @@ $Answers = unserialize($Answers);
 $Answers[] = $NewOption;
 $Answers = serialize($Answers);
 
-$DB->query("UPDATE forums_polls SET Answers = '".$Answers."' WHERE TopicID = ".$ThreadID);
+$DB->query("UPDATE forums_polls SET Answers = '".db_string($Answers)."' WHERE TopicID = ".$ThreadID);
 $Cache->delete_value('polls_'.$ThreadID);
 
 header("Location: forums.php?action=viewthread&threadid=".$ThreadID);

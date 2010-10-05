@@ -131,11 +131,11 @@ $ZIPOptions = array(
 // Ratio requirements, in descending order
 // Columns: Download amount, required ratio, grace period
 $RatioRequirements = array(
-	array(50*1024*1024*1024, 0.60, sqltime()),
-	array(40*1024*1024*1024, 0.50, sqltime()),
-	array(30*1024*1024*1024, 0.40, sqltime()),
-	array(20*1024*1024*1024, 0.30, sqltime()),
-	array(10*1024*1024*1024, 0.20, sqltime()),
+	array(50*1024*1024*1024, 0.60, date('Y-m-d H:i:s')),
+	array(40*1024*1024*1024, 0.50, date('Y-m-d H:i:s')),
+	array(30*1024*1024*1024, 0.40, date('Y-m-d H:i:s')),
+	array(20*1024*1024*1024, 0.30, date('Y-m-d H:i:s')),
+	array(10*1024*1024*1024, 0.20, date('Y-m-d H:i:s')),
 	array(5*1024*1024*1024,  0.15, time_minus(60*60*24*14))
 );
 

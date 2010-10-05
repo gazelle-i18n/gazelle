@@ -16,6 +16,8 @@ if(!is_number($_POST['threadid'])) { error(404); }
 if($_POST['title'] == ''){ error(0); }
 // End injection check
 // Make sure they are moderators
+
+
 if(!check_perms('site_moderate_forums')) { error(403); }
 
 authorize();
@@ -28,6 +30,8 @@ $Locked = (isset($_POST['locked'])) ? 1 : 0;
 $Title = db_string($_POST['title']);
 $ForumID = (int)$_POST['forumid'];
 $Page = (int)$_POST['page'];
+
+
 
 if ($Locked == 1) {
 	$DB->query("DELETE FROM forums_last_read_topics WHERE TopicID='$TopicID'");
@@ -226,6 +230,14 @@ if(isset($_POST['delete'])) {
 		$Cache->update_row($ForumID, $UpdateArray);
 		
 		$Cache->commit_transaction(0);
+	} else { // Editing 
+		$DB->query("SELECT LastPostTopicID FROM forums WHERE ID='$ForumID'");
+		list($LastTopicID) = $DB->next_record();
+		if($LastTopicID == $TopicID) {
+			$Cache->begin_transaction('forums_list');
+			$Cache->update_row($ForumID, array('Title'=>$_POST['title']));
+			$Cache->commit_transaction(0);
+		}
 	}
 	if($Locked) {
 		$CatalogueID = floor($NumPosts/THREAD_CATALOGUE);

@@ -105,7 +105,7 @@ $DB->set_query_id($Comments);
 show_header($Title);
 
 ?><div class="thin">
-	<h2 class="center">
+	<h2>
 		<?=$Header?>
 	</h2>
 	

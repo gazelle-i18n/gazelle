@@ -99,7 +99,9 @@ if(!empty($_GET['tags'])) {
 		if(empty($Tag)) { continue; }
 		$TagList[]="tg.TagList LIKE '%".db_string($Tag)."%'";
 	}
-	$SearchWhere[]='('.implode(' OR ', $TagList).')';
+	if(!empty($TagList)) {
+		$SearchWhere[]='('.implode(' OR ', $TagList).')';
+	}
 }
 
 $SearchWhere = implode(' AND ', $SearchWhere);
@@ -244,7 +246,7 @@ $Pages=get_pages($Page,$TorrentCount,TORRENTS_PER_PAGE);
 <div class="thin">
 	<h2><a href="user.php?id=<?=$UserID?>"><?=$User['Username']?></a><?='\'s '.$Action.' torrents'?></h2>
 	
-	<div class="center">
+	<div>
 		<form action="" method="get">
 			<table>
 				<tr>
@@ -293,6 +295,7 @@ $Pages=get_pages($Page,$TorrentCount,TORRENTS_PER_PAGE);
 							<option value="1" <?selected('log','1')?>>Yes</option>
 							<option value="0" <?selected('log','0')?>>No</option>
 							<option value="100" <?selected('log','100')?>>100% only</option>
+							<option value="-1" <?selected('log','-1')?>>&lt;100%/Unscored</option>
 						</select>
 						<select name="cue">
 							<option value="">Has Cue</option>

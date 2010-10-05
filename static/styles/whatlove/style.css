@@ -162,12 +162,10 @@ ul.thin li {
 
 #content {
 	padding-bottom: 10px;
-	top: 70px;
-	margin: auto;
+	margin: 70px auto auto;
 	width: 100%;
 	overflow: hidden;
 	background-color: #FFFFFF;
-	position: relative;
 	-moz-border-radius-bottomleft: 5px;
 	-moz-border-radius-bottomright: 5px;
 	-webkit-border-bottom-left-radius: 5px;
@@ -180,7 +178,6 @@ ul.thin li {
 }
 
 #footer {
-	margin-top: 40px;
 	width: 100%;
 	text-align: center;
 	padding: 1em 0;
@@ -648,6 +645,7 @@ ul.stats li {
 ul.poll li {
 	padding: 0px 0px 0px 10px;
 	margin: 0px;
+	clear: left;
 }
 
 ul.poll li.graph {

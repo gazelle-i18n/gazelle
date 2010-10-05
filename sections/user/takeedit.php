@@ -59,80 +59,66 @@ if ($CurEmail != $_POST['email']) {
 		$Tmp = explode("@", $NewEmail);
 		$Front = db_string($Tmp[0]);
 		
-		$DB->query("SELECT DISTINCT ID,Email FROM users_main AS u WHERE u.Email LIKE '".$Front."@%' AND ID != ".$UserID);
-		$EmailUsers = $DB->to_array();
-		$DB->query("SELECT DISTINCT UserID,Email FROM users_history_emails AS h WHERE h.Email LIKE '".$Front."@%' AND UserID != ".$UserID);
-		$EmailUsers = array_merge($EmailUsers, $DB->to_array());
-		if(count($EmailUsers) > 0) {
+		if(!in_array($Front, array('whatcd', 'what.cd', 'what'))) {
+			$DB->query("SELECT DISTINCT ID,Email FROM users_main AS u WHERE u.Email LIKE '".$Front."@%' AND ID != ".$UserID);
 			$EmailUsers = $DB->to_array();
-				
-			foreach($EmailUsers as $EmailUser) {
-				list($EmailUserID, $Email) = $EmailUser;
-				$DB->query("SELECT Username FROM users_main WHERE ID = ".$EmailUserID);
-				list($EmailUsername) = $DB->next_record();
-				
-				$DB->query("INSERT INTO reports_dupe_account
-					(ID, Type, UserID, OldID, Time, Checked) VALUES
-					('', 'ChangedEmail', ".$LoggedUser['ID'].", ".$EmailUserID.", '".sqltime()."', '0')");
-				$ReportID = $DB->inserted_id();
-
-				send_irc("PRIVMSG #reports :".$ReportID." - User http://".NONSSL_SITE_URL."/user.php?id=".$UserID." (".$U['Username'].") changed their email to ".$NewEmail." which is similar to ".$Email." used by user http://".NONSSL_SITE_URL."/user.php?id=".$EmailUserID." (".$EmailUsername.") at ".sqltime());
-				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Set email to ".$NewEmail." that is similar to ".$Email." used by http://".NONSSL_SITE_URL."/user.php?id=".$EmailUserID." (".$EmailUsername.") "."\n\n', AdminComment) WHERE UserID = ".$UserID);
-				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - User http://".NONSSL_SITE_URL."/user.php?id=".$U['ID']." (".$U['Username'].") set their email to ".$NewEmail." which is similar to ".$Email." used by this user.\n\n', AdminComment) WHERE UserID = ".$EmailUserID);
-			}
-		}
-
-
-		$DB->query("SELECT DISTINCT ID, 
-				Username 
-			FROM users_main AS u 
-				WHERE (LENGTH(u.Username) >= 4 AND (u.Username LIKE '%".$Front."' 
-					OR u.Username LIKE '".$Front."%'))
-				AND u.ID != ".$UserID." 
-				AND u.Enabled='2'");
-		$UsernameUsers = $DB->to_array();
-		if(count($UsernameUsers) > 0) {
-			$UsernameUsers = $DB->to_array();
-			
-			foreach($UsernameUsers as $UsernameUser) {
-				list($UsernameUserID, $Username) = $UsernameUser;
-				
-				if(count($UsernameUsers)<10) {
+			$DB->query("SELECT DISTINCT UserID,Email FROM users_history_emails AS h WHERE h.Email LIKE '".$Front."@%' AND UserID != ".$UserID);
+			$EmailUsers = array_merge($EmailUsers, $DB->to_array());
+			if(count($EmailUsers) > 0) {
+				$EmailUsers = $DB->to_array();
+					
+				foreach($EmailUsers as $EmailUser) {
+					list($EmailUserID, $Email) = $EmailUser;
+					$DB->query("SELECT Username FROM users_main WHERE ID = ".$EmailUserID);
+					list($EmailUsername) = $DB->next_record();
+					
 					$DB->query("INSERT INTO reports_dupe_account
 						(ID, Type, UserID, OldID, Time, Checked) VALUES
-						('', 'ChangedEmail', ".$UserID.", ".$UsernameUserID.", '".sqltime()."', '0')");
+						('', 'ChangedEmail', ".$LoggedUser['ID'].", ".$EmailUserID.", '".sqltime()."', '0')");
 					$ReportID = $DB->inserted_id();
 
-					send_irc("PRIVMSG #reports :".$ReportID." - User http://".NONSSL_SITE_URL."/user.php?id=".$UserID." (".$U['Username'].") changed to email ".$NewEmail." similar to the username of http://".NONSSL_SITE_URL."/user.php?id=".$UsernameUserID." (".$Username.") at ".sqltime());
+					send_irc("PRIVMSG #reports :".$ReportID." - User http://".NONSSL_SITE_URL."/user.php?id=".$UserID." (".$U['Username'].") changed their email to ".$NewEmail." which is similar to ".$Email." used by user http://".NONSSL_SITE_URL."/user.php?id=".$EmailUserID." (".$EmailUsername.") at ".sqltime());
+					$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Set email to ".$NewEmail." that is similar to ".$Email." used by http://".NONSSL_SITE_URL."/user.php?id=".$EmailUserID." (".$EmailUsername.") "."\n\n', AdminComment) WHERE UserID = ".$UserID);
+					$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - User http://".NONSSL_SITE_URL."/user.php?id=".$U['ID']." (".$U['Username'].") set their email to ".$NewEmail." which is similar to ".$Email." used by this user.\n\n', AdminComment) WHERE UserID = ".$EmailUserID);
 				}
-				
-				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Changed to email ".$NewEmail." that is similar to the username of user http://".NONSSL_SITE_URL."/user.php?id=".$UsernameUserID." / (".$Username.") "."\n\n', AdminComment) WHERE UserID = ".$UserID);
-				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - User http://".NONSSL_SITE_URL."/user.php?id=".$UserID." (".$U['Username'].") changed to the email address ".$NewEmail." that is similar to this user\'s username.\n\n', AdminComment) WHERE UserID = ".$UsernameUserID);
+			}
+
+			if(strlen($Front) >= 4) {
+				$DB->query("SELECT DISTINCT ID, 
+						Username 
+					FROM users_main AS u 
+						WHERE (
+							LENGTH(u.Username) >= 4 
+							AND (
+								u.Username LIKE '%".$Front."' 
+								OR u.Username LIKE '".$Front."%'
+							)
+						)
+						AND u.ID != ".$UserID." 
+						AND u.Enabled='2'");
+				$UsernameUsers = $DB->to_array();
+				if(count($UsernameUsers) > 0) {
+					$UsernameUsers = $DB->to_array();
+					
+					foreach($UsernameUsers as $UsernameUser) {
+						list($UsernameUserID, $Username) = $UsernameUser;
+						
+						if(count($UsernameUsers)<10) {
+							$DB->query("INSERT INTO reports_dupe_account
+								(ID, Type, UserID, OldID, Time, Checked) VALUES
+								('', 'ChangedEmail', ".$UserID.", ".$UsernameUserID.", '".sqltime()."', '0')");
+							$ReportID = $DB->inserted_id();
+
+							send_irc("PRIVMSG #reports :".$ReportID." - User http://".NONSSL_SITE_URL."/user.php?id=".$UserID." (".$U['Username'].") changed to email ".$NewEmail." similar to the username of http://".NONSSL_SITE_URL."/user.php?id=".$UsernameUserID." (".$Username.") at ".sqltime());
+						}
+						
+						$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Changed to email ".$NewEmail." that is similar to the username of user http://".NONSSL_SITE_URL."/user.php?id=".$UsernameUserID." / (".$Username.") "."\n\n', AdminComment) WHERE UserID = ".$UserID);
+						$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - User http://".NONSSL_SITE_URL."/user.php?id=".$UserID." (".$U['Username'].") changed to the email address ".$NewEmail." that is similar to this user\'s username.\n\n', AdminComment) WHERE UserID = ".$UsernameUserID);
+					}
+				}
 			}
 		}
 
-
-
-		$DB->query("SELECT um.Username, UNIX_TIMESTAMP(uw.PasswordTime) FROM users_watch AS uw JOIN users_main AS um ON um.ID=uw.UserID WHERE uw.UserID = ".$UserID);
-		if($DB->record_count() > 0) {
-			list($Username, $PasswordChangeTime) = $DB->next_record();
-			if(abs(time() - $PasswordChangeTime) < 1*60*60) {
-				$AdminComment = date("Y-m-d")." - ".$Username." http://".NONSSL_SITE_URL."/user.php?id=".$UserID." just changed their password and email address within an hour of each other.\n";
-				$DB->query("INSERT INTO reports_dupe_account
-					(ID, Type, UserID, OldID, Time, Checked) VALUES
-					('', 'EmailPasswordChange', '".$UserID."', '".$UserID."', '".sqltime()."', '0')");
-				$ReportID = $DB->inserted_id();
-				send_irc('PRIVMSG #reports :'.$ReportID.' - '.$AdminComment);
-
-				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".db_string($AdminComment)."', AdminComment) WHERE UserID=".$UserID);
-			} else {
-				$DB->query("UPDATE users_watch SET EmailTime = '".sqltime()."' WHERE UserID = ".$UserID);
-			}
-		} else {
-			$DB->query("INSERT INTO users_watch (UserID, EmailTime) VALUES (".$UserID.", '".sqltime()."')");
-		}
-
-		//</strip>
 	
 		//This piece of code will update the time of their last email change to the current time *not* the current change.
 		$ChangerIP = db_string($LoggedUser['IP']);

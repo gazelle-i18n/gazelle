@@ -322,9 +322,9 @@ if(count($_GET)){
 		if($_GET['disabled_ip']){
 			$Distinct = 'DISTINCT ';
 			if($_GET['ip_history']){
-				if(count($Join) == 0){
+				//if(count($Join) == 0){
 					$Join[]=' JOIN users_history_ips AS hi ON hi.UserID=um1.ID ';
-				}
+				//}
 				$Join[]=' JOIN users_history_ips AS hi2 ON hi2.IP=hi.IP ';
 				$Join[]=' JOIN users_main AS um2 ON um2.ID=hi2.UserID AND um2.Enabled=\'2\' ';
 			} else {

@@ -21,6 +21,9 @@ if(strtotime($BannedUntil)<time() && !$BanID) {
 <? } ?>
 	<table>
 		<tr>
+			<td colspan="3"><strong>If you have changed your password in the last month<br />you will likely have to use your old one.</strong></td>
+		</tr>
+		<tr>
 			<td>Username&nbsp;</td>
 			<td colspan="2"><input type="text" name="username" id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}" autofocus="autofocus" /></td>
 		</tr>

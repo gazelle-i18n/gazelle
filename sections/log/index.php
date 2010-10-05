@@ -43,7 +43,7 @@ $DB->set_query_id($Log);
 ?>
 <div class="thin">
 	<h2>Site log</h2>
-	<div class="center">
+	<div>
 		<form action="" method="get">
 			<table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
 				<tr>
@@ -83,7 +83,8 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 		//Torrent 955774 (The Beach Boys - 20 Good Vibrations) (111.71 MB) was uploaded by Median
 		//Collage 1757 (Wizard TOP100) was created by sotamarsu  		
 		$Color = 'green';
-	} elseif(preg_match('/(Torrent|Collage|Wiki article)  ?\d+ \(.+\)( \([^\)]*\))? was( automatically)? deleted.*/s', $Message, $Match)){
+	} elseif(preg_match('/(Torrent|Collage|Wiki article)  ?\d+ \(.+\)( \([^\)]*\))? (uploaded by [^ ]+ )?was( automatically)? deleted.*/s', $Message, $Match)){
+		//Torrent 1496935 (Mushroomhead - XX (2001) [MP3/V2 (VBR)/CD] (108.10 MB)) uploaded by kryptonik was deleted by babygoat for the reason: Dupe. ( http://what.cd/torrents.php?torrentid=1135108 )
 		//Torrent 50476 ((a) Senile Animal [FLAC/Lossless/CD]) was automatically deleted by sickofjesus, per trump (100% FLAC trumps 90% FLAC: http://what.cd/torrents.php?id=30743&torrentid=952396)
 		//Torrent 889878 (Lynda com Adobe Motion Natural Light Effects-iNKiSO) (0.00 MB) was deleted by NightGuard: re upload with other piece size
 		//Torrent 751451 (Q. Stone - Q. Stone [MP3 / V0 (VBR)]) was deleted for inactivity (unseeded)

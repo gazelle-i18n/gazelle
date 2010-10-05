@@ -63,21 +63,18 @@ echo "Ran every-time functions\n";
 
 //------------- Freeleech -----------------------------------------------//
 
+//We use this to control 6 hour freeleeches. They're actually 7 hour, but don't tell anyone. 
 /*
-We use this to control 6 hour freeleeches. They're actually 7 hour, but don't tell anyone. 
+$TimeMinus = time_minus(3600*7);
 
-$DB->query("SELECT GroupID FROM torrents WHERE FreeTorrent='1' AND FreeLeechType='1' AND Time<'".time_minus(3600*7)."'");
+$DB->query("SELECT DISTINCT GroupID FROM torrents WHERE FreeTorrent='1' AND FreeLeechType='3' AND Time<'$TimeMinus'");
 while(list($GroupID) = $DB->next_record()) {
 	$Cache->delete_value('torrents_details_'.$GroupID);
 	$Cache->delete_value('torrent_group_'.$GroupID);
 }
-
-sleep(5);
-$DB->query("UPDATE torrents SET FreeTorrent='0',FreeLeechType='0',flags='2' WHERE FreeTorrent='1' AND FreeLeechType='1' AND Time<'".time_minus(3600*7)."'");
-sleep(5);
+$DB->query("UPDATE torrents SET FreeTorrent='0',FreeLeechType='0',flags='2' WHERE FreeTorrent='1' AND FreeLeechType='3' AND Time<'$TimeMinus'");
 */
-
-
+sleep(5);
 //------------- Delete unpopular tags -----------------------------------//
 $DB->query("DELETE FROM torrents_tags WHERE NegativeVotes>PositiveVotes");
 
@@ -153,14 +150,14 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 	$Criteria[]=array('From'=>POWER, 'To'=>ELITE, 'MinUpload'=>100*1024*1024*1024, 'MinRatio'=>1.05, 'MinUploads'=>50, 'MaxTime'=>time_minus(3600*24*7*4));
 	$Criteria[]=array('From'=>ELITE, 'To'=>TORRENT_MASTER, 'MinUpload'=>500*1024*1024*1024, 'MinRatio'=>1.05, 'MinUploads'=>500, 'MaxTime'=>time_minus(3600*24*7*8));
 	$Criteria[]=array('From'=>TORRENT_MASTER, 'To'=>POWER_TM, 'MinUpload'=>500*1024*1024*1024, 'MinRatio'=>1.05, 'MinUploads'=>500, 'MaxTime'=>time_minus(3600*24*7*8), 'Extra'=>'(SELECT COUNT(DISTINCT GroupID) FROM torrents WHERE UserID=users_main.ID) >= 500');
-	$Criteria[]=array('From'=>24, 'To'=>25, 'MinUpload'=>500*1024*1024*1024, 'MinRatio'=>1.05, 'MinUploads'=>500, 'MaxTime'=>time_minus(3600*24*7*8), 'Extra'=>"(SELECT COUNT(ID) FROM torrents WHERE ((LogScore = 100 AND Format = 'FLAC') OR (Media = 'Vinyl' AND Format = 'FLAC') OR (Media = 'WEB' AND Format = 'FLAC') OR (Media = 'DVD' AND Format = 'FLAC') OR (Media = 'Soundboard' AND Format = 'FLAC')) AND UserID = users_main.ID) >= 500");
+	$Criteria[]=array('From'=>24, 'To'=>25, 'MinUpload'=>500*1024*1024*1024, 'MinRatio'=>1.05, 'MinUploads'=>500, 'MaxTime'=>time_minus(3600*24*7*8), 'Extra'=>"(SELECT COUNT(ID) FROM torrents WHERE ((LogScore = 100 AND Format = 'FLAC') OR (Media = 'Vinyl' AND Format = 'FLAC') OR (Media = 'WEB' AND Format = 'FLAC') OR (Media = 'DVD' AND Format = 'FLAC') OR (Media = 'Soundboard' AND Format = 'FLAC') OR (Media = 'Cassette' AND Format = 'FLAC') OR (Media = 'SACD' AND Format = 'FLAC') OR (Media = 'Blu-ray' AND Format = 'FLAC') OR (Media = 'DAT' AND Format = 'FLAC')) AND UserID = users_main.ID) >= 500");
 
 	 foreach($Criteria as $L){ // $L = Level
 		$Query = "SELECT ID FROM users_main JOIN users_info ON users_main.ID = users_info.UserID
                         WHERE PermissionID=".$L['From']."
                         AND Warned= '0000-00-00 00:00:00'
                         AND Uploaded>='$L[MinUpload]'
-                        AND (Uploaded/Downloaded >='$L[MinRatio]' OR (Uploaded/Downloaded = NULL))
+                        AND (Uploaded/Downloaded >='$L[MinRatio]' OR (Uploaded/Downloaded IS NULL))
                         AND JoinDate<'$L[MaxTime]'
                         AND (SELECT COUNT(ID) FROM torrents WHERE UserID=users_main.ID)>='$L[MinUploads]'
                         AND Enabled='1'";
@@ -220,6 +217,9 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 		list($Invites) = $DB->next_record();
 		if ($Invites < 10) {
 			$DB->query("UPDATE users_main SET Invites=Invites+1 WHERE ID=$UserID");
+			$Cache->begin_transaction('user_info_heavy_'.$UserID);
+			$Cache->update_row(false, array('Invites' => '+1'));
+			$Cache->commit_transaction(0);
 		}
 	}
 	$DB->query("DELETE FROM invites WHERE Expires<'$sqltime'");
@@ -280,7 +280,7 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 
         $UserIDs = $DB->collect('ID');
         if(count($UserIDs) > 0) {
-                disable_users($UserIDs, "Disabled by ratio watch system for downloading more than 10 gigs on ratio watch", 3);
+                disable_users($UserIDs, "Disabled by ratio watch system for downloading more than 10 gigs on ratio watch", 2);
         }
 
 }
@@ -369,7 +369,7 @@ if($Day != next_day() || $_GET['runday']){
 	$OnRatioWatch = array();
 	
 	// Take users off ratio watch
-	$DB->query("SELECT m.ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
+	$UserQuery = $DB->query("SELECT m.ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 		WHERE m.Uploaded/m.Downloaded >= m.RequiredRatio
 		AND (i.RatioWatchEnds!='0000-00-00 00:00:00' OR m.can_leech='0')
 		AND m.Enabled='1'");
@@ -379,7 +379,8 @@ if($Day != next_day() || $_GET['runday']){
 			JOIN users_main AS um ON um.ID = ui.UserID
 			SET ui.RatioWatchEnds='0000-00-00 00:00:00',
 			ui.RatioWatchDownload='0',
-			um.can_leech='1'
+			um.can_leech='1',
+			ui.AdminComment = CONCAT('".$sqltime." - Leeching re-enabled by adequate ratio.\n\n', ui.AdminComment)
 			WHERE ui.UserID IN(".implode(",", $OffRatioWatch).")");
 	}
 	
@@ -422,7 +423,7 @@ if($Day != next_day() || $_GET['runday']){
 	//------------- Disable downloading ability of users on ratio watch
 	
 	
-	$DB->query("SELECT ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
+	$UserQuery = $DB->query("SELECT ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 		WHERE i.RatioWatchEnds!='0000-00-00 00:00:00'
 		AND i.RatioWatchEnds<'$sqltime'
 		And m.Enabled='1'");
@@ -464,16 +465,17 @@ if($Day != next_day() || $_GET['runday']){
 		$Body = "Hi $Username, \n\nIt has been almost 4 months since you used your account at http://".NONSSL_SITE_URL.". This is an automated email to inform you that your account will be disabled in 10 days if you do not sign in. ";
 		send_email($Email, 'Your '.SITE_NAME.' account is about to be disabled', $Body);
 	}
-	
 	$DB->query("SELECT um.ID FROM  users_info AS ui JOIN users_main AS um ON um.ID=ui.UserID
 		WHERE um.PermissionID IN ('".USER."', '".MEMBER	."')
-		AND um.LastAccess<'".time_minus(3600*24*30*4)."'
+		AND um.LastAccess<'".time_minus(3600*24*30*4)."' 
 		AND um.LastAccess!='0000-00-00 00:00:00'
 		AND ui.Donor='0'
 		AND um.Enabled!='2'");
 
-	disable_users($DB->collect('ID'), "Disabled for inactivity", 3);
-	
+	if($DB->record_count() > 0) {
+		disable_users($DB->collect('ID'), "Disabled for inactivity", 3);
+	}
+
 	//------------- Disable unconfirmed users ------------------------------//
 	sleep(10);
 	$DB->query("UPDATE users_info AS ui JOIN users_main AS um ON um.ID=ui.UserID
@@ -560,7 +562,7 @@ if($Day != next_day() || $_GET['runday']){
 		FROM torrents AS t
 		JOIN torrents_group AS tg ON tg.ID=t.GroupID
 		LEFT JOIN artists_group AS ag ON ag.ArtistID=tg.ArtistID
-		WHERE t.flags = 0
+		WHERE t.flags <> 1
 		AND (t.last_action<'".time_minus(3600*24*28)."'
 		AND t.last_action!='0000-00-00 00:00:00'
 		OR t.Time<'".time_minus(3600*24*2)."'
@@ -682,7 +684,7 @@ if($Day != next_day() || $_GET['runday']){
 		$DB->query("INSERT INTO top10_history_torrents
 			(HistoryID, Rank, TorrentID, TitleString, TagString)
 			VALUES
-			(".$HistoryID.", ".$i.", ".$TorrentID.", '".$TitleString."', '".$TagString."')");
+			(".$HistoryID.", ".$i.", ".$TorrentID.", '".db_string($TitleString)."', '".db_string($TagString)."')");
 		$i++;
 	}
 
@@ -767,7 +769,7 @@ if($Day != next_day() || $_GET['runday']){
 			$DB->query("INSERT INTO top10_history_torrents
 				(HistoryID, Rank, TorrentID, TitleString, TagString)
 				VALUES
-				(".$HistoryID.", ".$i.", ".$TorrentID.", '".$TitleString."', '".$TagString."')");
+				(".$HistoryID.", ".$i.", ".$TorrentID.", '".db_string($TitleString)."', '".db_string($TagString)."')");
 			$i++;
 		}
 

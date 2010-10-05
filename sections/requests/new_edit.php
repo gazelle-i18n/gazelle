@@ -101,7 +101,8 @@ if($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
 	list($ArtistName) = $DB->next_record();
 	$ArtistForm = array(
 		1 => array(array('name' => trim($ArtistName))),
-		2 => array()
+		2 => array(),
+		3 => array()
 	);
 } elseif($NewRequest && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
 	$ArtistForm = get_artist($_GET['groupid']);
@@ -255,47 +256,47 @@ show_message();
 				<tr id="formats_tr">
 					<td class="label">Allowed Formats</td>
 					<td>
-						<input type="checkbox" name="all_formats" id="toggle_formats" onchange="Toggle('formats', <?=($NewRequest ? 1 : 0)?>);"<?=(!empty($FormatArray) && (count($FormatArray) == count($Formats)) ? ' checked="checked"' : '')?> /> All
+						<input type="checkbox" name="all_formats" id="toggle_formats" onchange="Toggle('formats', <?=($NewRequest ? 1 : 0)?>);"<?=(!empty($FormatArray) && (count($FormatArray) == count($Formats)) ? ' checked="checked"' : '')?> /><label for="toggle_formats"> All</label>
 						<span style="float: right;"><strong>NB: You cannot require a log or cue unless FLAC is an allowed format</strong></span>
 <?		foreach ($Formats as $Key => $Val) {
 			if($Key % 8 == 0) echo "<br />";?>
-						<input type="checkbox" name="formats[]" value="<?=$Key?>" onchange="ToggleLogCue();" id="format_<?=$Key?>"
+						<input type="checkbox" name="formats[]" value="<?=$Key?>" onchange="ToggleLogCue(); if(!this.checked) { $('#toggle_formats').raw().checked = false; }" id="format_<?=$Key?>"
 							<?=(!empty($FormatArray) && in_array($Key, $FormatArray) ? ' checked="checked" ' : '')?>
-						/> <label for="format_<?=$Key?>"><?=$Val?></label>
+						/><label for="format_<?=$Key?>"> <?=$Val?></label>
 <?		}?>
 					</td>
 				</tr>
 				<tr id="bitrates_tr">
 					<td class="label">Allowed Bitrates</td>
 					<td>
-						<input type="checkbox" name="all_bitrates" id="toggle_bitrates" onchange="Toggle('bitrates', <?=($NewRequest ? 1 : 0)?>);"<?=(!empty($BitrateArray) && (count($BitrateArray) == count($Bitrates)) ? ' checked="checked"' : '')?> /> All
+						<input type="checkbox" name="all_bitrates" id="toggle_bitrates" onchange="Toggle('bitrates', <?=($NewRequest ? 1 : 0)?>);"<?=(!empty($BitrateArray) && (count($BitrateArray) == count($Bitrates)) ? ' checked="checked"' : '')?> /><label for="toggle_bitrates"> All</label>
 <?		foreach ($Bitrates as $Key => $Val) {
 			if($Key % 8 == 0) echo "<br />";?>
-						<input type="checkbox" name="bitrates[]" value="<?=$Key?>" 
+						<input type="checkbox" name="bitrates[]" value="<?=$Key?>" id="bitrate_<?=$Key?>" 
 							<?=(!empty($BitrateArray) && in_array($Key, $BitrateArray) ? ' checked="checked" ' : '')?>
-						/> <?=$Val?>
+						onchange="if(!this.checked) { $('#toggle_bitrates').raw().checked = false; }"/><label for="bitrate_<?=$Key?>"> <?=$Val?></label>
 <?		}?>
 					</td>
 				</tr>
 				<tr id="media_tr">
 					<td class="label">Allowed Media</td>
 					<td>
-						<input type="checkbox" name="all_media" id="toggle_media" onchange="Toggle('media', <?=($NewRequest ? 1 : 0)?>);"<?=(!empty($MediaArray) && (count($MediaArray) == count($Media)) ? ' checked="checked"' : '')?> /> All
+						<input type="checkbox" name="all_media" id="toggle_media" onchange="Toggle('media', <?=($NewRequest ? 1 : 0)?>);"<?=(!empty($MediaArray) && (count($MediaArray) == count($Media)) ? ' checked="checked"' : '')?> /><label for="toggle_media"> All</label>
 <?		foreach ($Media as $Key => $Val) { 
 			if($Key % 8 == 0) echo "<br />";?>	
-						<input type="checkbox" name="media[]" value="<?=$Key?>" 
+						<input type="checkbox" name="media[]" value="<?=$Key?>" id="media_<?=$Key?>" 
 							<?=(!empty($MediaArray) && in_array($Key, $MediaArray) ? ' checked="checked" ' : '')?>
-						/> <?=$Val?>
+						onchange="if(!this.checked) { $('#toggle_media').raw().checked = false; }"/><label for="media_<?=$Key?>"> <?=$Val?></label>
 <?		}?>
 					</td>
 				</tr>
 				<tr id="logcue_tr" class="hidden">
 					<td class="label">Log / Cue (FLAC only)</td>
 					<td>
-						<input type="checkbox" id="needlog" name="needlog" onchange="ToggleLogScore()" <?=(!empty($NeedLog) ? 'checked="checked" ' : '')?>/> Require Log
+						<input type="checkbox" id="needlog" name="needlog" onchange="ToggleLogScore()" <?=(!empty($NeedLog) ? 'checked="checked" ' : '')?>/><label for="needlog"> Require Log</label>
 						<span id="minlogscore_span" class="hidden">&nbsp;<input type="text" name="minlogscore" id="minlogscore"  size="4" value="<?=(!empty($MinLogScore) ? $MinLogScore : '')?>"/> Minimum Log Score</span>
 						<br />
-						<input type="checkbox" name="needcue" <?=(!empty($NeedCue) ? 'checked="checked" ' : '')?>/> Require Cue
+						<input type="checkbox" id="needcue" name="needcue" <?=(!empty($NeedCue) ? 'checked="checked" ' : '')?>/><label for="needcue"> Require Cue</label>
 						<br />
 					</td>
 				</tr>

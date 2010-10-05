@@ -97,7 +97,7 @@ if (empty($_POST['question']) || empty($_POST['answers']) || !check_perms('forum
 	
 	//This can cause polls to have answer ids of 1 3 4 if the second box is empty
 	foreach ($_POST['answers'] as $i => $Answer) {
-		if (empty($Answer)) { continue; }
+		if ($Answer == '') { continue; }
 		$Answers[$i+1] = $Answer;
 		$Votes[$i+1] = 0;
 	}

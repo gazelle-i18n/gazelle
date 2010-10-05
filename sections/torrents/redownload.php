@@ -66,6 +66,35 @@ foreach($Downloads as $Download) {
 	$Tor = new TORRENT($Contents, true);
 	$Tor->set_announce_url(ANNOUNCE_URL.'/'.$LoggedUser['torrent_pass'].'/announce');
 	unset($Tor->Val['announce-list']);
-	$Zip->add_file($Tor->enc(), file_string($Month).'/'.file_string($Artist.$Album).' - '.file_string($Year).' ('.file_string($Media).' - '.file_string($Format).' - '.file_string($Encoding).').torrent');
+
+	$TorrentName='';
+	$TorrentInfo='';
+	$TorrentName = $Artist;
+	$TorrentName .= $Album;
+
+	if ($Year>0) { $TorrentName.=' - '.$Year; }
+
+	if ($Media!='') { $TorrentInfo.=$Media; }
+
+	if ($Format!='') {
+		if ($TorrentInfo!='') { $TorrentInfo.=' - '; }
+		$TorrentInfo.=$Format;
+	}
+
+	if ($Encoding!='') {
+		if ($TorrentInfo!='') { $TorrentInfo.=' - '; }
+		$TorrentInfo.=$Encoding;
+	}
+
+	if ($TorrentInfo!='') { $TorrentName.=' ('.$TorrentInfo.')'; }
+
+	if (!$TorrentName) { $TorrentName="No Name"; }
+
+	$FileName = file_string($TorrentName);
+	if ($Browser == 'Internet Explorer') {
+		$FileName = urlencode($FileName);
+	}
+	$FileName .= '.torrent';
+	$Zip->add_file($Tor->enc(), file_string($Month).'/'.$FileName);
 }
 $Zip->close_stream();

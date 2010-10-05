@@ -5,7 +5,7 @@ if (!isset($_GET['case']) || !$Analysis = $Cache->get_value('analysis_'.$_GET['c
 
 show_header('Case Analysis');
 ?>
-<h2 class="center">Case Analysis (<a href="<?=$Analysis['url']?>"><?=$_GET['case']?></a>)</h2>
+<h2>Case Analysis (<a href="<?=$Analysis['url']?>"><?=$_GET['case']?></a>)</h2>
 <table id="debug_report">
 	<tr>
 		<td align="left"><pre><?=$Analysis['message']?></pre></td>

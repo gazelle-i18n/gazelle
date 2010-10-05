@@ -21,7 +21,7 @@ show_message();
 ?>
 
 <div class="thin">
-	<h2 class="center">Report a torrent</h2>
+	<h2>Report a torrent</h2>
 
 	<form action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="report_table">
 		<div>

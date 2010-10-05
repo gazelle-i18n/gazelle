@@ -112,7 +112,7 @@ if($CategoryName == "Music") {
 	}
 	
 	if(!is_number($_POST['releasetype']) || !array_key_exists($_POST['releasetype'], $ReleaseTypes)) {
-		$Err = "Plese pick a release type";
+		$Err = "Please pick a release type";
 	}
 
 	$ReleaseType = $_POST['releasetype'];
