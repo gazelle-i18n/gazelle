@@ -234,8 +234,13 @@ if(isset($_POST['delete'])) {
 		$DB->query("SELECT LastPostTopicID FROM forums WHERE ID='$ForumID'");
 		list($LastTopicID) = $DB->next_record();
 		if($LastTopicID == $TopicID) {
+			$UpdateArray = array(
+				'Title'=>$_POST['title'],
+				'IsLocked'=>$Locked,
+				'IsSticky'=>$Sticky
+			);
 			$Cache->begin_transaction('forums_list');
-			$Cache->update_row($ForumID, array('Title'=>$_POST['title']));
+			$Cache->update_row($ForumID, $UpdateArray);
 			$Cache->commit_transaction(0);
 		}
 	}

@@ -32,6 +32,42 @@ show_message();
 <?
 ?>
 		<div class="box">
+			<div class="head colhead_dark"><a href="blog.php">Latest blog posts</a></div>
+<?
+if(($Blog = $Cache->get_value('blog')) === false) {
+	$DB->query("SELECT
+		b.ID,
+		um.Username,
+		b.Title,
+		b.Body,
+		b.Time,
+		b.ThreadID
+		FROM blog AS b LEFT JOIN users_main AS um ON b.UserID=um.ID
+		ORDER BY Time DESC
+		LIMIT 20");
+	$Blog = $DB->to_array();
+	$Cache->cache_value('blog',$Blog,1209600);
+}
+?>
+			<ul class="stats nobullet">
+<?
+if(count($Blog) < 5) {
+	$Limit = count($Blog);
+} else {
+	$Limit = 5;
+}
+for($i = 0; $i < $Limit; $i++) {
+	list($BlogID, $Author, $Title, $Body, $BlogTime, $ThreadID) = $Blog[$i];
+?>
+				<li>
+					<?=($i + 1)?>. <a href="blog.php#blog<?=$BlogID?>"><?=$Title?></a>
+				</li>
+<? 
+}
+?>
+			</ul>
+		</div>
+		<div class="box">
 			<div class="head colhead_dark"><strong>Stats</strong></div>
 			<ul class="stats nobullet">
 <? if (USER_LIMIT>0) { ?>
@@ -147,42 +183,6 @@ $PeerCount = $SeederCount + $LeecherCount;
 				<li>Seeder/Leecher Ratio: <?=$Ratio?></li>
 <?
 
-?>
-			</ul>
-		</div>
-		<div class="box">
-			<div class="head colhead_dark"><a href="blog.php">Latest blog posts</a></div>
-<?
-if(($Blog = $Cache->get_value('blog')) === false) {
-	$DB->query("SELECT
-		b.ID,
-		um.Username,
-		b.Title,
-		b.Body,
-		b.Time,
-		b.ThreadID
-		FROM blog AS b LEFT JOIN users_main AS um ON b.UserID=um.ID
-		ORDER BY Time DESC
-		LIMIT 20");
-	$Blog = $DB->to_array();
-	$Cache->cache_value('blog',$Blog,1209600);
-}
-?>
-			<ul class="stats nobullet">
-<?
-if(count($Blog) < 5) {
-	$Limit = count($Blog);
-} else {
-	$Limit = 5;
-}
-for($i = 0; $i < $Limit; $i++) {
-	list($BlogID, $Author, $Title, $Body, $BlogTime, $ThreadID) = $Blog[$i];
-?>
-				<li>
-					<?=($i + 1)?>. <a href="blog.php#blog<?=$BlogID?>"><?=$Title?></a>
-				</li>
-<? 
-}
 ?>
 			</ul>
 		</div>
