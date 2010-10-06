@@ -78,24 +78,104 @@ if($DB->record_count() == 0) {
 	echo '<tr class="nobr"><td colspan="2">Nothing found!</td></tr>';
 }
 $Row = 'a';
+$Usernames = array();
 while(list($Message, $LogTime) = $DB->next_record()) {
-	if(preg_match('/(Torrent|Collage|Wiki article) \d+ (\(.+\))?( \([^\)]*\))? was (created|uploaded|recovered) by [^ ]+/s', $Message, $Match)){
-		//Torrent 955774 (The Beach Boys - 20 Good Vibrations) (111.71 MB) was uploaded by Median
-		//Collage 1757 (Wizard TOP100) was created by sotamarsu  		
-		$Color = 'green';
-	} elseif(preg_match('/(Torrent|Collage|Wiki article)  ?\d+ \(.+\)( \([^\)]*\))? (uploaded by [^ ]+ )?was( automatically)? deleted.*/s', $Message, $Match)){
-		//Torrent 1496935 (Mushroomhead - XX (2001) [MP3/V2 (VBR)/CD] (108.10 MB)) uploaded by kryptonik was deleted by babygoat for the reason: Dupe. ( http://what.cd/torrents.php?torrentid=1135108 )
-		//Torrent 50476 ((a) Senile Animal [FLAC/Lossless/CD]) was automatically deleted by sickofjesus, per trump (100% FLAC trumps 90% FLAC: http://what.cd/torrents.php?id=30743&torrentid=952396)
-		//Torrent 889878 (Lynda com Adobe Motion Natural Light Effects-iNKiSO) (0.00 MB) was deleted by NightGuard: re upload with other piece size
-		//Torrent 751451 (Q. Stone - Q. Stone [MP3 / V0 (VBR)]) was deleted for inactivity (unseeded)
-		//Collage 151 (Electronic Music) was deleted by WormsWitchity: Collages must be based on fact and not opinion.
-		//Wiki article 270 (test french rules) was deleted by oinkmeup	
-		$Color = 'red';
-	} elseif(preg_match('/Torrent \d+( \(.*\) in group \d+)? was edited by [^ ]+/s', $Message, $Match)){
-		//Torrent 954785 () in group 507459 was edited by Louis70  
-		$Color = 'blue';
-	} else {
-		$Color = false;
+	$MessageParts = explode(" ", $Message);
+	$Message = "";
+	$Color = $Colon = false;
+	for ($i = 0; $i < sizeof($MessageParts); $i++) {
+		//if ($i == 0) {
+		//	$Message = $MessageParts[$i];
+		//	continue;
+		//}
+		switch ($MessageParts[$i]) {
+			case "Torrent":
+				$TorrentID = $MessageParts[++$i];
+				if (is_numeric($TorrentID)) {
+					$Message = $Message.' Torrent <a href="http://what.cd/torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>';
+				} else {
+					$Message = $Message.' Torrent '.$TorrentID;
+				}
+				break;
+			case "Request":
+				$RequestID = $MessageParts[++$i];
+				if (is_numeric($RequestID)) {
+					$Message = $Message.' Request <a href="http://what.cd/requests.php?action=view&id='.$RequestID.'"> '.$RequestID.'</a>';
+				} else {
+					$Message = $Message.' Request '.$RequestID;
+				}
+				break;
+			case "Artist":
+				$ArtistID = $MessageParts[++$i];
+				if (is_numeric($ArtistID)) {
+					$Message = $Message.' Arist <a href="http://what.cd/artist.php?id='.$ArtistID.'"> '.$ArtistID.'</a>';
+				} else {
+					$Message = $Message.' Artist '.$ArtistID;
+				}
+				break;
+			case "group":
+				$GroupID = $MessageParts[++$i];
+				$Message = $Message.' group <a href="http://what.cd/torrents.php?id='.$GroupID.'"> '.$GroupID.'</a>';
+				break;
+			case "torrent":
+				$TorrentID = substr($MessageParts[++$i], 0, strlen($MessageParts[$i]) - 1);
+				$Message = $Message.' torrent <a href="http://what.cd/torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>,';
+				break;
+			case "by":
+				$UserID = 0;
+				$User = "";
+				$URL = "";
+				if ($MessageParts[$i + 1] == "user") {
+					$i++;
+					if (is_numeric($MessageParts[$i + 1])) {
+						$UserID = $MessageParts[++$i];
+					}
+					$URL = "user ".$UserID." ".'<a href="http://what.cd/user.php?id='.$UserID.'">'.$MessageParts[++$i]."</a>";
+				} else {
+					$User = $MessageParts[++$i];
+					if(substr($User,-1) == ':') {
+						$User = substr($User, 0, -1);
+						$Colon = true;
+					}
+					if(!isset($Usernames[$User])) {
+						$DB->query("SELECT ID FROM users_main WHERE Username = '".$User."'");
+						list($UserID) = $DB->next_record();
+						$Usernames[$User] = $UserID;
+					} else {
+						$UserID = $Usernames[$User];
+					}
+					$DB->set_query_id($Log);
+					$URL = '<a href="http://what.cd/user.php?id='.$UserID.'">'.$User."</a>".($Colon?':':'');
+				}
+				$Message = $Message." by ".$URL;
+				break;
+			case "uploaded":
+				if ($Color === false) {
+					$Color = 'green';
+				}
+				$Message = $Message." ".$MessageParts[$i];
+				break;
+			case "deleted":
+				if ($Color === false || $Color === 'green') {
+					$Color = 'red';
+				}
+				$Message = $Message." ".$MessageParts[$i];
+				break;
+			case "edited":
+				if ($Color === false) {
+					$Color = 'blue';
+				}
+				$Message = $Message." ".$MessageParts[$i];
+				break;
+			case "un-filled":
+				if ($Color === false) {
+					$Color = '';
+				}
+				$Message = $Message." ".$MessageParts[$i];
+				break;
+			default:
+				$Message = $Message." ".$MessageParts[$i];
+		}
 	}
 	$Row = ($Row == 'a') ? 'b' : 'a';
 ?>
@@ -104,7 +184,7 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 				<?=time_diff($LogTime)?>
 			</td>
 			<td>
-				<span<? if($Color) { ?> style="color: <?=$Color ?>;"<? } ?>><?=display_str($Message)?></span>
+				<span<? if($Color) { ?> style="color: <?=$Color ?>;"<? } ?>><?=$Message?></span>
 			</td>
 		</tr>
 <?

@@ -220,6 +220,28 @@ foreach ($Properties as $Key => $Value) {
 //******************************************************************************//
 //--------------- Start database stuff -----------------------------------------//
 
+$DBTorVals = array();
+$DB->query("SELECT Media, Format, Encoding, RemasterYear, Remastered, RemasterTItle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, Description FROM torrents WHERE ID = ".$TorrentID);
+$DBTorVals = $DB->to_array(false, MYSQLI_ASSOC);
+$DBTorVals = $DBTorVals[0];
+$LogDetails = "";
+foreach ($DBTorVals as $Key => $Value) {
+	$Value = "'".$Value."'";
+	if ($Value != $T[$Key]) {
+		if (!isset($T[$Key])) {
+			continue;
+		}
+		if ((empty($Value) && empty($T[$Key])) || ($Value == "'0'" && $T[$Key] == "''")) {
+			continue;
+		}
+		if ($LogDetails == "") {
+			$LogDetails = $Key.": ".$Value." -> ".$T[$Key];
+		} else {
+			$LogDetails = $LogDetails.", ".$Key.": ".$Value." -> ".$T[$Key];
+		}
+	}
+}
+
 // Update info for the torrent
 $SQL = "
 	UPDATE torrents SET
@@ -293,7 +315,7 @@ if(strtotime($Time)>1241352173) {
 $DB->query("SELECT Name FROM torrents_group WHERE ID=$GroupID");
 list($Name) = $DB->next_record();
 
-write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$LoggedUser['Username']); // TODO: this is probably broken
+write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$LoggedUser['Username']." (".$LogDetails.")"); // TODO: this is probably broken
 $Cache->delete_value('torrents_details_'.$GroupID);
 $Cache->delete_value('torrent_download_'.$TorrentID);
 
