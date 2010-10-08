@@ -84,10 +84,9 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 	$Message = "";
 	$Color = $Colon = false;
 	for ($i = 0; $i < sizeof($MessageParts); $i++) {
-		//if ($i == 0) {
-		//	$Message = $MessageParts[$i];
-		//	continue;
-		//}
+		if (strpos($MessageParts[$i], "http://what.cd/") === 0) {
+			$MessageParts[$i] = '<a href="'.$MessageParts[$i].'">'.$MessageParts[$i].'</a>';
+		}
 		switch ($MessageParts[$i]) {
 			case "Torrent":
 				$TorrentID = $MessageParts[++$i];

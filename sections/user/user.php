@@ -815,6 +815,20 @@ if($DB->record_count() > 0) {
 <?
 	}
 
+	if (check_perms('users_mod')) {
+?>
+		<tr>
+			<td class="label">Reset all EAC v0.95 Logs To:</td>
+			<td>
+				<select name="095logs">
+					<option value=""></option>
+					<option value="99">99</option>
+					<option value="100">100</option>
+				</select>
+			</td>
+		</tr>
+<?	}
+
 	if (check_perms('users_edit_password')) {
 ?>
 			<tr>

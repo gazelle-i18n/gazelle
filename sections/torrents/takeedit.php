@@ -47,6 +47,7 @@ $Properties['Format'] = $_POST['format'];
 $Properties['Media'] = $_POST['media'];
 $Properties['Bitrate'] = $_POST['bitrate'];
 $Properties['Encoding'] = $_POST['bitrate'];
+$Properties['Trumpable'] = (isset($_POST['make_trumpable'])) ? 1 : 0;
 $Properties['TorrentDescription'] = $_POST['release_desc'];
 if($_POST['album_desc']) {
 	$Properties['GroupDescription'] = $_POST['album_desc'];
@@ -311,6 +312,21 @@ if(strtotime($Time)>1241352173) {
 	}
 }
 // End competiton
+
+$DB->query("SELECT LogScore FROM torrents WHERE ID = ".$TorrentID);
+list($LogScore) = $DB->next_record();
+if ($Properties['Trumpable'] == 1 && $LogScore == 100) {
+	$DB->query("UPDATE torrents SET LogScore = 99 WHERE ID = ".$TorrentID);
+	$Results = array();
+	$Results[] = "Ripped with EAC v0.95, -1 point [1]";
+	$Details = db_string(serialize($Results));
+	$DB->query("UPDATE torrents_logs_new SET Score = 99, Details = '".$Details."' WHERE TorrentID = ".$TorrentID);
+}
+
+if ($Properties['Trumpable'] == 0 && $LogScore == 99) {
+	$DB->query("UPDATE torrents SET LogScore = 100 WHERE ID = ".$TorrentID);
+	$DB->query("UPDATE torrents_logs_new SET Score = 100, Details = '' WHERE TorrentID = ".$TorrentID);
+}
 
 $DB->query("SELECT Name FROM torrents_group WHERE ID=$GroupID");
 list($Name) = $DB->next_record();
