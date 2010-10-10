@@ -600,7 +600,6 @@ $DB->query("INSERT IGNORE INTO users_points (UserID, GroupID, Points) VALUES ('$
 }*/
 
 // Torrent
-
 $DB->query("
 	INSERT INTO torrents
 		(GroupID, UserID, Media, Format, Encoding, 
