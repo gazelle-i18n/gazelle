@@ -318,7 +318,7 @@ list($LogScore) = $DB->next_record();
 if ($Properties['Trumpable'] == 1 && $LogScore == 100) {
 	$DB->query("UPDATE torrents SET LogScore = 99 WHERE ID = ".$TorrentID);
 	$Results = array();
-	$Results[] = "Ripped with EAC v0.95, -1 point [1]";
+	$Results[] = "The original uploader has chosen to allow this log to be deducted one point for using EAC v0.95., -1 point [1]";
 	$Details = db_string(serialize($Results));
 	$DB->query("UPDATE torrents_logs_new SET Score = 99, Details = '".$Details."' WHERE TorrentID = ".$TorrentID);
 }

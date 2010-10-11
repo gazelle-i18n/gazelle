@@ -196,7 +196,7 @@ if ($Logs095 !== 0) {
 		if ($Logs095 === 100) {
 			$Details = "";
 		} else {
-			$Results[] = "Ripped with EAC v0.95, -1 point [1]";
+			$Results[] = "The original uploader has chosen to allow this log to be deducted one point for using EAC v0.95., -1 point [1]";
 			$Details = db_string(serialize($Results));
 		}
 
