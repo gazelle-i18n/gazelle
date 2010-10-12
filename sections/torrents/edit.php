@@ -38,6 +38,7 @@ $DB->query("SELECT
 	t.HasLog,
 	t.HasCue,
 	t.LogScore,
+	t.ExtendedGrace,
 	bt.TorrentID AS BadTags,
 	bf.TorrentID AS BadFolders
 	FROM torrents AS t 

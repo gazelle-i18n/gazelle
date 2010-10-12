@@ -460,6 +460,23 @@ function old_geoip($IP) {
 	return $Countries[$IP];
 }
 
+function gethostbyip($ip)
+{
+	$testar = explode('.',$ip);
+	if (count($testar)!=4) { 
+		return $ip;
+	}
+	for ($i=0;$i<4;++$i) {
+		if (!is_numeric($testar[$i])) {
+			return $ip;
+		}
+	}
+	
+	$host = `host $ip`;
+	return (($host ? end ( explode (' ', $host)) : $ip));
+}
+
+
 function get_host($IP) {
 	static $ID = 0;
 	++$ID;

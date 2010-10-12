@@ -857,6 +857,7 @@ CREATE TABLE `torrents` (
   `LastLogged` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `pid` int(5) NOT NULL DEFAULT '0',
   `LastReseedRequest` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `ExtendedGrace` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `InfoHash` (`info_hash`(40)),
   KEY `GroupID` (`GroupID`),

@@ -210,7 +210,7 @@ util.fn = util.prototype = {
 			var classes = object.className.split(' ');
 			var result = array_search(class_name, classes)
 			if (result === false) {
-				return this;
+				//return this;
 			}
 			delete classes[result];
 			object.className = classes.join(' ');

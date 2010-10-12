@@ -75,6 +75,9 @@ define('TORRENTS_PER_PAGE', '50');
 define('REQUESTS_PER_PAGE', '25');
 define('MESSAGES_PER_PAGE', '25');
 
+//Cache catalogues
+define('THREAD_CATALOGUE', 500);
+
 // Miscellaneous values
 
 $Categories = array('Music', 'Applications', 'E-Books', 'Audiobooks', 'E-Learning Videos', 'Comedy', 'Comics');
