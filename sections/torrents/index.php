@@ -388,7 +388,7 @@ if(!empty($_REQUEST['action'])) {
 	} elseif(!empty($_GET['type'])) {
 		include(SERVER_ROOT.'/sections/torrents/user.php');
 	} elseif(!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-		$DB->query("SELECT ID FROM torrents_group WHERE Name LIKE '".$_GET['groupname']."'");
+		$DB->query("SELECT ID FROM torrents_group WHERE Name LIKE '".db_string($_GET['groupname'])."'");
 		list($GroupID) = $DB->next_record();
 		if($GroupID) {
 			header("Location: torrents.php?id=".$GroupID);

@@ -165,9 +165,9 @@ if(!empty($_GET['taglist'])) {
 
 if(empty($_GET['tags_type']) && !empty($TagList) && count($TagList) > 1) {
 	if(!empty($TagListEx)) {
-		$Queries[]='@taglist ('.implode(' | ', $TagList).') '.implode(' ', $TagListEx);
+		$Queries[]='@taglist ( '.implode(' | ', $TagList).' ) '.implode(' ', $TagListEx);
 	} else {
-		$Queries[]='@taglist ('.implode(' | ', $TagList).')';
+		$Queries[]='@taglist ( '.implode(' | ', $TagList).' )';
 	}
 } elseif(!empty($TagList)) {
 	$_GET['tags_type'] = '1';

@@ -425,7 +425,7 @@ function geoip($IP) {
 	if (isset($IPs[$IP])) {
 		return $IPs[$IP];
 	}
-	$Long = ip2long($IP);
+	$Long = ip2unsigned($IP);
 	global $DB;
 	$DB->query("SELECT Code FROM geoip_country WHERE '$Long' BETWEEN StartIP AND EndIP LIMIT 1");
 	list($Country) = $DB->next_record();
@@ -472,7 +472,7 @@ function gethostbyip($ip)
 		}
 	}
 	
-	$host = `host $ip`;
+	$host = `host -W 1 $ip`;
 	return (($host ? end ( explode (' ', $host)) : $ip));
 }
 
