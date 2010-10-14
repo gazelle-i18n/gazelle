@@ -84,14 +84,14 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 	$Message = "";
 	$Color = $Colon = false;
 	for ($i = 0; $i < sizeof($MessageParts); $i++) {
-		if (strpos($MessageParts[$i], "http://what.cd/") === 0) {
+		if (strpos($MessageParts[$i], 'https://'.SSL_SITE_URL) === 0 || strpos($MessageParts[$i], 'http://'.NONSSL_SITE_URL) === 0) {
 			$MessageParts[$i] = '<a href="'.$MessageParts[$i].'">'.$MessageParts[$i].'</a>';
 		}
 		switch ($MessageParts[$i]) {
 			case "Torrent":
 				$TorrentID = $MessageParts[++$i];
 				if (is_numeric($TorrentID)) {
-					$Message = $Message.' Torrent <a href="http://what.cd/torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>';
+					$Message = $Message.' Torrent <a href="torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>';
 				} else {
 					$Message = $Message.' Torrent '.$TorrentID;
 				}
@@ -99,7 +99,7 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 			case "Request":
 				$RequestID = $MessageParts[++$i];
 				if (is_numeric($RequestID)) {
-					$Message = $Message.' Request <a href="http://what.cd/requests.php?action=view&id='.$RequestID.'"> '.$RequestID.'</a>';
+					$Message = $Message.' Request <a href="requests.php?action=view&id='.$RequestID.'"> '.$RequestID.'</a>';
 				} else {
 					$Message = $Message.' Request '.$RequestID;
 				}
@@ -107,18 +107,18 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 			case "Artist":
 				$ArtistID = $MessageParts[++$i];
 				if (is_numeric($ArtistID)) {
-					$Message = $Message.' Arist <a href="http://what.cd/artist.php?id='.$ArtistID.'"> '.$ArtistID.'</a>';
+					$Message = $Message.' Arist <a href="artist.php?id='.$ArtistID.'"> '.$ArtistID.'</a>';
 				} else {
 					$Message = $Message.' Artist '.$ArtistID;
 				}
 				break;
 			case "group":
 				$GroupID = $MessageParts[++$i];
-				$Message = $Message.' group <a href="http://what.cd/torrents.php?id='.$GroupID.'"> '.$GroupID.'</a>';
+				$Message = $Message.' group <a href="torrents.php?id='.$GroupID.'"> '.$GroupID.'</a>';
 				break;
 			case "torrent":
 				$TorrentID = substr($MessageParts[++$i], 0, strlen($MessageParts[$i]) - 1);
-				$Message = $Message.' torrent <a href="http://what.cd/torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>,';
+				$Message = $Message.' torrent <a href="torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>,';
 				break;
 			case "by":
 				$UserID = 0;
@@ -129,7 +129,7 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 					if (is_numeric($MessageParts[$i + 1])) {
 						$UserID = $MessageParts[++$i];
 					}
-					$URL = "user ".$UserID." ".'<a href="http://what.cd/user.php?id='.$UserID.'">'.$MessageParts[++$i]."</a>";
+					$URL = "user ".$UserID." ".'<a href="user.php?id='.$UserID.'">'.$MessageParts[++$i]."</a>";
 				} else {
 					$User = $MessageParts[++$i];
 					if(substr($User,-1) == ':') {
@@ -144,7 +144,7 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 						$UserID = $Usernames[$User];
 					}
 					$DB->set_query_id($Log);
-					$URL = '<a href="http://what.cd/user.php?id='.$UserID.'">'.$User."</a>".($Colon?':':'');
+					$URL = '<a href="user.php?id='.$UserID.'">'.$User."</a>".($Colon?':':'');
 				}
 				$Message = $Message." by ".$URL;
 				break;

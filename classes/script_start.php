@@ -27,7 +27,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && proxyCheck($_SERVER['REMOTE_ADDR
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
 }
 
-$SSL = ($_SERVER['SERVER_PORT'] == 443);
+$SSL = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
 
 if (!isset($argv) && !empty($_SERVER['HTTP_HOST'])) { //Skip this block if running from cli or if the browser is old and shitty
 	if (!$SSL && $_SERVER['HTTP_HOST'] == 'www.'.NONSSL_SITE_URL) { header('Location: http://'.NONSSL_SITE_URL.$_SERVER['REQUEST_URI']); die(); }
@@ -93,6 +93,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']
 
 $Debug->set_flag('start user handling');
 session_start();
+$Debug->set_flag('Session started');
 
 // Get permissions
 list($Classes, $ClassLevels) = $Cache->get_value('classes');
@@ -102,6 +103,7 @@ if(!$Classes) {
 	$ClassLevels = $DB->to_array('Level');
 	$Cache->cache_value('classes', array($Classes, $ClassLevels), 0);
 }
+$Debug->set_flag('Loaded permissions');
 
 //-----------------------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +145,8 @@ if(isset($LoginCookie)) {
 	if (!array_key_exists($SessionID,$UserSessions)) {
 		logout();
 	}
+	
+	$Debug->set_flag('debug timer 1 ends');
 
 	// Check if user is enabled
 	$Enabled = $Cache->get_value('enabled_'.$LoggedUser['ID']);
@@ -155,6 +159,7 @@ if(isset($LoginCookie)) {
 		
 		logout();
 	}
+	$Debug->set_flag('debug timer 2 ends');
 
 	// Up/Down stats
 	$UserStats = $Cache->get_value('user_stats_'.$LoggedUser['ID']);
@@ -182,6 +187,7 @@ if(isset($LoginCookie)) {
 		time() < strtotime($LoggedUser['RatioWatchEnds']) &&
 		($LoggedUser['BytesDownloaded']*$LoggedUser['RequiredRatio'])>$LoggedUser['BytesUploaded']
 	);
+	$Debug->set_flag('debug timer 3 ends');
 
 	// Manage 'special' inherited permissions
 	if($LoggedUser['Artist']) {
@@ -195,6 +201,8 @@ if(isset($LoginCookie)) {
 	} else {
 		$DonorPerms['Permissions'] = array();
 	}
+
+	$Debug->set_flag('debug timer 4 ends');
 
 	if(is_array($LoggedUser['CustomPermissions'])) {
 		$CustomPerms = $LoggedUser['CustomPermissions'];
@@ -211,6 +219,8 @@ if(isset($LoginCookie)) {
 	// Because we <3 our staff
 	if (check_perms('site_disable_ip_history')) { $_SERVER['REMOTE_ADDR'] = '127.0.0.1'; }
 
+	$Debug->set_flag('debug timers round 2 end');
+	$Debug->set_flag('debug timers round 3 start');
 	// Update LastUpdate every 10 minutes
 	if(strtotime($UserSessions[$SessionID]['LastUpdate'])+600<time()) {
 		$DB->query("UPDATE users_main SET LastAccess='".sqltime()."' WHERE ID='$LoggedUser[ID]'");
@@ -227,6 +237,7 @@ if(isset($LoginCookie)) {
 				));
 		$Cache->commit_transaction(0);
 	}
+	$Debug->set_flag('debug timer 1 end');
 	
 	// Notifications
 	if(isset($LoggedUser['Permissions']['site_torrents_notify'])) {
@@ -237,11 +248,13 @@ if(isset($LoginCookie)) {
 			$Cache->cache_value('notify_filters_'.$LoggedUser['ID'], $LoggedUser['Notify'], 2592000);
 		}
 	}
+	$Debug->set_flag('debug timer 2 end');
 	
 	// We've never had to disable the wiki privs of anyone.
 	if ($LoggedUser['DisableWiki']) {
 		unset($LoggedUser['Permissions']['site_edit_wiki']);
 	}
+	$Debug->set_flag('debug timer 3 end');
 	
 	// IP changed
 	if($LoggedUser['IP']!=$_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
@@ -272,8 +285,10 @@ if(isset($LoginCookie)) {
 			
 		}
 	}
+	$Debug->set_flag('debug timer 4 end');
 	
 	
+	$Debug->set_flag('debug timer 5 end');
 	
 	
 	// Get stylesheets
@@ -283,6 +298,7 @@ if(isset($LoginCookie)) {
 		$Stylesheets = $DB->to_array('ID', MYSQLI_BOTH);
 		$Cache->cache_value('stylesheets', $Stylesheets, 600);
 	}
+	$Debug->set_flag('debug timer 6 end');
 
 	//A9 TODO: Clean up this messy solution
 	$LoggedUser['StyleName']=$Stylesheets[$LoggedUser['StyleID']]['Name'];
@@ -290,6 +306,7 @@ if(isset($LoginCookie)) {
 	if(empty($LoggedUser['Username'])) {
 		logout(); // Ghost
 	}
+	$Debug->set_flag('debug timer 7 end');
 }
 
 
