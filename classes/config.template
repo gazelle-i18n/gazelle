@@ -47,6 +47,11 @@ define('SQLPASS','{{SQLPASS}}'); //The MySQL password
 define('SQLDB','{{SQLDB}}'); //The MySQL database to use
 define('SQLPORT','{{SQLPORT}}'); //The MySQL port to connect on
 
+define('SPHINX_HOST','localhost');
+define('SPHINX_PORT',3312);
+define('SPHINX_MAX_MATCHES',1000); // Must be <= the server's max_matches variable (default 1000)
+define('SPHINX_INDEX','torrents');
+
 // Found in the 'permissions' table
 // Name of class	Class ID (NOT level)
 define('USER',		'2');

@@ -335,12 +335,14 @@ if ($DisableLeech!=$Cur['can_leech'] && check_perms('users_disable_any')) {
 
 if ($DisableInvites!=$Cur['DisableInvites'] && check_perms('users_disable_any')) {
 	$UpdateSet[]="DisableInvites='$DisableInvites'";
-	if ($DisableInvites == 1) { $UpdateSet[]="Invites='0'"; }
+	if ($DisableInvites == 1) { 
+		//$UpdateSet[]="Invites='0'"; 
+		if (!empty($UserReason)) {
+			send_pm($UserID, 0, db_string('Your invite privileges have been disabled'),db_string("Your invite privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		}
+	}
 	$EditSummary[]="invites status changed";
 	$HeavyUpdates['DisableInvites']=$DisableInvites;
-	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your invite privileges have been disabled'),db_string("Your invite privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
-	}
 }
 
 if ($DisablePosting!=$Cur['DisablePosting'] && check_perms('users_disable_posts')) {
