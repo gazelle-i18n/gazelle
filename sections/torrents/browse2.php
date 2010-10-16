@@ -150,6 +150,7 @@ if(!empty($_GET['taglist'])) {
 	$TagList = explode(',',$_GET['taglist']);
 	$TagListEx = array();
 	foreach($TagList as $Key => &$Tag) {
+		$Tag = trim($Tag);
 		if(strlen($Tag) >= 2) {
 			if($Tag[0] == '!' && strlen($Tag) >= 3) {
 				$TagListEx[] = '!'.$SS->EscapeString(substr($Tag,1));
