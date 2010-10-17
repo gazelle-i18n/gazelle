@@ -10,7 +10,7 @@ $Err = $Val->ValidateForm($_POST);
 $ArticleID=$_POST['id'];
 
 if($Err) {
-	$_SESSION['error_message'] = $Err;
+	error_message($Err);
 	header('Location: wiki.php?action=edit&id='.$ArticleID);
 	die();
 }

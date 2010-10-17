@@ -355,7 +355,7 @@ if($PostID == $ThreadInfo['StickyPostID']) { ?>
 <? if(empty($HeavyInfo['DisableAvatars'])) { ?>
 		<td class="avatar" valign="top">
 	<? if ($Avatar) { ?>
-			<img src="<?=$Avatar?>" width="150" alt="<?=$Username ?>'s avatar" />
+			<img src="<?=$Avatar?>" width="150" style="max-height:400px;" alt="<?=$Username ?>'s avatar" />
 	<? } else { ?>
 			<img src="<?=STATIC_SERVER?>common/avatars/default.png" width="150" alt="Default avatar" />
 	<? } ?>
@@ -453,7 +453,7 @@ if(!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 
 
 if(check_perms('site_moderate_forums')) {
-*/
+
 ?>
 	<br />
 	<h3>Edit thread</h3>

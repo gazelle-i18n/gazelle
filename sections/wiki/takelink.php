@@ -8,7 +8,7 @@ if (preg_match('/^https?:\/\/(www\.|ssl\.)?'.NONSSL_SITE_URL.'\/wiki\.php\?actio
 	$ArticleID = $Alias->to_id($Match[2]);
 }
 if(!$ArticleID){
-	$_SESSION['error_message'] = "Unable to link alias to an article";
+	error_message('Unable to link alias to an article.');
 	header('Location: wiki.php?action=link');
 	die();
 }

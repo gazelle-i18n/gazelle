@@ -35,7 +35,7 @@ if (preg_match("/personal collage$/", $Name) > 0) {
 write_log("Collage ".$CollageID." (".$Name.") was deleted by ".$LoggedUser['Username'].": ".$Reason);
 
 $Cache->delete_value('collage_'.$CollageID);
-$_SESSION['save_message'] = 'Your collage has been deleted.';
+save_message('Your collage has been deleted.');
 header('Location: collages.php');
 
 ?>

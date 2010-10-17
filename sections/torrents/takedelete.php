@@ -28,11 +28,10 @@ if($ArtistName) {
 	$Name = $ArtistName.' - '.$Name;
 }
 
-if($LoggedUser['multi_delete']>=3 && !check_perms('torrents_delete_fast')) {
-	error('You have recently deleted 3 torrents, please contact a staff member if you need to delete more.');
-}
-
-if(isset($LoggedUser['multi_delete'])) {
+if(isset($_SESSION['logged_user']['multi_delete'])) {
+	if($_SESSION['logged_user']['multi_delete']>=3 && !check_perms('torrents_delete_fast')) {
+		error('You have recently deleted 3 torrents, please contact a staff member if you need to delete more.');
+	}
 	$_SESSION['logged_user']['multi_delete']++;
 } else {
 	$_SESSION['logged_user']['multi_delete'] = 1;

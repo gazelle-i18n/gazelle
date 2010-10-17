@@ -15,7 +15,6 @@ if($BanID = site_ban_ip($_SERVER['REMOTE_ADDR'])) {
 	error('Your IP has been banned.');
 }
 
-
 require(SERVER_ROOT."/classes/class_validate.php");
 $Validate=NEW VALIDATE;
 

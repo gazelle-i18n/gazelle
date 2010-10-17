@@ -12,7 +12,7 @@ if ($LoggedUser['ID']!=$UserID && !check_perms('torrents_delete')) {
 	error(403);
 }
 
-if($LoggedUser['multi_delete']>=3 && !check_perms('torrents_delete_fast')) {
+if(isset($_SESSION['logged_user']['multi_delete']) && $_SESSION['logged_user']['multi_delete']>=3 && !check_perms('torrents_delete_fast')) {
 	error('You have recently deleted 3 torrents, please contact a staff member if you need to delete more.');
 }
 

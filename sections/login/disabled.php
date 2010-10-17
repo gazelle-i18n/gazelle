@@ -1,8 +1,5 @@
 <?
 show_header('Disabled');
-?>
-
-<?
 if(empty($_POST['submit']) || empty($_POST['username'])) {
 ?>
 <p class="warning">

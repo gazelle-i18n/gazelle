@@ -20,7 +20,7 @@ if(!$Err) {
 }
 
 if($Err) {
-	$_SESSION['error_message'] = $Err;
+	error_message($Err);
 	header('Location: wiki.php?action=create');
 	die();
 }

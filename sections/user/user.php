@@ -163,7 +163,7 @@ if (check_perms('admin_reports')) {
 ?>
 		<div class="box">
 			<div class="head colhead_dark">Avatar</div>
-			<div align="center"><img src="<?=display_str($Avatar)?>" width="150" alt="<?=$Username?>'s avatar" /></div>
+			<div align="center"><img src="<?=display_str($Avatar)?>" width="150" style="max-height:400px;" alt="<?=$Username?>'s avatar" /></div>
 		</div>
 <? } ?>
 		<div class="box">

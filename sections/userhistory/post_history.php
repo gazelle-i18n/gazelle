@@ -229,7 +229,7 @@ if(empty($Results)) {
 <?
 				if($Avatar && empty($HeavyInfo['DisableAvatars'])){
 ?>
-				<img src='<?=$Avatar?>' width='150' alt="<?=$Username?>'s avatar" />
+				<img src='<?=$Avatar?>' width='150' style="max-height:400px;" alt="<?=$Username?>'s avatar" />
 <?
 				} 
 ?>

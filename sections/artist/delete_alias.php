@@ -24,7 +24,7 @@ $DB->query("SELECT GroupID FROM torrents_artists WHERE AliasID='$AliasID'");
 if($DB->record_count() > 0) {
 	list($GroupID) = $DB->next_record();
 	if($GroupID != 0) {
-		error_message("That alias still has the group ($GroupID) attached, fix that first");
+		error_message("That alias still has the group ($GroupID) attached, fix that first.");
 		header('Location: '.$_SERVER['HTTP_REFERER']);
 		die();
 	}

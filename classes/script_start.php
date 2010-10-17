@@ -92,6 +92,8 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']
 */
 
 $Debug->set_flag('start user handling');
+session_start();
+$Debug->set_flag('session sarted');
 
 // Get permissions
 list($Classes, $ClassLevels) = $Cache->get_value('classes');
@@ -587,9 +589,13 @@ function show_message() {
 	}
 }
 
-function save_message($Str) { $_SESSION['save_message'] = $Str; }
-function error_message($Str) { $_SESSION['error_message'] = $Str; }
+function save_message($Str) {
+	$_SESSION['save_message'] = $Str;
+}
 
+function error_message($Str) {
+	$_SESSION['error_message'] = $Str;
+}
 
 function cut_string($Str,$Length,$Hard=0,$ShowDots=1) {
 	if (strlen($Str)>$Length) {
@@ -1818,8 +1824,6 @@ if(!preg_match('/^[a-z0-9]+$/i', $Document)) { error(404); }
 
 
 
-session_start();
-$Debug->set_flag('Session started');
 require(SERVER_ROOT.'/sections/'.$Document.'/index.php');
 $Debug->set_flag('completed module execution');
 /*
