@@ -9,7 +9,7 @@ class USER_RANK {
 	function build_table($MemKey, $Query) {
 		global $Cache,$DB;
 		
-		$DB->query("DROP TABLE IF EXISTS stats");
+		$DB->query("DROP TEMPORARY TABLE IF EXISTS stats");
 		
 		$DB->query("CREATE TEMPORARY TABLE stats
 			(ID int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,

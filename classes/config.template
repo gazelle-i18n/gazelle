@@ -12,7 +12,7 @@ define('ANNOUNCE_URL', ''); //Announce URL
 
 define('BOT_NICK', '');
 define('BOT_SERVER', '');
-define('BOT_PORT', '6667');
+define('BOT_PORT', 6667);
 define('BOT_CHAN', '#'.NONSSL_SITE_URL);
 define('BOT_ANNOUNCE_CHAN', '#');
 define('BOT_STAFF_CHAN', '#');
@@ -21,7 +21,7 @@ define('BOT_HELP_CHAN', '#');
 define('BOT_DEBUG_CHAN', '#');
 define('BOT_REPORT_CHAN', '#');
 define('BOT_NICKSERV_PASS', '');
-define('SOCKET_LISTEN_PORT', '51010');
+define('SOCKET_LISTEN_PORT', 51010);
 define('SOCKET_LISTEN_ADDRESS', 'localhost');
 
 define('ADMIN_CHAN', '#');
@@ -55,7 +55,7 @@ define('SQLHOST', 'localhost'); //The MySQL host ip/fqdn
 define('SQLLOGIN', '');//The MySQL login
 define('SQLPASS', ''); //The MySQL password
 define('SQLDB', 'gazelle'); //The MySQL database to use
-define('SQLPORT', '3306'); //The MySQL port to connect on
+define('SQLPORT', 3306); //The MySQL port to connect on
 define('SQLSOCK', '/var/run/mysql/mysqld.sock');
 
 // Memcached details
@@ -93,6 +93,7 @@ define('TOPICS_PER_PAGE', 50);
 define('TORRENTS_PER_PAGE', 50);
 define('REQUESTS_PER_PAGE', 25);
 define('MESSAGES_PER_PAGE', 25);
+define('LOG_ENTRIES_PER_PAGE', 50);
 
 //Cache catalogues
 define('THREAD_CATALOGUE', 500);
@@ -168,6 +169,6 @@ $CaptchaBGs=array('captcha1.png','captcha2.png','captcha3.png','captcha4.png','c
 // Special characters, and what they should be converted to
 // Used for torrent searching
 $SpecialChars = array(
-        '&' => 'and',
+        '&' => 'and'
 );
 ?>

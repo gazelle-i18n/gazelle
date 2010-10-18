@@ -93,7 +93,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']
 
 $Debug->set_flag('start user handling');
 session_start();
-$Debug->set_flag('session sarted');
+$Debug->set_flag('session started');
 
 // Get permissions
 list($Classes, $ClassLevels) = $Cache->get_value('classes');
