@@ -308,7 +308,7 @@ if($Paranoia < 5 || check_perms('users_override_paranoia', $Class) || $OwnProfil
 
 if (check_perms('users_view_ips',$Class)) {
 ?>
-				<li>IP: <?=display_str($IP)?> (<?=old_geoip($IP)?>) [<a href="user.php?action=search&amp;ip_history=on&amp;ip=<?=display_str($IP)?>&matchtype=strict" title="Search">S</a>]</li>
+				<li>IP: <?=display_str($IP)?> (<?=geoip($IP)?>) [<a href="user.php?action=search&amp;ip_history=on&amp;ip=<?=display_str($IP)?>&matchtype=strict" title="Search">S</a>]</li>
 				<li>Host: <?=get_host($IP)?></li>
 <?
 }

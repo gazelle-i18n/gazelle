@@ -92,7 +92,11 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']
 */
 
 $Debug->set_flag('start user handling');
+
+
 session_start();
+
+
 $Debug->set_flag('session started');
 
 // Get permissions

@@ -7,7 +7,8 @@ if(!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
 	if($_GET['tags']) {
 		$Tags = explode(',', str_replace(".","_",trim($_GET['tags'])));
 		foreach ($Tags as $Tag) {
-			if(trim($Tag)!="") {
+			$Tag = trim($Tag);
+			if($Tag != '') {
 				$Where[]="g.TagList REGEXP '[[:<:]]".db_string($Tag)."[[:>:]]'";
 			}
 		}

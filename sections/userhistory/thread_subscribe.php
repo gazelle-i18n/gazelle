@@ -26,7 +26,7 @@ if(($Key = array_search($_GET['topicid'],$UserSubscriptions)) !== FALSE) {
 	$DB->query('DELETE FROM users_subscriptions WHERE UserID = '.db_string($LoggedUser['ID']).' AND TopicID = '.db_string($_GET['topicid']));
 	unset($UserSubscriptions[$Key]);
 } else {
-	$DB->query("INSERT INTO users_subscriptions (UserID, TopicID) VALUES ($LoggedUser[ID], ".db_string($_GET['topicid']).")");
+	$DB->query("INSERT IGNORE INTO users_subscriptions (UserID, TopicID) VALUES ($LoggedUser[ID], ".db_string($_GET['topicid']).")");
 	array_push($UserSubscriptions, $_GET['topicid']);
 }
 $Cache->replace_value('subscriptions_user_'.$LoggedUser['ID'], $UserSubscriptions, 0);

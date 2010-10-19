@@ -43,7 +43,7 @@ $DB->query("SELECT
 		<td><?=display_str($OldPassKey)?></td>
 		<td><?=display_str($NewPassKey)?></td>
 		<td><?=time_diff($ChangeTime)?></td>
-		<td><?=display_str($ChangerIP)?> [<a href="user.php?action=search&ip_history=on&ip=<?=display_str($ChangerIP)?>" title="Search">S</a>]<br /><?=display_str(gethostbyaddr($ChangerIP))?></td>
+		<td><?=display_str($ChangerIP)?> [<a href="user.php?action=search&ip_history=on&ip=<?=display_str($ChangerIP)?>" title="Search">S</a>]<br /><?=display_str(gethostbyip($ChangerIP))?></td>
 	</tr>
 <? } ?>
 </table>
