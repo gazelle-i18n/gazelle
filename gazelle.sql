@@ -897,6 +897,12 @@ CREATE TABLE `torrents_bad_filenames` (
   KEY `TimeAdded` (`TimeAdded`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `torrents_bad_files` (
+  `TorrentID` int(11) NOT NULL DEFAULT '0',
+  `UserID` int(11) NOT NULL DEFAULT '0',
+  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `torrents_bad_folders` (
   `TorrentID` int(11) NOT NULL,
   `UserID` int(11) NOT NULL,

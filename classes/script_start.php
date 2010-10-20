@@ -1058,6 +1058,7 @@ function delete_torrent($ID, $GroupID=0) {
 	$DB->query("DELETE FROM torrents_files WHERE TorrentID='$ID'");
 	$DB->query("DELETE FROM torrents_bad_tags WHERE TorrentID = ".$ID);
 	$DB->query("DELETE FROM torrents_bad_folders WHERE TorrentID = ".$ID);
+	$DB->query("DELETE FROM torrents_bad_files WHERE TorrentID = ".$ID);
 	$Cache->delete_value('torrent_download_'.$ID);
 	$Cache->delete_value('torrent_group_'.$GroupID);
 	$Cache->delete_value('torrents_details_'.$GroupID);
@@ -1128,7 +1129,7 @@ function delete_group($GroupID) {
 	$DB->query("DELETE FROM torrents_comments WHERE GroupID='$GroupID'");
 	$DB->query("DELETE FROM bookmarks_torrents WHERE GroupID='$GroupID'");
 	$DB->query("DELETE FROM wiki_torrents WHERE PageID='$GroupID'");
-	$DB->query("REPLACE INTO sphinx_delta (ID) VALUES ('$GroupID')"); // Tells Sphinx that the group is removed
+	$DB->query("REPLACE INTO sphinx_delta (ID,Time) VALUES ('$GroupID',UNIX_TIMESTAMP())"); // Tells Sphinx that the group is removed
 	
 	$Cache->delete_value('torrents_details_'.$GroupID);
 	$Cache->delete_value('torrent_group_'.$GroupID);

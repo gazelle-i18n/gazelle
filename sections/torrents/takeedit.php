@@ -43,6 +43,7 @@ $Properties['HasLog'] = (isset($_POST['flac_log']))? 1 : 0;
 $Properties['HasCue'] = (isset($_POST['flac_cue']))? 1 : 0;
 $Properties['BadTags'] = (isset($_POST['bad_tags']))? 1 : 0;
 $Properties['BadFolders'] = (isset($_POST['bad_folders']))? 1 : 0;
+$Properties['BadFiles'] = (isset($_POST['bad_files'])) ? 1 : 0;
 $Properties['Format'] = $_POST['format'];
 $Properties['Media'] = $_POST['media'];
 $Properties['Bitrate'] = $_POST['bitrate'];
@@ -294,6 +295,16 @@ if(check_perms('users_mod')) {
 	}
 	if ($bfID && !$Properties['BadFolders']) {
 		$DB->query("DELETE FROM torrents_bad_folders WHERE TorrentID='$TorrentID'");
+	}
+
+	$DB->query("SELECT TorrentID FROM torrents_bad_files WHERE TorrentID='$TorrentID'");
+	list($bfiID) = $DB->next_record();
+
+	if (!$bfiID && $Properties['BadFiles']) {
+		$DB->query("INSERT INTO torrents_bad_files VALUES($TorrentID, $LoggedUser[ID], '".sqltime()."')");
+	}
+	if ($bfiID && !$Properties['BadFiles']) {
+		$DB->query("DELETE FROM torrents_bad_files WHERE TorrentID='$TorrentID'");
 	}
 }
 

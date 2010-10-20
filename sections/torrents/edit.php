@@ -40,12 +40,14 @@ $DB->query("SELECT
 	t.LogScore,
 	t.ExtendedGrace,
 	bt.TorrentID AS BadTags,
-	bf.TorrentID AS BadFolders
+	bf.TorrentID AS BadFolders,
+	bfi.TorrentID AS BadFiles
 	FROM torrents AS t 
 	LEFT JOIN torrents_group AS tg ON tg.ID=t.GroupID
 	LEFT JOIN artists_group AS ag ON ag.ArtistID=tg.ArtistID
 	LEFT JOIN torrents_bad_tags AS bt ON bt.TorrentID=t.ID
 	LEFT JOIN torrents_bad_folders AS bf ON bf.TorrentID=t.ID
+	LEFT JOIN torrents_bad_files AS bfi ON bfi.TorrentID=t.ID
 	WHERE t.ID='$TorrentID'");
 
 list($Properties) = $DB->to_array(false,MYSQLI_BOTH);

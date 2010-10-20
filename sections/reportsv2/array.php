@@ -139,6 +139,23 @@ $Types = array(
 					'pm' => 'Name your directories with meaningful titles, such as "Artist - Album (Year) - Format."  We advise that directory names in your uploads should at least be "Artist - Album (Year) - Format". The minimum acceptable is "Album", although it is preferable to include more information. If the directory name does not include this minimum then another user can rename the directory, re-upload and report yours for deletion. Avoid creating unnecessary nested folders (such as an extra folder for the actual album) inside your properly named directory. Nested folders make it less likely that downloaders leave the torrent unchanged in order to stay seeding.'
 				)
 			),
+			'file_trump' => array (
+				'priority' => '769',
+				'title' => 'Bad File Names Trump',
+				'report_messages' => array(
+					'Please describe what is wrong with the file names.',
+					'Please make sure you are reporting the torrent <strong>which has been trumped</strong> and should be deleted, not the torrent that you think should reamin on site.'
+				),
+				'report_fields' => array(
+					'sitelink' => '1'
+				),
+				'resolve_options' => array(
+					'upload' => '0',
+					'warn' => '0',
+					'delete' => '1',
+					'pm' => '2.3.10. File names must accurately reflect the song titles. You may not have file names like 01track.mp3, 02track.mp3, etc. Also, file names with incorrect song titles can be trumped by properly labeled torrents.  If you upload an album with improper file names, then another user may fix the file names, re-upload, and report yours for deletion.'
+				)
+			),
 			'tracks_missing' => array(
 				'priority' => '730',
 				'title' => 'Track(s) Missing',
@@ -289,7 +306,7 @@ $Types = array(
 					'warn' => '0',
 					'delete' => '0',
 					'pm' => 'The [url=http://what.cd/rules.php?p=upload#2.3.2]Uploading Rules[/url] require all uploads to have meaningful directory names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
-[b]You can fix this torrent yourself![/b]It\'s easy, and only takes a few minutes: Add or fix the folder/directory name(s), and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Trump", indicate in the report comments that you have fixed the directory name(s), and provide a link (PL) to the new torrent.')
+[b]You can fix this torrent yourself![/b]It\'s easy, and only takes a few minutes: Add or fix the folder/directory name(s), and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Folder Trump", indicate in the report comments that you have fixed the directory name(s), and provide a link (PL) to the new torrent.')
 			),
 			'wrong_format' => array(
 				'priority' => '705',
@@ -444,9 +461,9 @@ $Types = array(
 				),
 				'resolve_options' => array(
 					'upload' => '0',
-					'warn' => '1',
-					'delete' => '1',
-					'pm' => "File names must accurately reflect the song titles. You may not have file names like 01track.mp3, 02track.mp3, etc."
+					'warn' => '0',
+					'delete' => '0',
+					'pm' => "The [url=http://what.cd/rules.php?p=upload#r2.3.10]Uploading Rules[/url] require all uploads to have proper file names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time. [b]You can avoid a 1-week warning by fixing this torrent yourself![/b] It\'s easy, and only takes a few minutes: Fix the required file names and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason \"Bad File Names Trump\", indicate in the report comments that you have fixed the file names, and provide a link (PL) to the new torrent"
 				)
 			),
 			'cassette' => array(

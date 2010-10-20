@@ -282,7 +282,7 @@ if(count($Queries)>0) {
 } else {
 	$Query='';
 	if(empty($SS->Filters)) {
-		$SS->set_filter('time', array(0), true);
+		$SS->set_filter('size', array(0), true);
 	}
 }
 

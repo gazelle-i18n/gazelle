@@ -78,6 +78,14 @@ show_header('Better');
 					Torrents that have been marked as having 'Very bad folder names' or 'No folder names at all'.
 				</td>
 			</tr>
+			<tr class="rowb">
+				<td class="nobr">
+					<a href="better.php?method=files">File Names</a>
+				</td>
+				<td class="nobr">
+					Torrents that have been marked as having 'Bad File Names'.
+				</td>
+			</tr>
 
 		</table>
 	</div>

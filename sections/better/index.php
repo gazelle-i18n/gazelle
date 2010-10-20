@@ -19,6 +19,9 @@ if(isset($_GET['method'])) {
 		case 'folders':
 			include(SERVER_ROOT.'/sections/better/folders.php');
 			break;
+		case 'files':
+			include(SERVER_ROOT.'/sections/better/files.php');
+			break;
 		case 'upload':
 			include(SERVER_ROOT.'/sections/better/upload.php');
 			break;

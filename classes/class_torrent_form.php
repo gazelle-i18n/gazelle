@@ -176,6 +176,7 @@ class TORRENT_FORM {
 		$HasCue = $Torrent['HasCue'];
 		$BadTags = $Torrent['BadTags'];
 		$BadFolders = $Torrent['BadFolders'];
+		$BadFiles = $Torrent['BadFiles'];
 		global $ReleaseTypes;
 ?>
 		<table cellpadding="3" cellspacing="1" border="0" class="border<? if($this->NewTorrent) { echo ' slice'; }?>" width="100%">
@@ -458,6 +459,12 @@ class TORRENT_FORM {
 				<td class="label">Bad Folder Names</td>
 				<td>
 					<input type="checkbox" id="bad_folders" name="bad_folders"<? if($BadFolders) { echo " checked='checked'";}?>/> Check this box if the torrent has bad folder names.
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Bad File Names</td>
+				<td>
+					<input type="checkbox" id="bad_files" name="bad_files"<? if ($BadFiles) {echo " checked='checked'";}?>/> Check this box if the torrent has bad file names.
 				</td>
 			</tr>
 <?		} ?>
