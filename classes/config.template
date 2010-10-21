@@ -8,7 +8,7 @@ define('SSL_SITE_URL', ''); //The FQDN of your site, make this different if you 
 define('NONSSL_STATIC_SERVER', 'static/');
 define('SSL_STATIC_SERVER', 'static/'); // Allows you to run static content off another server
 
-define('ANNOUNCE_URL', ''); //Announce URL
+define('ANNOUNCE_URL', 'http://'.NONSSL_SITE_URL.':2710'); //Announce URL
 
 define('BOT_NICK', '');
 define('BOT_SERVER', '');
