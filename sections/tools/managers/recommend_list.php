@@ -3,7 +3,6 @@ if(!check_perms('site_recommend_own') && !check_perms('site_manage_recommendatio
 	error(403);
 }
 show_header('Recommendations');
-show_message();
 
 $DB->query("SELECT 
 	tr.GroupID,

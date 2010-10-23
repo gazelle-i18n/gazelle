@@ -32,8 +32,6 @@ if ($SiteOptions) {
 
 show_header($Username.' > Settings','validate');
 echo $Val->GenerateJS('userform');
-
-show_message();
 ?>
 <div class="thin">
 	<h2><?=format_username($UserID,$Username)?> &gt; Settings</h2>

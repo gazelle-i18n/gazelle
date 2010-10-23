@@ -12,7 +12,7 @@ if (!list($Countries,$Rank,$CountryUsers,$CountryMax,$CountryMin,$LogIncrements)
 	}
 	
 	$CountryMax = ceil(log(Max(1,$Data[0][1]))/log(2))+1;
-	$CountryMin = floor(log($Data[$CountryMinThreshold][1])/log(2));
+	$CountryMin = floor(log(Max(1,$Data[$CountryMinThreshold][1]))/log(2));
 
 	foreach ($Data as $Key => $Item) {
 		list($Country,$UserCount) = $Item;

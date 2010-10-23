@@ -92,11 +92,9 @@ $DB->query("SELECT
 $Invited = $DB->to_array();
 
 show_header('Invites');
-show_message();
 ?>
 <div class="thin">
 	<h2><?=format_username($UserID,$Username)?> &gt; Invites</h2>
-<?	show_message(); ?>
 	<div class="linkbox">
 		[<a href="user.php?action=invitetree<? if($Sneaky){ echo '&amp;userid='.$UserID; }?>">Invite tree</a>]
 	</div>

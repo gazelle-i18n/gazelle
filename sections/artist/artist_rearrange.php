@@ -388,7 +388,6 @@ $TorrentDisplayList = ob_get_clean();
 //----------------- End building list and getting stats
 
 show_header($Name, 'browse,requests,artists');
-show_message();
 ?>
 <div class="thin">
 	<h2><?=$Name?><? if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<? } if ($VanityHouseArtist) { ?> [Vanity House] <? } ?></h2>

@@ -99,7 +99,6 @@ if(empty($UserSubscriptions)) {
 
 // Start printing
 show_header('Forums'.' > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
-show_message();
 ?>
 <div class="thin">
 	<h2>

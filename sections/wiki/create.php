@@ -1,6 +1,5 @@
 <?
 show_header('Create an article');
-show_message();
 ?>
 <div class="thin">
 	<div class="box pad">

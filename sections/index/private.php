@@ -25,7 +25,6 @@ if ($LoggedUser['LastReadNews'] != $News[0][0]) {
 }
 
 show_header('News');
-show_message();
 ?>
 <div class="thin">
 	<div class="sidebar">

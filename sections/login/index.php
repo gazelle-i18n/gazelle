@@ -288,9 +288,9 @@ else {
 							$DB->query("DELETE FROM login_attempts WHERE ID='".db_string($AttemptID)."'");
 						}
 
-						if (!empty($_SESSION['after_log']['url'])) {
-							$URL = $_SESSION['after_log']['url'];
-							unset($_SESSION['after_log']);
+						if (!empty($_COOKIE['redirect'])) {
+							$URL = $_COOKIE['redirect'];
+							setcookie('redirect','',time()-60*60*24,'/','',false);
 							header('Location: '.$URL);
 							die();
 						} else {

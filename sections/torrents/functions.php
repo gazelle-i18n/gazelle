@@ -105,7 +105,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0) {
 		if(count($TorrentList) == 0) {
 			//error(404,'','','',true);
 			if(isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
-				error_message("Cannot find the torrent with the ID ".$_GET['torrentid']);
+				error("Cannot find the torrent with the ID ".$_GET['torrentid']);
 				header("Location: log.php?search=Torrent+".$_GET['torrentid']);
 			} else {
 				error(404);

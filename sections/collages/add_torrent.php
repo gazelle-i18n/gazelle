@@ -25,7 +25,7 @@ $Val->SetFields('url', '1','regex','The URL must be a link to a torrent on the s
 $Err = $Val->ValidateForm($_POST);
 
 if($Err) {
-	error_message($Err);
+	error($Err);
 	header('Location: collages.php?id='.$CollageID);
 	die();
 }
@@ -60,7 +60,7 @@ if($DB->record_count() == 0) {
 	$Cache->delete_value('collage_'.$CollageID);
 	$Cache->delete_value('torrents_details_'.$GroupID);
 } else {
-	error_message('Torrent already in collage!');
+	error('Torrent already in collage!');
 }
 
 header('Location: collages.php?id='.$CollageID);

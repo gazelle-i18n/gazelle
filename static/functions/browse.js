@@ -196,7 +196,7 @@ function AddArtistField() {
 	var ArtistField = document.createElement("input");
 	ArtistField.type = "text";
 	ArtistField.name = "aliasname[]";
-	ArtistField.size = "10";
+	ArtistField.size = "20";
 	x.appendChild(ArtistField);
 	x.appendChild(document.createTextNode(' '));
 	var Importance = document.createElement("select");

@@ -116,7 +116,6 @@ $Badges.=($Warned!='0000-00-00 00:00:00') ? '<img src="'.STATIC_SERVER.'common/s
 $Badges.=($Enabled == '1' || $Enabled == '0' || !$Enabled) ? '': '<img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" />';
 
 show_header($Username,'user');
-show_message();
 ?>
 <div class="thin">
 	<h2><?=$Username?></h2>

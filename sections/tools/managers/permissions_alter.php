@@ -8,7 +8,6 @@ function display_perm($Key,$Title) {
 }
 
 show_header('Manage Permissions','validate');
-show_message();
 
 echo $Val->GenerateJS('permform');
 ?>

@@ -34,7 +34,6 @@ if(!check_perms('site_view_full_log')) {
 $sql .= "ORDER BY ID DESC LIMIT $Limit";
 
 show_header("Site log");
-show_message();
 
 $Log = $DB->query($sql);
 $DB->query("SELECT FOUND_ROWS()");

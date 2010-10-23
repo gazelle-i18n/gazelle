@@ -13,7 +13,6 @@ if(!in_array($Section, array('inbox', 'sentbox'))) { error(404); }
 list($Page,$Limit) = page_limit(MESSAGES_PER_PAGE);
 
 show_header('Inbox');
-show_message();
 ?>
 <div class="thin">
 	<h2><?= ($Section == 'sentbox') ? 'Sentbox' : 'Inbox' ?></h2>

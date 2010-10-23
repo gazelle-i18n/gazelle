@@ -104,7 +104,7 @@ if($DB->record_count() < 1) {
 }
 
 if(!empty($Err)) {
-	error_message($Err);
+	error($Err);
 	include(SERVER_ROOT.'/sections/reportsv2/report.php');
 	die();
 }
@@ -125,6 +125,5 @@ $ReportID = $DB->inserted_id();
 $Cache->delete_value('reports_torrent_'.$TorrentID);
 
 $Cache->increment('num_torrent_reportsv2');
-save_message("Torrent Reported!");
 header('Location: torrents.php?torrentid='.$TorrentID);
 ?>

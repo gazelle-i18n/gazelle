@@ -15,7 +15,7 @@ $Type = $Types[$Short];
 $ID = $_POST['id'];
 if($Short == "request_update") {
 	if(empty($_POST['year']) || !is_number($_POST['year'])) {
-		error_message('Year must be specified.');
+		error('Year must be specified.');
 		header('Location: reports.php?action=report&type=request_update&id='.$ID);
 		die();
 	}
@@ -77,6 +77,5 @@ send_irc("PRIVMSG ".$Channel." :".$ReportID." - ".$LoggedUser['Username']." just
 
 $Cache->delete_value('num_other_reports');
 
-save_message($Type['title']." reported!");
 header('Location: '.$Link);
 ?>

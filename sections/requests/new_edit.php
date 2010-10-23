@@ -119,7 +119,6 @@ if($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
 }
 
 show_header(($NewRequest ? "Create a request" : "Edit a request"), 'requests');
-show_message();
 ?>
 <div class="thin">
 	<h2><?=($NewRequest ? "Create a request" : "Edit a request")?></h2>

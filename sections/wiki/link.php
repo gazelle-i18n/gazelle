@@ -1,6 +1,5 @@
 <?
 show_header('Link an article');
-show_message();
 ?>
 <div class="thin">
 	<div class="box pad">

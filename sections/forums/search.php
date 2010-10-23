@@ -50,7 +50,6 @@ if(isset($_GET['forums']) && is_array($_GET['forums'])) {
 
 // Let's hope we got some results - start printing out the content.
 show_header('Forums'.' > '.'Search');
-show_message();
 ?>
 <div class="thin">
 	<h2><a href="forums.php">Forums</a> &gt; Search</h2>

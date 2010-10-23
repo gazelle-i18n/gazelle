@@ -12,9 +12,8 @@ if($NewAlias!='' && $NewAlias!='addalias' && !$Dupe){ //Not null, and not dupe
 	$DB->query("INSERT INTO wiki_aliases (Alias, UserID, ArticleID) VALUES ('$NewAlias', '$LoggedUser[ID]', '$ArticleID')");
 	$Alias->flush();
 } else {
-	error_message('The alias you attempted to add was either null or already in the database.');
+	error('The alias you attempted to add was either null or already in the database.');
 }
 
 $Cache->delete_value('wiki_article_'.$ArticleID);
 header('Location: wiki.php?action=article&id='.$ArticleID);
-?>

@@ -2,7 +2,6 @@
 if(!check_perms('users_mod')) { error(404); }
 //if(!check_perms('site_top10_history')) { error(403); }
 show_header('Top 10 Torrents history!');
-show_message();
 ?>
 <div class="thin">
 	<h2> Top 10 Torrents </h2>
@@ -42,8 +41,7 @@ if(!empty($_GET['date'])) {
 	$Date = $_GET['date'];
 	$SQLTime = $Date." 00:00:00";
 	if(!validDate($SQLTime)) {
-		error_message('Something is wrong with the date you provided');
-		header('Location: top10.php?type=history');
+		error('Something is wrong with the date you provided');
 	}
 
 	if(empty($_GET['datetype']) || $_GET['datetype'] == "day") {

@@ -1,6 +1,5 @@
 <?
 show_header('Create a collage');
-show_message();
 ?>
 <div class="thin">
 	<form action="collages.php" method="post">

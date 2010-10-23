@@ -62,7 +62,6 @@ if(($LoggedUser['ID']!=$Properties['UserID'] && !check_perms('torrents_edit')) |
 
 show_header('Edit torrent', 'upload');
 
-show_message();
 
 if(!($Properties['Remastered'] && !$Properties['RemasterYear']) || check_perms('edit_unknowns')) {
 	$TorrentForm = new TORRENT_FORM($Properties, $Err, false);

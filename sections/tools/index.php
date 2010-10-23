@@ -171,10 +171,9 @@ switch ($_REQUEST['action']){
 						$DB->query("UPDATE permissions SET Level='".db_string($Level)."',Name='".db_string($Name)."',`Values`='".db_string(serialize($Values))."',DisplayStaff='".db_string($DisplayStaff)."' WHERE ID='".db_string($_REQUEST['id'])."'");
 						$Cache->delete_value('perm_'.$_REQUEST['id']);
 					}
-					save_message("Your permission class has been saved.");
 					$Cache->delete_value('classes');
 				} else {
-					error_message($Err);
+					error($Err);
 				}
 			}
 
@@ -185,7 +184,6 @@ switch ($_REQUEST['action']){
 				$DB->query("DELETE FROM permissions WHERE ID='".db_string($_REQUEST['removeid'])."'");
 				$DB->query("UPDATE users_main SET PermissionID='".USER."' WHERE PermissionID='".db_string($_REQUEST['removeid'])."'");
 
-				save_message("The permission class has been removed.");
 				$Cache->delete_value('classes');
 			}
 

@@ -3,7 +3,7 @@
 if(empty($Return)) {
 	$ToID = $_GET['to'];
 	if($ToID == $LoggedUser['ID']) {
-		error_message("You cannot start a conversation with yourself!");
+		error("You cannot start a conversation with yourself!");
 		header('Location: inbox.php');
 	}
 }
@@ -18,7 +18,6 @@ $DB->query("SELECT Username FROM users_main WHERE ID='$ToID'");
 list($Username) = $DB->next_record();
 if(!$Username) { error(404); }
 show_header('Compose', 'inbox');
-show_message();
 ?>
 <div class="thin">
 	<h2>Send a message to <a href="user.php?id=<?=$ToID?>"><?=$Username?></a></h2>

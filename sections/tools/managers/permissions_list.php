@@ -1,6 +1,5 @@
 <?
 show_header('Manage Permissions');
-show_message();
 ?>
 <script type="text/javascript" language="javascript">
 //<![CDATA[

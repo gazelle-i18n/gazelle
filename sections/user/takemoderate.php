@@ -222,7 +222,7 @@ if ($Username!=$Cur['Username'] && check_perms('users_edit_usernames', $Cur['Cla
 	$DB->query("SELECT ID FROM users_main WHERE Username = '".$Username."'");
 	if($DB->next_record() > 0) {
 		list($UsedUsernameID) = $DB->next_record();
-		error_message("Username already in use by <a href='user.php?id=".$UsedUsernameID."'>".$Username."</a>");
+		error("Username already in use by <a href='user.php?id=".$UsedUsernameID."'>".$Username."</a>");
 		header("Location: user.php?id=".$UserID);
 		die();
 	} else {

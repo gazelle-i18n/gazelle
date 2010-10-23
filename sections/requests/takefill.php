@@ -25,9 +25,7 @@ if(!empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
 	}
 	
 	if(!empty($Err)) {
-		error_message($Err);
-		include('request.php');
-		die();
+		error($Err);
 	}
 	
 	preg_match("/torrentid=([0-9]+)/i", $Link, $Matches);
@@ -151,9 +149,7 @@ if($CategoryName == "Music") {
 
 // Fill request
 if(!empty($Err)) {
-	error_message($Err);
-	include('request.php');
-	die();
+	error($Err);
 }
 
 

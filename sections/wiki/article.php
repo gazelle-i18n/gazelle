@@ -34,7 +34,6 @@ list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Ali
 if($Read > $LoggedUser['Class']){ error(404); }
 
 show_header($Title,'wiki');
-show_message();
 ?>
 <div class="thin">
 	<h2><?=$Title?></h2>

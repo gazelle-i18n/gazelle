@@ -17,10 +17,9 @@ if($DB->record_count() == 0) {
 		ON DUPLICATE KEY UPDATE ForwardedTo = 0, UnRead = 1");
 	$DB->query("UPDATE pm_conversations_users SET ForwardedTo='$ReceiverID' WHERE ConvID='$ConvID' AND UserID='$UserID'");
 	$Cache->delete_value('inbox_new_'.$ReceiverID);
-	save_message("PM successfully forwarded to $StaffIDs[$ReceiverID].");
 	header('Location: inbox.php');
 } else {
-	error_message("$StaffIDs[$ReceiverID] already has this conversation in their inbox.");
+	error("$StaffIDs[$ReceiverID] already has this conversation in their inbox.");
 	header('Location: inbox.php?action=viewconv&id='.$ConvID);
 }
 //show_footer();

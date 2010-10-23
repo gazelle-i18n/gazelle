@@ -25,7 +25,7 @@ if(!$Err) {
 }
 
 if($Err) {
-	error_message($Err);
+	error($Err);
 	header('Location: collages.php?action=new');
 	die();
 }

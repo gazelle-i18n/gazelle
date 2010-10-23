@@ -79,7 +79,6 @@ $UserCanEdit = (!$IsFilled && $LoggedUser['ID'] == $RequestorID && $VoteCount < 
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
 show_header('View request: '.$FullName, 'comments,requests');
-show_message();
 
 ?>
 <div class="thin">

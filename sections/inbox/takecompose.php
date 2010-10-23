@@ -35,7 +35,7 @@ if(empty($Body)) {
 }
 
 if(!empty($Err)) {
-	error_message($Err);
+	error($Err);
 	//header('Location: inbox.php?action=compose&to='.$_POST['toid']);
 	$ToID = $_POST['toid'];
 	$Return = true;

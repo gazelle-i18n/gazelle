@@ -118,7 +118,6 @@ show_header('Browse collages');
 ?>
 <div class="thin">
 	<h2>Browse collages<?=(!empty($UserLink) ? (isset($CollageIDs) ? ' with contributions by '.$UserLink : ' started by '.$UserLink) : '')?></h2>
-	<? show_message(); // Typically "your collage has been deleted" ?>
 	<div>
 		<form action="" method="get">
 			<div><input type="hidden" name="action" value="search" /></div>

@@ -41,14 +41,14 @@ foreach($Emails as $CurEmail){
 		if(count($Emails) > 1) {
 			continue;
 		} else {
-			error_message('Invalid email.');
+			error('Invalid email.');
 			header('Location: user.php?action=invite');
 			die();
 		}
 	}
 	$DB->query("SELECT Expires FROM invites WHERE InviterID = ".$LoggedUser['ID']." AND Email LIKE '".$CurEmail."'");
 	if($DB->record_count() > 0) {
-		error_message("You already have a pending invite to that address!");
+		error("You already have a pending invite to that address!");
 		header('Location: user.php?action=invite');
 		die();
 	}

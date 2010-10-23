@@ -108,7 +108,7 @@ if(!$HasFilter){
 }
 
 if($Err){
-	error_message($Err);
+	error($Err);
 	header('Location: user.php?action=notify');
 	die();
 }

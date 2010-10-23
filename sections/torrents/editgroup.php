@@ -37,7 +37,6 @@ list($Name, $Image, $Body, $WikiImage, $WikiBody, $Year, $RecordLabel, $Catalogu
 if(!$Body) { $Body = $WikiBody; $Image = $WikiImage; }
 
 show_header('Edit torrent group');
-show_message();
 
 // Start printing form
 ?>

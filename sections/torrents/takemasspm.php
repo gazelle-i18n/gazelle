@@ -33,7 +33,7 @@ $Validate->SetFields('message','0','string','Invalid message.',array('maxlength'
 $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if($Err){
-	error_message($Err);
+	error($Err);
 	header('Location: '.$_SERVER['HTTP_REFERER']);
 	die();
 }

@@ -66,7 +66,6 @@ if ($TorrentTags != '') {
 
 show_header($Title,'browse,comments');
 
-show_message();
 ?>
 <div class="thin">
 	<h2><?=$DisplayName?></h2>
@@ -197,7 +196,7 @@ if($Categories[$GroupCategoryID-1] == 'Music') {
 						<input type="hidden" name="action" value="add_alias" />
 						<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 						<input type="hidden" name="groupid" value="<?=$GroupID?>" />
-						<input type="text" name="aliasname[]" size="10" />
+						<input type="text" name="aliasname[]" size="20" />
 						<select name="importance[]">
 							<option value="1">Main</option>
 							<option value="2">Guest</option>
@@ -254,7 +253,7 @@ if(count($Tags) > 0) {
 					<input type="hidden" name="action" value="add_tag" />
 					<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 					<input type="hidden" name="groupid" value="<?=$GroupID?>" />
-					<input type="text" name="tagname" size="18" />
+					<input type="text" name="tagname" size="20" />
 					<input type="submit" value="+" />
 				</form>
 				<br /><br />

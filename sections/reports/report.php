@@ -15,7 +15,6 @@ $Type = $Types[$Short];
 $ID = $_GET['id'];
 
 show_header('Report a '.$Type['title']);
-show_message();
 ?>
 <div class="thin">
 	<h2>Report <?=$Type['title']?></h2>

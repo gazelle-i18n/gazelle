@@ -1,7 +1,6 @@
 <?
 if(!check_perms('site_torrents_notify')){ error(403); }
 show_header('Manage notifications');
-show_message();
 ?>
 <div class="thin">
 	<h2>Notify me of all new torrents with...<a href="torrents.php?action=notify">(View)</a></h2>

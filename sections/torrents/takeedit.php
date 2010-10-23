@@ -93,7 +93,7 @@ switch ($Type) {
 		}
 
 		if (!empty($Properties['Remastered']) && !$Properties['UnknownRelease'] && $Properties['RemasterYear'] < 1982 && $Properties['Media'] == 'CD') {
-			error_message("You have selected a year for an album that predates the media you say it was created on.");
+			error("You have selected a year for an album that predates the media you say it was created on.");
 			header("Location: torrents.php?action=edit&id=$TorrentID");
 			die();
 		}
@@ -102,7 +102,7 @@ switch ($Type) {
 			'0','string','Remaster title must be between 2 and 80 characters.',array('maxlength'=>80, 'minlength'=>2));
 
 		if ($Properties['RemasterTitle'] == 'Original Release') {
-			error_message('"Original Release" is not a valid remaster title.');
+			error('"Original Release" is not a valid remaster title.');
 			header("Location: torrents.php?action=edit&id=$TorrentID");
 			die();
 		}
@@ -201,9 +201,7 @@ if($Err){ // Show the upload form, with the data the user entered
 	if(check_perms('site_debug')) {
 		die($Err);
 	}
-	error_message($Err);
-	header('Location: '.$_SERVER['HTTP_REFERER']);
-	die();
+	error($Err);
 }
 
 

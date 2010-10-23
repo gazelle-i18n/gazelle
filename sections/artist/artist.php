@@ -310,7 +310,6 @@ $TorrentDisplayList = ob_get_clean();
 //----------------- End building list and getting stats
 
 show_header($Name, 'requests');
-show_message();
 ?>
 <div class="thin">
 	<h2><?=$Name?><? if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<? } ?></h2>

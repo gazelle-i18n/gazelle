@@ -10,8 +10,6 @@ ID of the artist, and must be set.
 
 ************************************************************************/
 
-show_message();
-
 $ArtistID = $_GET['artistid'];
 if(!is_number($ArtistID)) { error(0); }
 
@@ -25,9 +23,7 @@ $DB->query("SELECT
 	WHERE a.ArtistID='$ArtistID'");
 
 if($DB->record_count() < 1) {
-	error_message("Cannot find the artist with the ID ".$ArtistID);
-	header("Location: log.php?search=Artist+".$ArtistID);
-	die();
+	error("Cannot find the artist with the ID ".$ArtistID.': See the <a href="log.php?search=Artist+'.$ArtistID.'">log</a>.');
 }
 
 list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, true);

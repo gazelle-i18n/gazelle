@@ -5,7 +5,6 @@ define('ANNOUNCEMENT_FORUM_ID', 19);
 show_header('Blog');
 require(SERVER_ROOT.'/classes/class_text.php');
 $Text = new TEXT;
-show_message();
 
 if(check_perms('admin_manage_blog')) {
 	if(!empty($_REQUEST['action'])) {
@@ -52,7 +51,7 @@ if(check_perms('admin_manage_blog')) {
 				if($ThreadID && is_number($ThreadID)) {
 					$DB->query("SELECT ForumID FROM forums_topics WHERE ID=".$ThreadID);
 					if($DB->record_count() < 1) {
-						error_message("No such thread exists!");
+						error("No such thread exists!");
 						header('Location: blog.php');
 					} 
 				} else {
@@ -60,7 +59,6 @@ if(check_perms('admin_manage_blog')) {
 					if($ThreadID < 1) {
 						error(0);
 					}
-					save_message("Thread ".$ThreadID." created");
 				}
 				
 				$DB->query("INSERT INTO blog (UserID, Title, Body, Time, ThreadID) VALUES ('$LoggedUser[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', '".sqltime()."', ".$ThreadID.")");

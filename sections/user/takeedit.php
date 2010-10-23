@@ -36,7 +36,7 @@ if (check_perms('site_advanced_search')) {
 $Err = $Val->ValidateForm($_POST);
 
 if($Err) {
-	error_message($Err);
+	error($Err);
 	header('Location: user.php?action=edit&userid='.$UserID);
 	die();
 }
@@ -128,7 +128,7 @@ if ($CurEmail != $_POST['email']) {
 				('$UserID', '$NewEmail', '0000-00-00 00:00:00', '".db_string($_SERVER['REMOTE_ADDR'])."')");
 		
 	} else {
-		error_message($Err);
+		error($Err);
 		header('Location: user.php?action=edit&userid='.$UserID);
 		die();
 	}
@@ -155,7 +155,7 @@ if($LoggedUser['DisableAvatar'] && $_POST['avatar'] != $U['Avatar']) {
 }
 
 if ($Err) {
-	error_message($Err);
+	error($Err);
 	header('Location: user.php?action=edit&userid='.$UserID);
 	die();
 }
@@ -258,7 +258,6 @@ if (isset($_POST['resetpasskey'])) {
 $SQL.="WHERE m.ID='".db_string($UserID)."'";
 $DB->query($SQL);
 
-save_message("Your profile has been saved.");
 header('Location: user.php?action=edit&userid='.$UserID);
 
 ?>

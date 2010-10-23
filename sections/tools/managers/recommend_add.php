@@ -16,7 +16,7 @@ $Val->SetFields('url',
 $Err = $Val->ValidateForm($_POST); // Validate the form
 
 if($Err){ // if something didn't validate
-	error_message($Err);
+	error($Err);
 	header('Location: '.$_SERVER['HTTP_REFERER']);
 	exit;
 }

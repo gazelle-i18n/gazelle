@@ -28,7 +28,6 @@ if(isset($_POST['all'])) {
 	$DB->query("DELETE FROM users_sessions WHERE UserID='$UserID' AND SessionID<>'$SessionID'");
 	$UserSessions = array($SessionID=>array('SessionID'=>$SessionID,'Browser'=>$Browser,'OperatingSystem'=>$OperatingSystem,'IP'=>$SessionIP,'LastUpdate'=>sqltime()));
 	$Cache->cache_value('users_sessions_'.$UserID, $UserSessions, 0);
-	save_message("All other sessions have been removed (logged out)");
 }
 
 if (isset($_POST['session'])) {
@@ -40,13 +39,11 @@ if (isset($_POST['session'])) {
 	$Cache->begin_transaction('users_sessions_'.$UserID);
 	$Cache->delete_row($_POST['session']);
 	$Cache->commit_transaction(0);
-	save_message("The selected session has been removed (logged out)");
 }
 
 list($UserID, $Username) = array_values(user_info($UserID));
 
 show_header($Username.' &gt; Sessions');
-show_message();
 ?>
 <div class="thin">
 <h2><?=format_username($UserID,$Username)?> &gt; Sessions</h2>

@@ -16,7 +16,6 @@ if(!isset($_GET['id']) || !is_number($_GET['id'])) {
 }
 
 show_header('Report', 'reportsv2');
-show_message();
 
 ?>
 

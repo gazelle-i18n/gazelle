@@ -33,7 +33,6 @@ list($Properties) = $DB->to_array(false,MYSQLI_BOTH);
 if(!$Properties) { error(404); }
 
 show_header('Edit torrent', 'upload');
-show_message();
 
 if(!check_perms('site_moderate_requests')) {
 	error(403);

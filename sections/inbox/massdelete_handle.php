@@ -2,7 +2,7 @@
 authorize();
 
 if(!isset($_POST['messages']) || !is_array($_POST['messages'])){
-	error_message('You forgot to select messages to delete.');
+	error('You forgot to select messages to delete.');
 	header('Location: inbox.php');
 	die();
 }

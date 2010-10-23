@@ -59,7 +59,6 @@ if($UnRead=='1') {
 }
 
 show_header('View conversation '.$Subject, 'comments,inbox');
-show_message();
 
 // Get messages
 $DB->query("SELECT SentDate, SenderID, Body, ID FROM pm_messages AS m WHERE ConvID='$ConvID' ORDER BY ID");

@@ -10,11 +10,9 @@ if($_POST['collage_id'] && is_number($_POST['collage_id'])) {
 	$DB->query("UPDATE collages SET Deleted = '0' WHERE ID=$CollageID");
 	$Cache->delete_value('collage_'.$CollageID);
 	write_log("Collage ".$CollageID." was recovered by ".$LoggedUser['Username']);
-	save_message("Collage recovered \o/");
 	header("Location: collages.php?id=$CollageID");
 }
 show_header("Collage recovery!");
-show_message();
 ?>
 <div class="thin center">
 	<div class="box" style="width:600px; margin:0px auto;">
@@ -32,6 +30,5 @@ show_message();
 		</div>
 	</div>
 </div>
-<?
-show_footer();
-?>
+<? show_footer();
+

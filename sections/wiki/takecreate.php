@@ -20,9 +20,7 @@ if(!$Err) {
 }
 
 if($Err) {
-	error_message($Err);
-	header('Location: wiki.php?action=create');
-	die();
+	error($Err);
 }
 
 if(check_perms('admin_manage_wiki')){

@@ -93,12 +93,6 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']
 
 $Debug->set_flag('start user handling');
 
-
-session_start();
-
-
-$Debug->set_flag('session started');
-
 // Get permissions
 list($Classes, $ClassLevels) = $Cache->get_value('classes');
 if(!$Classes) {
@@ -518,7 +512,6 @@ function logout() {
 	$Cache->delete_value('user_info_'.$LoggedUser['ID']);
 	$Cache->delete_value('user_stats_'.$LoggedUser['ID']);
 	$Cache->delete_value('user_info_heavy_'.$LoggedUser['ID']);
-	unset($_SESSION['logged_user']);
 
 	header('Location: login.php');
 	
@@ -528,8 +521,7 @@ function logout() {
 function enforce_login() {
 	global $SessionID, $LoggedUser;
 	if (!$SessionID || !$LoggedUser) {
-		$_SESSION['after_log']['url'] = $_SERVER['REQUEST_URI'];
-		$_SESSION['redirect'] = $_SERVER['REQUEST_URI'];
+		setcookie('redirect',$_SERVER['REQUEST_URI'],time()+60*30,'/','',false);
 		logout();
 	}
 }
@@ -575,30 +567,6 @@ function show_footer($Options=array()) {
 	global $ScriptStartTime, $LoggedUser, $Cache, $DB, $SessionID, $UserSessions, $Debug, $Time;
 	if (!is_array($LoggedUser)) { require(SERVER_ROOT.'/design/publicfooter.php'); }
 	else { require(SERVER_ROOT.'/design/privatefooter.php'); }
-}
-
-/*-- show_message function -----------------------------------------------*/
-/*------------------------------------------------------------------------*/
-/* This function is to pass errors and messages from one page to another. */
-/**************************************************************************/
-
-function show_message() {
-	if (!empty($_SESSION['error_message'])) {
-		echo '<div class="error_message">',$_SESSION['error_message'],'</div>';
-		$_SESSION['error_message'] = '';
-	}
-	if (!empty($_SESSION['save_message'])) {
-		echo '<div class="save_message">',$_SESSION['save_message'],'</div>';
-		$_SESSION['save_message'] = '';
-	}
-}
-
-function save_message($Str) {
-	$_SESSION['save_message'] = $Str;
-}
-
-function error_message($Str) {
-	$_SESSION['error_message'] = $Str;
 }
 
 function cut_string($Str,$Length,$Hard=0,$ShowDots=1) {
@@ -1753,11 +1721,6 @@ function form($Index, $Return = false) {
 		} else {
 			echo display_str($_GET[$Index]);
 		}
-	} elseif(!empty($_SESSION['form'][$Index])) {if($Return) {
-			return display_str($_SESSION['form'][$Index]);
-		} else {
-			echo display_str($_SESSION['form'][$Index]);
-		}
 	}
 }
 
@@ -1774,15 +1737,9 @@ function selected($Name, $Value, $Attribute='selected', $Array = array()) {
 			if($_GET[$Name] == $Value) {
 				echo ' '.$Attribute.'="'.$Attribute.'"';
 			}
-		} elseif(isset($_SESSION['form'][$Name])) {
-			if($_SESSION['form'][$Name] == $Value) {
-				echo ' '.$Attribute.'="'.$Attribute.'"';
-			}
 		}
 	}
 }
-
-
 function error($Error, $Ajax=false) {
 	global $Debug;
 	require(SERVER_ROOT.'/sections/error/index.php');
@@ -1831,14 +1788,11 @@ if(!preg_match('/^[a-z0-9]+$/i', $Document)) { error(404); }
 
 require(SERVER_ROOT.'/sections/'.$Document.'/index.php');
 $Debug->set_flag('completed module execution');
-/*
-//Standard headers
-header('Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0');
-header('Pragma:');
-*/
 
-header('Expires: '.date('D, d M Y H:i:s', time()+(3600*2)).' GMT');
-header('Last-Modified: '.date('D, d M Y H:i:s').' GMT');
+/* Required in the absence of session_start() for providing that pages will change 
+upon hit rather than being browser cache'd for changing content. */
+header('Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0');
+header('Pragma: no-cache');
 
 //Flush to user
 ob_end_flush();

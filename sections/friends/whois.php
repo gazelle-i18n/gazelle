@@ -7,7 +7,6 @@
  */
 show_header();
 if(empty($_GET['username'])) {
-show_message();
 ?>
 <div class='thin center'>
 	<div class="box" style="width:600px; margin:0px auto;">
@@ -29,8 +28,7 @@ show_message();
 	$Username2 = $_GET['username'];
 	$DB->query("SELECT ID FROM users_main WHERE Username LIKE '".db_string($Username2)."'");
 	if($DB->record_count() < 1) {
-		error_message("No user with that username was found.");
-		header('Location: friends.php?action=whois');
+		error("No user with that username was found.");
 	}
 	list($ID2) = $DB->next_record();
 	$ID1 = $LoggedUser['ID'];
