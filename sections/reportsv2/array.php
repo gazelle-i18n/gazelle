@@ -291,7 +291,7 @@ $Types = array(
 					'warn' => '0',
 					'delete' => '0',
 					'pm' => 'The [url=http://what.cd/rules.php?p=upload#r2.3.12]Uploading Rules[/url] require all uploads to be properly tagged. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
-[b]You can avoid a 1-week warning by fixing this torrent yourself![/b] It\'s easy, and only takes a few minutes: Add or fix the required tags, and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Trump", indicate in the report comments that you have fixed the tags, and provide a link (PL) to the new torrent.')
+[b]You can avoid a 1-week warning by fixing this torrent yourself![/b] It\'s easy, and only takes a few minutes: Add or fix the required tags, and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Tag Trump", indicate in the report comments that you have fixed the tags, and provide a link (PL) to the new torrent.')
 			),
 			'folders_bad' => array(
 				'priority' => '701',

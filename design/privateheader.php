@@ -160,7 +160,7 @@ if ($MyNews < $CurrentNews) {
 //Inbox
 $NewMessages = $Cache->get_value('inbox_new_'.$LoggedUser['ID']);
 if ($NewMessages === false) {
-	$DB->query("SELECT COUNT(UnRead) FROM pm_conversations_users WHERE UserID='".$LoggedUser['ID']."' AND UnRead = '1'");
+	$DB->query("SELECT COUNT(UnRead) FROM pm_conversations_users WHERE UserID='".$LoggedUser['ID']."' AND UnRead = '1' AND InInbox = '1'");
 	list($NewMessages) = $DB->next_record();
 	$Cache->cache_value('inbox_new_'.$LoggedUser['ID'], $NewMessages, 0);
 }
@@ -220,6 +220,7 @@ if(check_perms('admin_reports')) {
 } else if(check_perms('project_team')) {
 		$ModBar[] = '<a href="reports.php">'.'Request update reports'.'</a>';
 }
+
 
 
 if (!empty($Alerts) || !empty($ModBar)) {

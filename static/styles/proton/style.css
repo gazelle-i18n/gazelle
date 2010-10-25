@@ -1185,9 +1185,12 @@ ul#userinfo_username {
   color: #8c8c8c;
 }
 
+/* Toolbox */
 
-
-
+.permission_container {
+	float:left;
+	width:33.33%;
+}
 
 /* TORRENTS */
 

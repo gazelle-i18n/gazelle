@@ -146,7 +146,7 @@ switch ($Type) {
 	case 'Audiobooks':
 	case 'Comedy':
 		$Validate->SetFields('title',
-			'1','string','Title must be between 2 and 200 characters.',array('maxlength'=>200, 'minlength'=>2));
+			'1','string','Title must be between 2 and 300 characters.',array('maxlength'=>300, 'minlength'=>2));
 		
 		$Validate->SetFields('year',
 			'1','number','The year of the release must be entered.');
@@ -182,7 +182,7 @@ switch ($Type) {
 	case 'E-Books':
 	case 'E-Learning Videos':
 		$Validate->SetFields('title',
-			'1','string','Title must be between 2 and 200 characters.',array('maxlength'=>200, 'minlength'=>2));
+			'1','string','Title must be between 2 and 300 characters.',array('maxlength'=>300, 'minlength'=>2));
 		break;
 }
 

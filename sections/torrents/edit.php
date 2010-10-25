@@ -81,7 +81,7 @@ if(!($Properties['Remastered'] && !$Properties['RemasterYear']) || check_perms('
 		case 'Comics':
 		case 'E-Books':
 		case 'E-Learning Videos':
-			$TorrentForm->simple_form();
+			$TorrentForm->simple_form($Properties['CategoryID']);
 			break;
 		default:
 			$TorrentForm->music_form('');

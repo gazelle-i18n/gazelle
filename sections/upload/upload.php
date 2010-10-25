@@ -106,8 +106,8 @@ $DB->query("SELECT
 $TorrentForm->head();
 switch ($UploadForm) {
 	case 'Music':
-	$TorrentForm->music_form($GenreTags);
-	break;
+		$TorrentForm->music_form($GenreTags);
+		break;
 		
 	case 'Audiobooks':
 	case 'Comedy':
@@ -118,7 +118,7 @@ switch ($UploadForm) {
 	case 'Comics':
 	case 'E-Books':
 	case 'E-Learning Videos':
-		$TorrentForm->simple_form();
+		$TorrentForm->simple_form($Properties['CategoryID']);
 		break;
 	default:
 		$TorrentForm->music_form($GenreTags);

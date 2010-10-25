@@ -1,5 +1,5 @@
 function Categories() {
-	ajax.get('ajax.php?action=upload_section&section=' + $('#categories').raw().options[$('#categories').raw().selectedIndex].value, function (response) {
+	ajax.get('ajax.php?action=upload_section&categoryid=' + $('#categories').raw().value, function (response) {
 		$('#dynamic_form').raw().innerHTML = response;
 	});
 }

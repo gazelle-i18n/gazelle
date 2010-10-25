@@ -419,8 +419,9 @@ if($Day != next_day() || $_GET['runday']){
 	}
 	
 	sleep(5);
-	
+
 	//------------- Rescore 0.95 logs of disabled users
+
 	$LogQuery = $DB->query("SELECT DISTINCT t.ID FROM torrents AS t JOIN users_main AS um ON t.UserID = um.ID JOIN torrents_logs_new AS tl ON tl.TorrentID = t.ID WHERE um.Enabled = '2' and t.HasLog = '1' and LogScore = 100 and Log LIKE 'EAC extraction logfile from%'");
 	$Details = array();
 	$Details[] = "Ripped with EAC v0.95, -1 point [1]";

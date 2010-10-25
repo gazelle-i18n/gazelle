@@ -88,8 +88,8 @@ class TORRENT_FORM {
 				</td>
 				<td>
 				<select id="categories" name="type" onchange="Categories()"<?=$this->Disabled?>>
-<?			foreach(display_array($this->Categories) as $Cat) {
-				echo "<option value='$Cat'";
+<?			foreach(display_array($this->Categories) as $Index => $Cat) {
+				echo "<option value='$Index'";
 				if($Cat == $this->Torrent['CategoryName']) { echo " selected='selected'"; }
 				echo ">";
 				echo $Cat;
@@ -529,6 +529,7 @@ class TORRENT_FORM {
 		$Torrent = $this->Torrent;
 ?>
 		<table cellpadding="3" cellspacing="1" border="0" class="border slice" width="100%">
+<?		if($this->NewTorrent){ ?>
 			<tr id="title_tr">
 				<td class="label">Artist - Title</td>
 				<td>
@@ -536,6 +537,7 @@ class TORRENT_FORM {
 					<p class="min_padding">Should only include the artist if applicable</p>
 				</td>
 			</tr>
+<?		} ?>
 			<tr id="year_tr">
 				<td class="label">Year</td>
 				<td>
@@ -618,16 +620,20 @@ class TORRENT_FORM {
 
 	
 
-	function simple_form() {
+	function simple_form($CategoryID) {
 		$Torrent = $this->Torrent; 
 ?>		<table cellpadding="3" cellspacing="1" border="0" class="border slice" width="100%">
+<? 		if($this->NewTorrent) {  ?> 
 			<tr id="name">
+<?			if ($this->Categories[$CategoryID] == 'E-Books') { ?>
+				<td class="label">Author - Title</td>
+<?			} else { ?>
 				<td class="label">Title</td>
-				<td>
+<?			} ?>
+			<td>
 					<input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" />
 				</td>
 			</tr>
-<? 		if($this->NewTorrent) {  ?> 
 			<tr>
 				<td class="label">Tags</td>
 				<td>

@@ -97,7 +97,7 @@ if(empty($Importances) || empty($TorrentList)) {
 	$GroupIDs = $DB->collect('GroupID');
 	$Importances = $DB->to_array('GroupID', MYSQLI_BOTH, false);
 	if(count($GroupIDs)>0) {
-		$TorrentList = get_groups($GroupIDs, true, false);
+		$TorrentList = get_groups($GroupIDs, true,true);
 		$TorrentList = $TorrentList['matches'];
 	} else {
 		$TorrentList = array();
@@ -170,7 +170,7 @@ $NumSnatches = 0;
 
 $OpenTable = false;
 foreach ($TorrentList as $GroupID=>$Group) {
-	list($GroupID, $GroupName, $GroupYear, $GroupRecordLabel, $GroupCatalogueNumber, $TagList, $ReleaseType, $Torrents) = array_values($Group);
+	list($GroupID, $GroupName, $GroupYear, $GroupRecordLabel, $GroupCatalogueNumber, $TagList, $ReleaseType, $Torrents, $Artists) = array_values($Group);
 	
 	
 	
@@ -226,7 +226,12 @@ foreach ($TorrentList as $GroupID=>$Group) {
 		$LastReleaseType = $ReleaseType;
 	}
 
+	
 	$DisplayName ='<a href="torrents.php?id='.$GroupID.'" title="View Torrent">'.$GroupName.'</a>';
+	if (($ReleaseType == 1023) || ($ReleaseType == 1024)) {
+		$DisplayName = display_artists(array(1 => $Artists), true, true).$DisplayName;
+	}
+
 	if($GroupYear>0) { $DisplayName = $GroupYear. ' - '.$DisplayName; }
 
 ?>
