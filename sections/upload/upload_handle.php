@@ -29,8 +29,8 @@ define('QUERY_EXCEPTION',true); // Shut up debugging
 // it into the database.														//
 
 $Properties=array();
-$Type = $_POST['type'];
-$TypeID = (array_search($Type, $Categories))+1;
+$Type = $Categories[(int)$_POST['type']];
+$TypeID = $_POST['type'] + 1;
 $Properties['CategoryName'] = $_POST['type'];
 $Properties['Title'] = $_POST['title'];
 $Properties['Remastered'] = (isset($_POST['remaster'])) ? 1 : 0;
@@ -77,7 +77,7 @@ $RequestID = $_POST['requestid'];
 //******************************************************************************//
 //--------------- Validate data in upload form ---------------------------------//
 
-$Validate->SetFields('type','1','inarray','Not a valid type.',array('inarray'=>$Categories));
+$Validate->SetFields('type','1','inarray','Not a valid type.',array('inarray'=>array_keys($Categories)));
 switch ($Type) {
 	case 'Music':
 		if(!$_POST['groupid']) {

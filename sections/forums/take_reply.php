@@ -62,7 +62,7 @@ if(!$ThreadInfo = $Cache->get_value('thread_'.$TopicID.'_info')) {
 		WHERE t.ID = '$TopicID'
 		GROUP BY fp.TopicID");
 	if($DB->record_count()==0) { error(404); }
-	$ThreadInfo = $DB->next_record(MYSQLI_ASSOC);
+	$ThreadInfo = $DB->next_record(MYSQLI_ASSOC, false);
 	$Cache->cache_value('thread_'.$TopicID.'_info', $ThreadInfo, 0);
 }
 $ForumID = $ThreadInfo['ForumID'];

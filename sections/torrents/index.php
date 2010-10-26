@@ -325,7 +325,6 @@ if(!empty($_REQUEST['action'])) {
 			// Delete thread info cache (eg. number of pages)
 			$Cache->delete('torrentcomments_count_'.$GroupID);
 			break;
-
 		case 'regen_filelist' :
 			if(check_perms('users_mod') && !empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
 				$TorrentID = $_GET['torrentid'];

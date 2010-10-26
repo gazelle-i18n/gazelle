@@ -297,23 +297,23 @@ if ($ThreadInfo['NoPoll'] == 0) {
 <? 
 } //End Polls
 
-
-$LastPost = 0;
+$LastPost = end($Thread);
+$LastPost = $LastPost['ID'];
+reset($Thread);
 
 //Sqeeze in stickypost
 if($ThreadInfo['StickyPostID']) {
-	array_unshift($Thread, $ThreadInfo['StickyPost']);
-	$Thread[] = $ThreadInfo['StickyPost'];
+	if($ThreadInfo['StickyPostID'] != $Thread[0]['ID']) {
+		array_unshift($Thread, $ThreadInfo['StickyPost']);
+	}
+	if($ThreadInfo['StickyPostID'] != $Thread[count($Thread)-1]['ID']) {
+		$Thread[] = $ThreadInfo['StickyPost'];
+	}
 }
-
 
 foreach($Thread as $Key => $Post){
 	list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername) = array_values($Post);
 	list($AuthorID, $Username, $PermissionID, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(user_info($AuthorID));
-	if(!$StickyPostID || $PostID != $StickPostID || ($Key != 0 || $Key == (count($Thread) - 1))) {
-		//Only update if there's no sticky post or it's appearing in the thread normally.
-		$LastPost = $PostID;
-	}
 ?>
 <table class="forum_post box vertical_margin<? if (((!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) && $PostID>$LastRead && strtotime($AddedTime)>$LoggedUser['CatchupTime']) || (isset($RequestKey) && $Key==$RequestKey)) { echo ' forum_unread'; } ?>" id="post<?=$PostID?>">
 	<tr class="colhead_dark">
