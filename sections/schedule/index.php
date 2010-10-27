@@ -391,7 +391,11 @@ if($Day != next_day() || $_GET['runday']){
 		send_pm($UserID, 0, db_string("You have been taken off Ratio Watch"), db_string("Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=http://what.cd/rules.php?p=ratio]here[/url].\n"), '');
 		echo "Ratio watch off: $UserID\n";
 	}
-	
+	$DB->set_query_id($UserQuery);
+	$Passkeys = $DB->collect('torrent_pass');
+	foreach($Passkeys as $Passkey) {
+		update_tracker('update_user', array('passkey' => $Passkey, 'can_leech' => '1'));
+	}
 	
 	// Put user on ratio watch if he doesn't meet the standards
 	sleep(10);
@@ -462,7 +466,11 @@ if($Day != next_day() || $_GET['runday']){
 		echo "Ratio watch disabled: $ID\n";
 	}
 
-	
+	$DB->set_query_id($UserQuery);
+	$Passkeys = $DB->collect('torrent_pass');
+	foreach($Passkeys as $Passkey) {
+		update_tracker('update_user', array('passkey' => $Passkey, 'can_leech' => '0'));
+	}
 	
 	//------------- Disable inactive user accounts --------------------------//
 	sleep(5);

@@ -311,7 +311,9 @@ $SQL .= "
 	WHERE ID=$TorrentID
 ";
 $DB->query($SQL);
-
+if(check_perms('torrents_freeleech') && $Properties['FreeLeech'] != $CurFreeLeech) {
+	update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $Properties['FreeLeech'] ? '1' : '0'));
+}
 
 $DB->query("SELECT GroupID, Time FROM torrents WHERE ID='$TorrentID'");
 list($GroupID, $Time) = $DB->next_record();

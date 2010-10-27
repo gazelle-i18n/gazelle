@@ -72,8 +72,15 @@ $DB->query("INSERT INTO reports
 				(".db_string($LoggedUser['ID']).", ".$ID." , '".$Short."', '".sqltime()."', '".db_string($Reason)."')");
 $ReportID = $DB->inserted_id();
 
-$Channel = (($Short == "request_update") ? "#requestedits" : ADMIN_CHAN);
-send_irc("PRIVMSG ".$Channel." :".$ReportID." - ".$LoggedUser['Username']." just reported a ".$Short.": http://what.cd/".$Link." : ".$Reason);
+$Channels = array(ADMIN_CHAN);
+
+if($Short == "request_update") {
+	$Channels[] = "#requestedits";
+}
+
+foreach($Channels as $Channel) {
+	send_irc("PRIVMSG ".$Channel." :".$ReportID." - ".$LoggedUser['Username']." just reported a ".$Short.": http://what.cd/".$Link." : ".$Reason);
+}
 
 $Cache->delete_value('num_other_reports');
 

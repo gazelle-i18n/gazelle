@@ -92,7 +92,7 @@ if(!empty($_REQUEST['confirm'])) {
 
 			$DB->query("SELECT ID FROM stylesheets WHERE `Default`='1'");
 			list($StyleID) = $DB->next_record();
-
+			update_tracker('add_user', array('id' => $UserID, 'passkey' => $torrent_pass));
 			$AuthKey = make_secret();
 			
 			$DB->query("INSERT INTO users_info (UserID,StyleID,AuthKey, Inviter, JoinDate) VALUES ('$UserID','$StyleID','".db_string($AuthKey)."', '$InviterID', '".sqltime()."')");

@@ -615,6 +615,8 @@ $DB->query("
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
 
+update_tracker('add_torrent', array('id' => $TorrentID, 'info_hash' => rawurlencode($InfoHash), 'freetorrent' => '0'));
+
 
 
 //******************************************************************************//

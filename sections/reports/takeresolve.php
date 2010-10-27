@@ -11,9 +11,9 @@ if(empty($_POST['reportid']) && !is_number($_POST['reportid'])) {
 
 $ReportID = $_POST['reportid'];
 
+$DB->query("SELECT Type FROM reports WHERE ID = ".$ReportID);
+list($Type) = $DB->next_record();
 if(!check_perms('admin_reports')) {
-	$DB->query("SELECT Type FROM reports WHERE ID = ".$ReportID);
-	list($Type) = $DB->next_record();
 	if($Type != "request_update") {
 		error(403);
 	}
@@ -29,6 +29,7 @@ $Channels = array(ADMIN_CHAN);
 if($Type == "request_update") {
 	$Channels[] = "#requestedits";
 }
+
 $DB->query("SELECT COUNT(ID) FROM reports WHERE Status = 'New'");
 list($Remaining) = $DB->next_record();
 

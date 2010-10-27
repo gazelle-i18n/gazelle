@@ -133,6 +133,8 @@ if ($_POST['UserStatus']=="delete" && check_perms('users_delete_users')) {
 	$DB->query("DELETE FROM users_info WHERE UserID=".$UserID);
 	$Cache->delete_value('user_info_'.$UserID);
 	
+	update_tracker('remove_user', array('passkey' => $Cur['torrent_pass']));
+	
 	header("Location: log.php?search=User+".$UserID);
 	die();
 }
@@ -330,7 +332,7 @@ if ($DisableLeech!=$Cur['can_leech'] && check_perms('users_disable_any')) {
 	if (!empty($UserReason)) {
 		send_pm($UserID, 0, db_string('Your leeching privileges have been disabled'),db_string("Your leeching privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
-	
+	update_tracker('update_user', array('passkey' => $Cur['torrent_pass'], 'can_leech' => $DisableLeech));
 }
 
 if ($DisableInvites!=$Cur['DisableInvites'] && check_perms('users_disable_any')) {
@@ -424,7 +426,7 @@ if ($EnableUser!=$Cur['Enabled'] && check_perms('users_disable_users')) {
 		$CanLeech = 1;
 		$UpdateSet[]="m.can_leech='1'";
 		$LightUpdates['Enabled'] = 1;
-		
+		update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass']));
 	}
 	$Cache->replace_value('enabled_'.$UserID, $EnableUser, 0);
 }
@@ -434,7 +436,8 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
 	$UpdateSet[]="torrent_pass='$Passkey'";
 	$EditSummary[]="passkey reset";
 	$HeavyUpdates['torrent_pass']=$Passkey;
-	
+	//MUST come after the case for updating can_leech.
+	update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 
 if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {

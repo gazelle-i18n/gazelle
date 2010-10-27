@@ -252,7 +252,7 @@ if (isset($_POST['resetpasskey'])) {
 	$Cache->update_row(false, array('torrent_pass'=>$NewPassKey));
 	$Cache->commit_transaction(0);
 	
-	
+	update_tracker('change_passkey', array('oldpasskey' => $OldPassKey, 'newpasskey' => $NewPassKey));
 }
 
 $SQL.="WHERE m.ID='".db_string($UserID)."'";

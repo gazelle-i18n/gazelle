@@ -996,57 +996,6 @@ function delete_torrent($ID, $GroupID=0) {
 	
 	
 	
-	$DB->query("UPDATE torrents SET flags=1 WHERE ID = '$ID'"); // Let xbtt delete the torrent
-	
-	$Cache->decrement('stats_torrent_count');
-
-	$DB->query("SELECT COUNT(ID) FROM torrents WHERE GroupID='$GroupID' AND flags <> 1");
-	list($Count) = $DB->next_record();
-
-	if($Count == 0) {
-		delete_group($GroupID);
-	} else {
-		update_hash($GroupID);
-		//Artists
-		$DB->query("SELECT ArtistID
-				FROM torrents_artists 
-				WHERE GroupID = ".$GroupID);
-		$ArtistIDs = $DB->collect('ArtistID');
-		foreach($ArtistIDs as $ArtistID) {
-			$Cache->delete_value('artist_'.$ArtistID);
-		}
-	}
-
-	// Torrent notifications
-	$DB->query("SELECT UserID FROM users_notify_torrents WHERE TorrentID='$ID'");
-	while(list($UserID) = $DB->next_record()) {
-		$Cache->delete_value('notifications_new_'.$UserID);
-	}
-	$DB->query("DELETE FROM users_notify_torrents WHERE TorrentID='$ID'");
-	$DB->query("DELETE FROM torrents_files WHERE TorrentID='$ID'");
-	$DB->query("DELETE FROM torrents_bad_tags WHERE TorrentID = ".$ID);
-	$DB->query("DELETE FROM torrents_bad_folders WHERE TorrentID = ".$ID);
-	$DB->query("DELETE FROM torrents_bad_files WHERE TorrentID = ".$ID);
-	$Cache->delete_value('torrent_download_'.$ID);
-	$Cache->delete_value('torrent_group_'.$GroupID);
-	$Cache->delete_value('torrents_details_'.$GroupID);
-}
-
-function delete_group($GroupID) {
-	global $DB, $Cache;
-
-	write_log("Group ".$GroupID." automatically deleted (No torrents have this group).");
-
-	//Never call this unless you're certain the group is no longer used by any torrents
-	$DB->query("SELECT CategoryID FROM torrents_group WHERE ID='$GroupID'");
-	list($Category) = $DB->next_record();
-	if($Category == 1) {
-		$Cache->decrement('stats_album_count');
-	}
-	$Cache->decrement('stats_group_count');
-	
-	
-	
 	// Collages
 	$DB->query("SELECT CollageID FROM collages_torrents WHERE GroupID='$GroupID'");
 	if($DB->record_count()>0) {
@@ -1773,9 +1722,80 @@ function disable_users($UserIDs, $AdminComment, $BanReason = 1) {
 		$Cache->update_row(false, array('Enabled' => 2));
 		$Cache->commit_transaction(0);
 	}
-	
+	$DB->query("SELECT torrent_pass FROM users_main WHERE ID in (".implode(", ",$UserIDs).")");
+	$PassKeys = $DB->collect('torrent_pass');
+	$Concat = "";
+	foreach($PassKeys as $PassKey) {
+		if(strlen($Concat) > 4000) {
+			update_tracker('remove_users', array('passkeys' => $Concat));
+			$Concat = $PassKey;
+		} else {
+			$Concat .= $PassKey;
+		}
+	}
+	update_tracker('remove_users', array('passkeys' => $Concat));
 }
 
+
+/**
+ * Send a GET request over a socket directly to the tracker
+ * For example, update_tracker('change_passkey', array('oldpasskey' => OLD_PASSKEY, 'newpasskey' => NEW_PASSKEY)) will send the request:
+ * GET /tracker_32_char_secret_code/update?action=change_passkey&oldpasskey=OLD_PASSKEY&newpasskey=NEW_PASSKEY HTTP/1.1
+ * @param $Action The action to send
+ * @param $Updates An associative array of key->value pairs to send to the tracker
+ */
+function update_tracker($Action, $Updates) {
+	//Build request
+	$Get = '/update?action='.$Action;
+	foreach($Updates as $Key => $Value) {
+		$Get .= '&'.$Key.'='.$Value;
+	}
+
+	send_irc('PRIVMSG #tracker :'.$Get);
+	$Path = TRACKER_SECRET.$Get;
+
+	$Return = "";
+	$Attempts = 0;
+	while($Return != "success" && $Attempts < 3) {
+	
+		// Send update
+		$File = fsockopen(TRACKER_HOST, TRACKER_PORT, $ErrorNum, $ErrorString);
+		if($File) {
+			$Header = 'GET /'.$Path.' HTTP/1.1\r\n';
+			if(fwrite($File, $Header) === false) {
+				$Attempts++;
+				$Err = "Failed to fwrite()";
+				sleep(3);
+				continue;
+			}
+		} else {
+			$Attempts++;
+			$Err = "Failed to fsockopen() - ".$ErrorNum." - ".$ErrorString;
+			sleep(3);
+			continue;
+		}
+
+		// Check for response.
+
+		$ResHeader = '';
+		do {
+			$ResHeader .= fread($File, 1);
+		} while (!ends_with($ResHeader, "\r\n\r\n"));
+
+		$Response = '';
+		while($Line = fgets($File)) {
+			$Response .= $Line;
+		}
+
+		$Return = chop($Response);
+		$Attempts++;
+	}
+
+	if($Return != "success") {
+		send_irc("PRIVMSG #admin :Failed to update ocelot: ".$Err." : ".$Get);
+	}
+	return ($Return == "success");
+}
 
 
 
