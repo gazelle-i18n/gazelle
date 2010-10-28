@@ -89,13 +89,18 @@ if(!empty($_GET['userid'])) {
 		error(404);
 	}
 	$User = user_info($UserID);
+	$Perms = get_permissions($User['PermissionID']);
+	$UserClass = $Perms['Class'];
+
 	$UserLink = '<a href="user.php?id='.$UserID.'">'.$User['Username'].'</a>';
 	if(!empty($_GET['contrib'])) {
+		if (!check_paranoia('collagecontribs', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$DB->query("SELECT DISTINCT CollageID FROM collages_torrents WHERE UserID = $UserID");
 		$CollageIDs = $DB->collect('CollageID');
 		if(empty($CollageIDs)) {
 			$SQL .= " AND 0";
 		} else {
+			if (!check_paranoia('collages', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 			$SQL .= " AND c.ID IN(".db_string(implode(',', $CollageIDs)).")";
 		}
 	} else {

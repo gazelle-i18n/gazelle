@@ -74,13 +74,17 @@ while(list($FriendID, $Comment, $Username, $Uploaded, $Downloaded, $Class, $Enab
 		<tr>
 			<td class="colhead" colspan="3">
 				<span style="float:left;"><?=format_username($FriendID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $Class)?>
-<?	if($Paranoia < 4 || check_perms('users_mod')) { ?>
+<?	if(check_paranoia('ratio', $Paranoia, $Class, $FriendID)) { ?>
 				&nbsp;Ratio: <strong><?=ratio($Uploaded, $Downloaded)?></strong>
+<?	} ?>
+<?	if(check_paranoia('uploaded', $Paranoia, $Class, $FriendID)) { ?>
 				&nbsp;Up: <strong><?=get_size($Uploaded)?></strong>
+<?	} ?>
+<?	if(check_paranoia('downloaded', $Paranoia, $Class, $FriendID)) { ?>
 				&nbsp;Down: <strong><?=get_size($Downloaded)?></strong>
 <?	} ?>
 				</span>
-<?	if($Paranoia < 5 || check_perms('users_mod')) { ?>
+<?	if(check_paranoia('lastseen', $Paranoia, $Class, $FriendID)) { ?>
 				<span style="float:right;"><?=time_diff($LastAccess)?></span>
 <?	} ?>
 			</td>

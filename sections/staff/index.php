@@ -5,6 +5,7 @@ show_header('Staff');
 if (!$Support = $Cache->get_value('staff')) {
 	$DB->query("SELECT
 		m.ID,
+		p.Level,
 		m.Username,
 		m.Paranoia,
 		m.LastAccess,
@@ -45,7 +46,7 @@ if (!$Support = $Cache->get_value('staff')) {
 <?
 	$Row = 'a';
 	foreach($FrontLineSupport as $Support) {
-		list($ID, $Username, $Paranoia, $LastAccess, $SupportFor) = $Support;
+		list($ID, $Class, $Username, $Paranoia, $LastAccess, $SupportFor) = $Support;
 		$Row = ($Row == 'a') ? 'b' : 'a';
 ?>
 			<tr class="row<?=$Row?>">
@@ -53,7 +54,7 @@ if (!$Support = $Cache->get_value('staff')) {
 					<?=format_username($ID, $Username)?>
 				</td>
 				<td class="nobr">
-					<? if ($Paranoia < 5) { echo time_diff($LastAccess); } else { echo 'Hidden by user'; }?>
+					<? if (check_paranoia('lastseen', $Paranoia, $Class)) { echo time_diff($LastAccess); } else { echo 'Hidden by user'; }?>
 				</td>
 				<td class="nobr">
 					<?=$SupportFor?>
@@ -97,7 +98,7 @@ if (!$Support = $Cache->get_value('staff')) {
 					<?=format_username($ID, $Username)?>
 				</td>
 				<td class="nobr">
-					<? if ($Paranoia < 5) { echo time_diff($LastAccess); } else { echo 'Hidden by staff member'; }?>
+					<? if (check_paranoia('lastseen', $Paranoia, $Class)) { echo time_diff($LastAccess); } else { echo 'Hidden by staff member'; }?>
 				</td>
 				<td class="nobr">
 					<?=$Remark?>

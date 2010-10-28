@@ -20,7 +20,7 @@ if(!check_perms('torrents_edit')) {
 if(check_perms('torrents_freeleech') && (isset($_POST['freeleech']) xor isset($_POST['unfreeleech']))) {
 	$Free = $_POST['freeleech'] ? '1' : '0';
 	$DB->query("SELECT info_hash FROM torrents WHERE GroupID = ".$GroupID);
-	$InfoHashes = $DB->collect('info_hash');
+	$InfoHashes = $DB->collect('info_hash', false);
 	foreach($InfoHashes as $InfoHash) {
 		update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $Free));
 	}

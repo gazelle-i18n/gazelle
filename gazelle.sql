@@ -887,7 +887,8 @@ CREATE TABLE `torrents_artists` (
   KEY `ArtistID` (`ArtistID`),
   KEY `AliasID` (`AliasID`),
   KEY `Importance` (`Importance`),
-  KEY `GroupID` (`GroupID`)
+  KEY `GroupID` (`GroupID`),
+  KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `torrents_bad_filenames` (
@@ -1178,7 +1179,7 @@ CREATE TABLE `users_main` (
   `Downloaded` bigint(20) unsigned NOT NULL DEFAULT '0',
   `Title` varchar(255) NOT NULL DEFAULT '',
   `Enabled` enum('0','1','2') NOT NULL DEFAULT '0',
-  `Paranoia` enum('0','1','2','3','4','5') NOT NULL DEFAULT '0',
+  `Paranoia` text,
   `Visible` enum('1','0') NOT NULL DEFAULT '1',
   `Invites` int(10) unsigned NOT NULL DEFAULT '0',
   `PermissionID` int(10) unsigned NOT NULL,

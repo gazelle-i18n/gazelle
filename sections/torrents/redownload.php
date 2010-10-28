@@ -10,8 +10,8 @@ if(!check_perms('zip_downloader')) {
 }
 
 if ($UserID != $LoggedUser['ID']) {
-	$DB->query("SELECT Paranoia FROM users_main WHERE ID='".$UserID."'");
-	list($Paranoia)=$DB->next_record();
+	$DB->query("SELECT m.Paranoia, p.Level FROM users_main AS m JOIN permissions AS p ON p.ID=m.PermissionID WHERE ID='".$UserID."'");
+	list($Paranoia, $UserClass)=$DB->next_record();
 }
 
 require(SERVER_ROOT.'/classes/class_torrent.php');
@@ -22,16 +22,16 @@ if (empty($_GET['type'])) {
 } else {
 	switch ($_GET['type']) {
 		case 'uploads':
-			if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=3) { error(403); }
+			if(!check_paranoia('uploads', $Paranoia, $UserClass, $UserID)) { error(403); }
 			$SQL = "WHERE t.UserID='$UserID'";
 			break;
 		case 'snatches':
-			if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=2) { error(403); }
-				$SQL = "JOIN xbt_snatched AS x ON t.ID=x.fid WHERE x.uid='$UserID'";
+			if(!check_paranoia('snatched', $Paranoia, $UserClass, $UserID)) { error(403); }
+			$SQL = "JOIN xbt_snatched AS x ON t.ID=x.fid WHERE x.uid='$UserID'";
 			break;
 		case 'seeding':
-			if (!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=2) { error(403); }
-				$SQL = "JOIN xbt_files_users AS xfu ON t.ID = xfu.fid WHERE xfu.uid='$UserID' AND xfu.remaining = 0";
+			if(!check_paranoia('seeding', $Paranoia, $UserClass, $UserID)) { error(403); }
+			$SQL = "JOIN xbt_files_users AS xfu ON t.ID = xfu.fid WHERE xfu.uid='$UserID' AND xfu.remaining = 0";
 			break;
 		default:
 			error(0);

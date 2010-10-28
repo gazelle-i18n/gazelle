@@ -21,16 +21,40 @@ $DB->query("SELECT
 			FROM users_main AS m
 			JOIN users_info AS i ON i.UserID = m.ID
 			WHERE m.ID = '".db_string($UserID)."'");
-list($Username,$Email,$IRCKey,$Paranoia,$Info,$Avatar,$Country,$StyleID,$StyleURL,$SiteOptions)=$DB->next_record(MYSQLI_NUM, array(9));
+list($Username,$Email,$IRCKey,$Paranoia,$Info,$Avatar,$Country,$StyleID,$StyleURL,$SiteOptions)=$DB->next_record(MYSQLI_NUM, array(3,9));
 
 
-if ($SiteOptions) { 
-	$SiteOptions=unserialize($SiteOptions); 
-} else { 
-	$SiteOptions=array();
+$Paranoia = unserialize($Paranoia);
+if(!is_array($Paranoia)) { 
+	$Paranoia = array(); 
 }
 
-show_header($Username.' > Settings','validate');
+function paranoia_level($Setting) {
+       global $Paranoia;
+       // 0: very paranoid; 1: stats allowed, list disallowed; 2: not paranoid
+       return (in_array($Setting . '+', $Paranoia)) ? 0 : (in_array($Setting, $Paranoia) ? 1 : 2);
+}
+
+function display_paranoia($FieldName) {
+       $Level = paranoia_level($FieldName);
+       print '<label><input type="checkbox" name="p_'.$FieldName.'_c" '.checked($Level >= 1).' onChange="AlterParanoia()" /> Show count</label>&nbsp;&nbsp;';
+       print '<label><input type="checkbox" name="p_'.$FieldName.'_l" '.checked($Level >= 2).' onChange="AlterParanoia()" /> Show list</label>';
+}
+
+function checked($Checked) {
+	return $Checked ? 'checked="checked"' : '';
+}
+
+$DB->query("SELECT COUNT(x.uid) FROM xbt_snatched AS x INNER JOIN torrents AS t ON t.ID=x.fid WHERE x.uid='$UserID'");
+list($Snatched) = $DB->next_record();
+
+if ($SiteOptions) { 
+	$SiteOptions = unserialize($SiteOptions); 
+} else { 
+	$SiteOptions = array();
+}
+
+show_header($Username.' > Settings','user,validate');
 echo $Val->GenerateJS('userform');
 ?>
 <div class="thin">
@@ -60,21 +84,6 @@ echo $Val->GenerateJS('userform');
 					</select>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Or -&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					External CSS: <input type="text" size="40" name="styleurl" id="styleurl" value="<?=display_str($StyleURL)?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="label"><strong>Paranoia Level</strong></td>
-				<td>
-					<select name="paranoia" id="paranoia">
-						<option value="0"<? if ($Paranoia == 0) { ?>selected="selected"<? } ?>>0 - Standard (Nothing Hidden)</option>
-						<option value="1"<? if ($Paranoia == 1) { ?>selected="selected"<? } ?>>1 - Hidden: Seeding, Leeching.</option>
-						<option value="2"<? if ($Paranoia == 2) { ?>selected="selected"<? } ?>>2 - Hidden: Seeding, Leeching, Snatched.</option>
-						<option value="3"<? if ($Paranoia == 3) { ?>selected="selected"<? } ?>>3 - Hidden: Seeding, Leeching, Snatched, Uploaded.</option>
-						<option value="4"<? if ($Paranoia == 4) { ?>selected="selected"<? } ?>>4 - Hidden: Seeding, Leeching, Snatched, Uploaded, Stats.</option>
-						<option value="5"<? if ($Paranoia == 5) { ?>selected="selected"<? } ?>>5 - Tinfoil Hat (Everything Hidden)</option>
-					</select>
-					<br/>
-					<span class="warning">Note: Paranoia has nothing to do with your security on this site, the only thing affected by this setting is other users ability to see your taste in music.</span>
 				</td>
 			</tr>
 <? if (check_perms('site_advanced_search')) { ?>
@@ -212,6 +221,140 @@ echo $Val->GenerateJS('userform');
 					<p class="min_padding">This field, if set will be used in place of the password in the IRC login.</p>
 					<p class="min_padding">Note: This value is stored in plaintext and should not be your password.</p>
 					<p class="min_padding">Note: In order to be accepted as correct, your IRCKey must be between 6 and 32 characters.</p>
+				</td>
+			</tr>
+			<tr class="colhead_dark">
+				<td colspan="2">
+					<strong>Paranoia settings</strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">&nbsp;</td>
+				<td>
+					<p><span class="warning">Note: Paranoia has nothing to do with your security on this site, the only thing affected by this setting is other users ability to see your site activity and taste in music.</span></p>
+					<p>Select the elements <strong>you want to show</strong> on your profile. For example, if you tick "Show count" for "Snatched", users will be able to see that you have snatched <?=number_format((int)$Snatched)?> torrents. If you tick "Show list", they will be able to see the full list of torrents you've snatched.</p>
+					<p><span class="warning">Some information will still be available in the site log.</span></p>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Recent activity</td>
+				<td>
+					<label><input type="checkbox" name="p_lastseen" <?=checked(!in_array('lastseen', $Paranoia))?>> Last seen</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Preset</td>
+				<td>
+					<button type="button" onClick="ParanoiaResetOff()">Show everything</button>
+					<button type="button" onClick="ParanoiaResetStats()">Show stats only</button>
+					<!--<button type="button" onClick="ParanoiaResetOn()">Show nothing</button>-->
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Stats</td>
+				<td>
+<?
+$UploadChecked = checked(!in_array('uploaded', $Paranoia));
+$DownloadChecked = checked(!in_array('downloaded', $Paranoia));
+$RatioChecked = checked(!in_array('ratio', $Paranoia));
+?>
+					<label><input type="checkbox" name="p_uploaded" onChange="AlterParanoia()"<?=$UploadChecked?> /> Uploaded</label>&nbsp;&nbsp;
+					<label><input type="checkbox" name="p_downloaded" onChange="AlterParanoia()"<?=$DownloadChecked?> /> Downloaded</label>&nbsp;&nbsp;
+					<label><input type="checkbox" name="p_ratio" onChange="AlterParanoia()"<?=$RatioChecked?> /> Ratio</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Torrent comments</td>
+				<td>
+<? display_paranoia('torrentcomments'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Collages started</td>
+				<td>
+<? display_paranoia('collages'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Collages contributed to</td>
+				<td>
+<? display_paranoia('collagecontribs'); ?>
+				</td>
+			</tr>
+				<td class="label">Requests filled</td>
+				<td>
+<?
+$RequestsFilledCountChecked = checked(!in_array('requestsfilled_count', $Paranoia));
+$RequestsFilledBountyChecked = checked(!in_array('requestsfilled_bounty', $Paranoia));
+$RequestsFilledListChecked = checked(!in_array('requestsfilled_list', $Paranoia));
+?>
+					<label><input type="checkbox" name="p_requestsfilled_count" onChange="AlterParanoia()" <?=$RequestsFilledCountChecked?> /> Show count</label>&nbsp;&nbsp;
+					<label><input type="checkbox" name="p_requestsfilled_bounty" onChange="AlterParanoia()" <?=$RequestsFilledBountyChecked?> /> Show bounty</label>&nbsp;&nbsp;
+					<label><input type="checkbox" name="p_requestsfilled_list" onChange="AlterParanoia()" <?=$RequestsFilledListChecked?> /> Show list</label>
+				</td>
+			</tr>
+				<td class="label">Requests voted</td>
+				<td>
+<?
+$RequestsVotedCountChecked = checked(!in_array('requestsvoted_count', $Paranoia));
+$RequestsVotedBountyChecked = checked(!in_array('requestsvoted_bounty', $Paranoia));
+$RequestsVotedListChecked = checked(!in_array('requestsvoted_list', $Paranoia));
+?>
+					<label><input type="checkbox" name="p_requestsvoted_count" onChange="AlterParanoia()" <?=$RequestsVotedCountChecked?> /> Show count</label>&nbsp;&nbsp;
+					<label><input type="checkbox" name="p_requestsvoted_bounty" onChange="AlterParanoia()" <?=$RequestsVotedBountyChecked?> /> Show bounty</label>&nbsp;&nbsp;
+					<label><input type="checkbox" name="p_requestsvoted_list" onChange="AlterParanoia()" <?=$RequestsVotedListChecked?> /> Show list</label>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Uploaded</td>
+				<td>
+<? display_paranoia('uploads'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Unique groups</td>
+				<td>
+<? display_paranoia('uniquegroups'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">"Perfect" FLACs</td>
+				<td>
+<? display_paranoia('perfectflacs'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Seeding</td>
+				<td>
+<? display_paranoia('seeding'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Leeching</td>
+				<td>
+<? display_paranoia('leeching'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Snatched</td>
+				<td>
+<? display_paranoia('snatched'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td class="label">Miscellaneous</td>
+				<td>
+					<label><input type="checkbox" name="p_requiredratio" <?=checked(!in_array('requiredratio', $Paranoia))?>> Required ratio</label>
+<?
+$DB->query("SELECT COUNT(UserID) FROM users_info WHERE Inviter='$UserID'");
+list($Invited) = $DB->next_record();
+?>
+					<br /><label><input type="checkbox" name="p_invitedcount" <?=checked(!in_array('invitedcount', $Paranoia))?>> Number of users invited</label>
+<?
+$DB->query("SELECT COUNT(ta.ArtistID) FROM torrents_artists AS ta WHERE ta.UserID = ".$UserID);
+list($ArtistsAdded) = $DB->next_record();
+?>
+					<br /><label><input type="checkbox" name="p_artistsadded" <?=checked(!in_array('artistsadded', $Paranoia))?>> Number of artists added</label>
 				</td>
 			</tr>
 			<tr class="colhead_dark">

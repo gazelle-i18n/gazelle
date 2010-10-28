@@ -118,7 +118,7 @@ class INVITE_TREE {
 			<li>
 				<strong><?=format_username($ID, $Username, $Donor, $Warned, $Enabled == 2 ? false : true, $Class)?></strong>
 <?
-			if ($Paranoia < 4 || check_perms('users_view_invites')) {
+			if(check_paranoia(array('uploaded', 'downloaded'), $Paranoia, $UserClass)) {
 				$TotalUpload += $Uploaded;
 				$TotalDownload += $Downloaded;
 ?>

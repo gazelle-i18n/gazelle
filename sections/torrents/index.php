@@ -154,7 +154,7 @@ if(!empty($_REQUEST['action'])) {
 			}
 			$DB->query("DELETE FROM users_notify_torrents WHERE UserID='$LoggedUser[ID]' AND UnRead='0'");
 			$Cache->delete_value('notifications_new_'.$LoggedUser['ID']);
-			header('Location: '.$_SERVER['HTTP_REFERER']);
+			header('Location: torrents.php?action=notify');
 			break;
 
 		case 'notify_cleargroup':
@@ -168,7 +168,7 @@ if(!empty($_REQUEST['action'])) {
 			}
 			$DB->query("DELETE FROM users_notify_torrents WHERE UserID='$LoggedUser[ID]' AND FilterID='$_GET[filterid]' AND UnRead='0'");
 			$Cache->delete_value('notifications_new_'.$LoggedUser['ID']);
-			header('Location: '.$_SERVER['HTTP_REFERER']);
+			header('Location: torrents.php?action=notify');
 			break;
 		
 		case 'notify_clearitem':

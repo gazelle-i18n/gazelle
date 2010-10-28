@@ -109,26 +109,27 @@ if(!empty($SearchWhere)) {
 	$SearchWhere = ' AND '.$SearchWhere;
 }
 
-$DB->query("SELECT Paranoia FROM users_main WHERE ID='".$UserID."'");
-list($Paranoia)=$DB->next_record();
+$User = user_info($UserID);
+$Perms = get_permissions($UserInfo['PermissionID']);
+$UserClass = $Perms['Class'];
 
 switch($_GET['type']) {
 	case 'snatched':
-		if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=2) { error(403); }
+		if(!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$Time = 'xs.tstamp';
 		$UserField = 'xs.uid';
 		$ExtraWhere = '';
 		$From = "xbt_snatched AS xs JOIN torrents AS t ON t.ID=xs.fid";
 		break;
 	case 'seeding':
-		if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=1) { error(403); }
+		if(!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$Time = '(unix_timestamp(now()) - xfu.timespent)';
 		$UserField = 'xfu.uid';
 		$ExtraWhere = 'AND xfu.Remaining=0';
 		$From = "xbt_files_users AS xfu JOIN torrents AS t ON t.ID=xfu.fid";
 		break;
 	case 'leeching':
-		if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=1) { error(403); }
+		if(!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$Time = '(unix_timestamp(now()) - xfu.timespent)';
 		$UserField = 'xfu.uid';
 		$ExtraWhere = 'AND xfu.Remaining>0';
@@ -154,6 +155,7 @@ switch($_GET['type']) {
 
 if(!empty($_GET['filter'])) {
 	if($_GET['filter'] == "perfectflac") {
+		if (!check_paranoia('perfectflacs', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$ExtraWhere .= ' AND t.Format = \'FLAC\'';
 		if(empty($_GET['media'])) {
 			$ExtraWhere .= ' AND (
@@ -165,8 +167,11 @@ if(!empty($_GET['filter'])) {
 		} elseif(strtoupper($_GET['media']) == 'CD' && empty($_GET['log'])) {
 			$ExtraWhere .= ' AND t.LogScore = 100';
 		}
-	} else	if($_GET['filter'] == "uniquegroup") {
+	} elseif($_GET['filter'] == "uniquegroup") {
+		if (!check_paranoia('uniquegroups', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$GroupBy = "tg.ID";
+	} else {
+		if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 	}
 }
 

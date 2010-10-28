@@ -41,7 +41,7 @@ $BaseQuery = "SELECT
 	WHERE u.Enabled='1'
 	AND Uploaded>'". 5*1024*1024*1024 ."' 
 	AND Downloaded>'". 5*1024*1024*1024 ."' 
-	AND Paranoia<'4'
+	AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
 	GROUP BY u.ID";
 
 	if($Details=='all' || $Details=='ul') {

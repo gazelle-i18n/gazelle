@@ -146,32 +146,32 @@ if (in_array(strtolower($_GET['order_way']),array('desc','asc'))) { $OrderWay=st
 if($_GET['userid'] && is_number($_GET['userid'])) {
 	$UserID=ceil($_GET['userid']);
 	
-	$DB->query("SELECT Paranoia FROM users_main WHERE ID='".$UserID."'");
-	list($Paranoia)=$DB->next_record();
+	$DB->query("SELECT m.Paranoia, p.Level FROM users_main AS m JOIN permissions AS p ON p.ID=m.PermissionID WHERE ID='".$UserID."'");
+	list($Paranoia, $UserClass) = $DB->next_record();
 
 	$TorrentWhere='';
 	$TorrentJoin='';
 	if($_GET['type']=="uploaded") {
-		if(!check_perms('users_view_uploaded') && $UserID != $LoggedUser['ID'] && $Paranoia>=3) { error(403); }
+		if(!check_paranoia('uploads', $Paranoia, $UserClass, $UserID)) { error(403); }
 		$TorrentWhere="WHERE t.UserID='".$UserID."'";
 		$Title="Uploaded Torrents";
 		
 	} elseif($_GET['type']=="seeding") {
-		if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=1) { error(403); }
+		if(!check_paranoia('seeding', $Paranoia, $UserClass, $UserID)) { error(403); }
 		$TorrentJoin="JOIN xbt_files_users AS xfu ON xfu.fid=t.ID AND xfu.uid='$UserID' AND xfu.remaining=0";
 		$Title="Seeding Torrents";
 		$TimeField="xfu.mtime";
 		$TimeLabel="Seeding Time";
 		
 	} elseif($_GET['type']=="leeching") {
-		if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=1) { error(403); }
+		if(!check_paranoia('leeching', $Paranoia, $UserClass, $UserID)) { error(403); }
 		$TorrentJoin="JOIN xbt_files_users AS xfu ON xfu.fid=t.ID AND xfu.uid='$UserID' AND xfu.remaining>0";
 		$Title="Leeching Torrents";
 		$TimeField="xfu.mtime";
 		$TimeLabel="Leeching Time";
 		
 	} elseif($_GET['type']=="snatched") {
-		if(!check_perms('users_view_seedleech') && $UserID!=$LoggedUser['ID'] && $Paranoia>=2) { error(403); }
+		if(!check_paranoia('snatched', $Paranoia, $UserClass, $UserID)) { error(403); }
 		$TorrentJoin="JOIN xbt_snatched AS xs ON xs.fid=t.ID AND xs.uid='$UserID'";
 		$Title="Snatched Torrents";
 		$TimeField="xs.tstamp";

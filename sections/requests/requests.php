@@ -5,6 +5,11 @@ $Queries = array();
 $OrderWays = array('year', 'votes', 'bounty', 'created', 'lastvote', 'filled');
 list($Page,$Limit) = page_limit(REQUESTS_PER_PAGE);
 $Submitted = !empty($_GET['submit']);
+					
+//Paranoia					
+$UserInfo = user_info((int)$_GET['userid']);
+$Perms = get_permissions($UserInfo['PermissionID']);
+$UserClass = $Perms['Class'];
 
 if(empty($_GET['type'])) { 
 	$Title = 'Requests';
@@ -23,9 +28,8 @@ if(empty($_GET['type'])) {
 		case 'voted':
 			if(!empty($_GET['userid'])) {
 				if(is_number($_GET['userid'])) {
-					$DB->query("SELECT Username FROM users_main WHERE ID = ".$_GET['userid']);
-					list($Username) = $DB->next_record();
-					$Title = "Requests voted for by ".$Username;
+					if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $_GET['userid'])) { error(403); }
+					$Title = "Requests voted for by ".$UserInfo['Username'];
 					$SS->set_filter('voter', array($_GET['userid']));
 				} else {
 					error(404);
@@ -42,7 +46,8 @@ if(empty($_GET['type'])) {
 			if(empty($_GET['userid']) || !is_number($_GET['userid'])) {
 				error(404);
 			} else {
-				$Title = "Requests filled";
+				if (!check_paranoia('requestsfilled_list', $UserInfo['Paranoia'], $Perms['Class'], $_GET['userid'])) { error(403); }
+				$Title = "Requests filled by ".$UserInfo['Username'];
 				$SS->set_filter('fillerid', array($_GET['userid']));
 			}
 			break;

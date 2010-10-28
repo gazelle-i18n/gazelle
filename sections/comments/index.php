@@ -6,10 +6,10 @@ $Text = new TEXT;
 
 if(!empty($_REQUEST['action'])) {
 	if($_REQUEST['action'] == 'my_torrents') {
-		$My_Torrents = true;
+		$MyTorrents = true;
 	}
 } else {
-	$My_Torrents = false;
+	$MyTorrents = false;
 }
 
 if(isset($_GET['id'])) {
@@ -17,13 +17,16 @@ if(isset($_GET['id'])) {
 	if(!is_number($UserID)) {
 		error(404);
 	}
-	$UserInfo = (user_info($UserID));
+	$UserInfo = user_info($UserID);
 	$Username = $UserInfo['Username'];
 	if($LoggedUser['ID'] == $UserID) {
 		$Self = true;
 	} else {
 		$Self = false;
 	}
+	$Perms = get_permissions($UserInfo['PermissionID']);
+	$UserClass = $Perms['Class'];
+	if (!check_paranoia('torrentcomments', $UserInfo['Paranoia'], $UserClass, $UserID)) { error(403); }
 } else {
 	$UserID = $LoggedUser['ID'];
 	$Username = $LoggedUser['Username'];
@@ -39,7 +42,7 @@ if (isset($LoggedUser['PostsPerPage'])) {
 list($Page,$Limit) = page_limit($PerPage);
 $OtherLink = '';
 
-if($My_Torrents) {
+if($MyTorrents) {
 	$Conditions = "WHERE t.UserID = $UserID AND tc.AuthorID != t.UserID AND tc.AddedTime > t.Time";
 	$Title = 'Comments left on your torrents';
 	$Header = 'Comments left on your uploads';

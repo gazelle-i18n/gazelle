@@ -53,6 +53,8 @@ require(SERVER_ROOT.'/classes/class_encrypt.php'); //Require the encryption clas
 require(SERVER_ROOT.'/classes/class_useragent.php'); //Require the useragent class
 require(SERVER_ROOT.'/classes/class_time.php'); //Require the time class
 require(SERVER_ROOT.'/classes/class_search.php'); //Require the searching class
+require(SERVER_ROOT.'/classes/class_paranoia.php'); //Require the paranoia check_paranoia function
+
 
 $Debug = new DEBUG;
 $Debug->handle_errors();
@@ -316,13 +318,15 @@ $Debug->set_flag('start function definitions');
 function user_info($UserID) {
 	global $DB, $Cache;
 	$UserInfo = $Cache->get_value('user_info_'.$UserID);
-	if(empty($UserInfo) || empty($UserInfo['ID'])) {
+	// the !isset($UserInfo['Paranoia']) can be removed after a transition period
+	if(empty($UserInfo) || empty($UserInfo['ID']) || !isset($UserInfo['Paranoia'])) {
 
 
 		$DB->query("SELECT
 			m.ID,
 			m.Username,
 			m.PermissionID,
+			m.Paranoia
 			i.Artist,
 			i.Donor,
 			i.Warned,
@@ -338,12 +342,16 @@ function user_info($UserID) {
 			$UserInfo = array('ID'=>'','Username'=>'','PermissionID'=>0,'Artist'=>false,'Donor'=>false,'Warned'=>'0000-00-00 00:00:00','Avatar'=>'','Enabled'=>0,'Title'=>'', 'CatchupTime'=>0, 'Visible'=>'1');
 
 		} else {
-			$UserInfo = $DB->next_record(MYSQLI_ASSOC, array('Title'));
-			$UserInfo['CatchupTime']=strtotime($UserInfo['CatchupTime']);
+			$UserInfo = $DB->next_record(MYSQLI_ASSOC, array('Paranoia', 'Title'));
+			$UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
+			$UserInfo['Paranoia'] = unserialize($UserInfo['Paranoia']);
+			if($UserInfo['Paranoia'] === false) {
+				$UserInfo['Paranoia'] = array();
+			}
 		}
 		$Cache->cache_value('user_info_'.$UserID, $UserInfo, 2592000);
 	}
-	if(strtotime($UserInfo['Warned'])<time()) {
+	if(strtotime($UserInfo['Warned']) < time()) {
 		$UserInfo['Warned'] = '0000-00-00 00:00:00';
 		$Cache->cache_value('user_info_'.$UserID, $UserInfo, 2592000);
 	}

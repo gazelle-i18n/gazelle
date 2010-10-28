@@ -16,7 +16,6 @@ if (!$U) {
 
 $Val->SetFields('stylesheet',1,"number","You forgot to select a stylesheet.");
 $Val->SetFields('styleurl',0,"regex","You did not enter a valid stylesheet url.",array('regex'=>'/^https?:\/\/(localhost(:[0-9]{2,5})?|[0-9]{1,3}(\.[0-9]{1,3}){3}|([a-zA-Z0-9\-\_]+\.)+([a-zA-Z]{1,5}[^\.]))(:[0-9]{2,5})?(\/[^<>]+)+\.css$/i'));
-$Val->SetFields('paranoia',1,"number","You forgot to enter your paranoia level.",array('minlength'=>0,'maxlength'=>5));
 $Val->SetFields('disablegrouping',1,"number","You forgot to select your torrent grouping option.",array('minlength'=>0,'maxlength'=>1));
 $Val->SetFields('torrentgrouping',1,"number","You forgot to select your torrent grouping option.",array('minlength'=>0,'maxlength'=>1));
 $Val->SetFields('discogview',1,"number","You forgot to select your discography view option.",array('minlength'=>0,'maxlength'=>1));
@@ -40,6 +39,79 @@ if($Err) {
 	header('Location: user.php?action=edit&userid='.$UserID);
 	die();
 }
+
+// Begin building $Paranoia
+// Reduce the user's input paranoia until it becomes consistent
+if (isset($_POST['p_uniquegroups_l'])) {
+	$_POST['p_uploads_l'] = 'on';
+}
+
+if (isset($_POST['p_uploads_l'])) {
+	$_POST['p_uniquegroups_l'] = 'on';
+	$_POST['p_perfectflacs_l'] = 'on';
+	$_POST['p_artistsadded'] = 'on';
+}
+
+if (isset($_POST['p_collagecontribs_l'])) {
+	$_POST['p_collages_l'] = 'on';
+}
+
+if (isset($_POST['p_snatched_c']) && isset($_POST['p_seeding_c']) && isset($_POST['p_downloaded'])) {
+	$_POST['p_requiredratio'] = 'on';
+}
+
+// if showing exactly 2 of stats, show all 3 of stats
+$StatsShown = 0;
+$Stats = array('downloaded', 'uploaded', 'ratio');
+foreach($Stats as $S) {
+	if(isset($_POST['p_'.$S])) {
+		$StatsShown++;
+	}
+}
+
+if($StatsShown == 2) {
+	foreach($Stats as $S) {
+		$_POST['p_'.$S] = 'on';
+	}
+}
+
+$Paranoia = array();
+$Checkboxes = array('downloaded', 'uploaded', 'ratio', 'lastseen', 'requiredratio', 'invitedcount', 'artistsadded');
+foreach($Checkboxes as $C) {
+	if(!isset($_POST['p_'.$C])) {
+		$Paranoia[] = $C;
+	}
+}
+
+$SimpleSelects = array('torrentcomments', 'collages', 'collagecontribs', 'uploads', 'uniquegroups', 'perfectflacs', 'seeding', 'leeching', 'snatched');
+foreach ($SimpleSelects as $S) {
+	if (!isset($_POST['p_'.$S.'_c'])) {
+		// very paranoid
+		$Paranoia[] = $S . '+';
+	} elseif (!isset($_POST['p_'.$S.'_l'])) {
+		// a little paranoid
+		$Paranoia[] = $S;
+	}
+}
+
+$Bounties = array('requestsfilled', 'requestsvoted');
+foreach ($Bounties as $B) {
+	if (isset($_POST['p_'.$B.'_list'])) {
+		$_POST['p_'.$B.'_count'] = 'on';
+		$_POST['p_'.$B.'_bounty'] = 'on';
+	}
+	if (!isset($_POST['p_'.$B.'_list'])) {
+		$Paranoia[] = $B.'_list';
+	}
+	if (!isset($_POST['p_'.$B.'_count'])) {
+		$Paranoia[] = $B.'_count';
+	}
+	if (!isset($_POST['p_'.$B.'_bounty'])) {
+		$Paranoia[] = $B.'_bounty';
+	}
+}
+// End building $Paranoia
+
 
 //Email change
 $DB->query("SELECT Email FROM users_main WHERE ID=".$UserID);
@@ -197,7 +269,8 @@ if($DownloadAlt != $LoggedUser['DownloadAlt']) {
 
 $Cache->begin_transaction('user_info_'.$UserID);
 $Cache->update_row(false, array(
-		'Avatar'=>$_POST['avatar']
+		'Avatar'=>$_POST['avatar'],
+		'Paranoia'=>$Paranoia
 
 ));
 $Cache->commit_transaction(0);
@@ -206,8 +279,7 @@ $Cache->begin_transaction('user_info_heavy_'.$UserID);
 $Cache->update_row(false, array(
 		'StyleID'=>$_POST['stylesheet'],
 		'StyleURL'=>$_POST['styleurl'],
-		'DownloadAlt'=>$DownloadAlt,
-		'Paranoia'=>$_POST['paranoia']
+		'DownloadAlt'=>$DownloadAlt
 		));
 $Cache->update_row(false, $Options);
 $Cache->commit_transaction(0);
@@ -224,9 +296,9 @@ $SQL="UPDATE users_main AS m JOIN users_info AS i ON m.ID=i.UserID SET
 	m.Email='".db_string($_POST['email'])."',
 	m.IRCKey='".db_string($_POST['irckey'])."',";
 
-$SQL .=	"m.Paranoia='".db_string($_POST['paranoia'])."'";
+$SQL .= "m.Paranoia='".db_string(serialize($Paranoia))."'";
 
-if ($ResetPassword) {
+if($ResetPassword) {
 	$Secret=make_secret();
 	$PassHash=make_hash($_POST['new_pass_1'],$Secret);
 	$SQL.=",m.Secret='".db_string($Secret)."',m.PassHash='".db_string($PassHash)."'";

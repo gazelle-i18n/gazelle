@@ -68,7 +68,7 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		header("Location: log.php?search=User+".$UserID);
 	}
 
-	list($Username,	$Email,	$LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $JoinDate, $Info, $Avatar, $Country, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableIRC, $DisableCountry) = $DB->next_record(MYSQLI_NUM, array(8));
+	list($Username,	$Email,	$LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $JoinDate, $Info, $Avatar, $Country, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableIRC, $DisableCountry) = $DB->next_record(MYSQLI_NUM, array(8,11));
 } else { // Person viewing is a normal user
 	$DB->query("SELECT
 		m.Username,
@@ -105,11 +105,28 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		header("Location: log.php?search=User+".$UserID);
 	}
 
-	list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $JoinDate, $Info, $Avatar, $Country, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName, $RatioWatchEnds, $RatioWatchDownload) = $DB->next_record(MYSQLI_NUM, array(11));
+	list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $JoinDate, $Info, $Avatar, $Country, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName, $RatioWatchEnds, $RatioWatchDownload) = $DB->next_record(MYSQLI_NUM, array(9,11));
+}
+
+$Paranoia = unserialize($Paranoia);
+if(!is_array($Paranoia)) {
+	$Paranoia = array();
+}
+$ParanoiaLevel = 0;
+foreach($Paranoia as $P) {
+	$ParanoiaLevel++;
+	if(strpos($P, '+')) {
+		$ParanoiaLevel++;
+	}
 }
 
 $JoinedDate = time_diff($JoinDate);
 $LastAccess = time_diff($LastAccess);
+
+function check_paranoia_here($Setting) {
+	global $Paranoia, $Class, $UserID;
+	return check_paranoia($Setting, $Paranoia, $Class, $UserID);
+}
 
 $Badges=($Donor) ? '<a href="donate.php"><img src="'.STATIC_SERVER.'common/symbols/donor.png" alt="Donor" /></a>' : '';
 $Badges.=($Warned!='0000-00-00 00:00:00') ? '<img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" />' : '';
@@ -169,32 +186,28 @@ if (check_perms('admin_reports')) {
 			<div class="head colhead_dark">Stats</div>
 			<ul class="stats nobullet">
 				<li>Joined: <?=$JoinedDate?></li>
-<? if ($Paranoia < 5 || check_perms('users_override_paranoia', $Class) || $OwnProfile) { ?>
+<? if (check_paranoia_here('lastseen')) { ?>
 				<li>Last Seen: <?=$LastAccess?></li>
-<?
-}
-
-if(check_perms('users_override_paranoia', $Class)) {
-	$ViewStats = $ViewUploaded = $ViewRequested = 1;
-} else {
-	$ViewStats = ($Paranoia < 4 || $OwnProfile);
-	$ViewUploaded = ($Paranoia < 3 || check_perms('users_view_uploaded') || $OwnProfile);
-	$ViewRequested = ($Paranoia < 3 || check_perms('users_view_uploaded') || $OwnProfile);
-}
-
-if ($ViewStats) {
-?>
+<? } ?>
+<? if (check_paranoia_here('uploaded')) { ?>
 				<li>Uploaded: <?=get_size($Uploaded)?></li>
+<? } ?>
+<? if (check_paranoia_here('downloaded')) { ?>
 				<li>Downloaded: <?=get_size($Downloaded)?></li>
+<? } ?>
+<? if (check_paranoia_here('ratio')) { ?>
 				<li>Ratio: <?=ratio($Uploaded, $Downloaded)?></li>
-<?	if(isset($RequiredRatio)) { ?>
+<? } ?>
+<? if (check_paranoia_here('requiredratio') && isset($RequiredRatio)) { ?>
 				<li>Required ratio: <?=number_format((double)$RequiredRatio, 2)?></li>
-<?	}?>
 <? } ?>
 			</ul>
 		</div>
 <?
 
+
+
+if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
 	$DB->query("SELECT COUNT(DISTINCT r.ID), SUM(rv.Bounty) FROM requests AS r LEFT JOIN requests_votes AS rv ON r.ID=rv.RequestID WHERE r.FillerID = ".$UserID);
 	list($RequestsFilled, $TotalBounty) = $DB->next_record();
 	$DB->query("SELECT COUNT(rv.RequestID), SUM(rv.Bounty) FROM requests_votes AS rv WHERE rv.UserID = ".$UserID);
@@ -202,52 +215,76 @@ if ($ViewStats) {
 	
 	$DB->query("SELECT COUNT(ID) FROM torrents WHERE UserID='$UserID'");
 	list($Uploads) = $DB->next_record();
+} else {
+	$RequestsVoted = 0;
+	$TotalSpent = 0;
+}
 
-if($Paranoia < 5 || check_perms('users_override_paranoia', $Class) || $OwnProfile) {
-	include(SERVER_ROOT.'/classes/class_user_rank.php');
-	$Rank = new USER_RANK;
+$TotalSpent = get_size($TotalSpent);
 
-	$DB->query("SELECT COUNT(DISTINCT r.ID), SUM(rv.Bounty) FROM requests AS r LEFT JOIN requests_votes AS rv ON r.ID=rv.RequestID WHERE r.FillerID = ".$UserID);
-	list($RequestsFilled, $TotalBounty) = $DB->next_record();
-	$DB->query("SELECT COUNT(rv.RequestID), SUM(rv.Bounty) FROM requests_votes AS rv WHERE rv.UserID = ".$UserID);
-	list($RequestsVoted, $TotalSpent) = $DB->next_record();
-	
+if(check_paranoia_here('uploads+')) {
 	$DB->query("SELECT COUNT(ID) FROM torrents WHERE UserID='$UserID'");
 	list($Uploads) = $DB->next_record();
+} else {
+	$Uploads = 0;
+}
 
+if (check_paranoia_here('artistsadded')) {
 	$DB->query("SELECT COUNT(ta.ArtistID) FROM torrents_artists AS ta WHERE ta.UserID = ".$UserID);
 	list($ArtistsAdded) = $DB->next_record();
+} else {
+	$ArtistsAdded = 0;
+}
 
-	$UploadedRank = $Rank->get_rank('uploaded', $Uploaded);
-	$DownloadedRank = $Rank->get_rank('downloaded', $Downloaded);
-	$UploadsRank = $Rank->get_rank('uploads', $Uploads);
-	$RequestRank = $Rank->get_rank('requests', $RequestsFilled);
-	$PostRank = $Rank->get_rank('posts', $ForumPosts);
-	$BountyRank = $Rank->get_rank('bounty', $TotalSpent);
-	$ArtistsRank = $Rank->get_rank('artists', $ArtistsAdded);
+include(SERVER_ROOT.'/classes/class_user_rank.php');
+$Rank = new USER_RANK;
 
-	if($Downloaded == 0) { $Ratio = 1; }
-	elseif($Uploaded == 0) { $Ratio = 0.5; }
-	else { $Ratio = round($Uploaded/$Downloaded, 2); }
-	$OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank, $RequestRank, $PostRank, $BountyRank, $ArtistsRank, $Ratio);
+$UploadedRank = $Rank->get_rank('uploaded', $Uploaded);
+$DownloadedRank = $Rank->get_rank('downloaded', $Downloaded);
+$UploadsRank = $Rank->get_rank('uploads', $Uploads);
+$RequestRank = $Rank->get_rank('requests', $RequestsFilled);
+$PostRank = $Rank->get_rank('posts', $ForumPosts);
+$BountyRank = $Rank->get_rank('bounty', $TotalSpent);
+$ArtistsRank = $Rank->get_rank('artists', $ArtistsAdded);
+
+if($Downloaded == 0) {
+	$Ratio = 1;
+} elseif($Uploaded == 0) {
+	$Ratio = 0.5;
+} else {
+	$Ratio = round($Uploaded/$Downloaded, 2);
+}
+$OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank, $RequestRank, $PostRank, $BountyRank, $ArtistsRank, $Ratio);
 
 ?>
 		<div class="box">
 			<div class="head colhead_dark">Percentile Rankings (Hover for values)</div>
 			<ul class="stats nobullet">
+<? if (check_paranoia_here('uploaded')) { ?>
 				<li title="<?=$ViewStats ? get_size($Uploaded) : 'Hidden'?>">Data uploaded: <?=number_format((int)$UploadedRank)?></li>
+<? } ?>
+<? if (check_paranoia_here('downloaded')) { ?>
 				<li title="<?=$ViewStats ? get_size($Downloaded) : 'Hidden'?>">Data downloaded: <?=number_format((int)$DownloadedRank)?></li>
+<? } ?>
+<? if (check_paranoia_here('uploads+')) { ?>
 				<li title="<?=$ViewUploaded ? $Uploads : 'Hidden'?>">Torrents uploaded: <?=number_format((int)$UploadsRank)?></li>
+<? } ?>
+<? if (check_paranoia_here('requestsfilled_count')) { ?>
 				<li title="<?=$ViewRequested ? $RequestsFilled : 'Hidden'?>">Requests filled: <?=number_format((int)$RequestRank)?></li>
+<? } ?>
+<? if (check_paranoia_here('requestsvoted_bounty')) { ?>
 				<li title="<?=$ViewRequested ? get_size($TotalSpent) : 'Hidden'?>">Bounty spent: <?=number_format((int)$BountyRank)?></li>
+<? } ?>
 				<li title="<?=$ForumPosts?>">Posts made: <?=number_format((int)$PostRank)?></li>
+<? if (check_paranoia_here('artistsadded')) { ?>
 				<li title="<?=$ArtistsAdded?>">Artists added: <?=number_format((int)$ArtistsRank)?></li>
+<? } ?>
+<? if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
 				<li><strong>Overall rank: <?=number_format((int)$OverallRank)?></strong></li>
+<? } ?>
 			</ul>
 		</div>
 <?
-	}
-
 	if (check_perms('users_mod', $Class) || check_perms('users_view_ips',$Class) || check_perms('users_view_keys',$Class)) {
 		$DB->query("SELECT COUNT(*) FROM users_history_passwords WHERE UserID='$UserID'");
 		list($PasswordChanges) = $DB->next_record();
@@ -291,12 +328,29 @@ if($Paranoia < 5 || check_perms('users_override_paranoia', $Class) || $OwnProfil
 ?>
 		</ul>
 	</div>
-<?	} ?>
+<?	} 
+
+
+?>
 		<div class="box">
 			<div class="head colhead_dark">Personal</div>
 			<ul class="stats nobullet">
 				<li>Class: <?=$ClassLevels[$Class]['Name']?></li>
-				<li>Paranoia Level: <?=number_format((int)$Paranoia)?></li>
+<?
+// An easy way for people to measure the paranoia of a user, for e.g. contest eligibility
+if($ParanoiaLevel == 0) {
+	$ParanoiaLevelText = 'Off';
+} elseif($ParanoiaLevel == 1) {
+	$ParanoiaLevelText = 'Very Low';
+} elseif($ParanoiaLevel <= 5) {
+	$ParanoiaLevelText = 'Low';
+} elseif($ParanoiaLevel <= 20) {
+	$ParanoiaLevelText = 'High';
+} else {
+	$ParanoiaLevelText = 'Very high';
+}
+?>
+				<li>Paranoia level: <span title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
 <?	if (check_perms('users_view_email',$Class) || $OwnProfile) { ?>
 				<li>Email: <a href="mailto:<?=display_str($Email)?>"><?=display_str($Email)?></a>
 <?		if (check_perms('users_view_email',$Class)) { ?>
@@ -332,68 +386,115 @@ if (check_perms('users_view_invites')) {
 			</ul>
 		</div>
 <?
+
+
+
 // These stats used to be all together in one UNION'd query
 // But we broke them up because they had a habit of locking each other to death.
 // They all run really quickly anyways.
 $DB->query("SELECT COUNT(x.uid), COUNT(DISTINCT x.fid) FROM xbt_snatched AS x INNER JOIN torrents AS t ON t.ID=x.fid WHERE x.uid='$UserID'");
 list($Snatched, $UniqueSnatched) = $DB->next_record();
+
 $DB->query("SELECT COUNT(ID) FROM torrents_comments WHERE AuthorID='$UserID'");
 list($NumComments) = $DB->next_record();
+
 $DB->query("SELECT COUNT(ID) FROM collages WHERE Deleted='0' AND UserID='$UserID'");
 list($NumCollages) = $DB->next_record();
+
 $DB->query("SELECT COUNT(DISTINCT CollageID) FROM collages_torrents AS ct JOIN collages ON CollageID = ID WHERE Deleted='0' AND ct.UserID='$UserID'");
 list($NumCollageContribs) = $DB->next_record();
+
+$DB->query("SELECT COUNT(DISTINCT GroupID) FROM torrents WHERE UserID = '$UserID'");
+list($UniqueGroups) = $DB->next_record();
+
+$DB->query("SELECT COUNT(ID) FROM torrents WHERE ((LogScore = 100 AND Format = 'FLAC') OR (Media = 'Vinyl' AND Format = 'FLAC') OR (Media = 'WEB' AND Format = 'FLAC') OR (Media = 'DVD' AND Format = 'FLAC') OR (Media = 'Soundboard' AND Format = 'FLAC') OR (Media = 'Cassette' AND Format = 'FLAC') OR (Media = 'SACD' AND Format = 'FLAC') OR (Media = 'Blu-ray' AND Format = 'FLAC') OR (Media = 'DAT' AND Format = 'FLAC')) AND UserID = '$UserID'");
+list($PerfectFLACs) = $DB->next_record();
 ?>
 		<div class="box">
 			<div class="head colhead_dark">Community</div>
 			<ul class="stats nobullet">
 				<li>Forum Posts: <?=number_format((int)$ForumPosts)?> [<a href="userhistory.php?action=posts&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+<? if (check_paranoia_here('torrentcomments')) { ?>
 				<li>Torrent Comments: <?=number_format((int)$NumComments)?> [<a href="comments.php?id=<?=$UserID?>" title="View">View</a>]</li>
+<? } elseif (check_paranoia_here('torrentcomments+')) { ?>
+				<li>Torrent Comments: <?=number_format((int)$NumComments)?></li>
+<? } ?>
+<? if (check_paranoia_here('collages')) { ?>
 				<li>Collages started: <?=number_format((int)$NumCollages)?> [<a href="collages.php?userid=<?=$UserID?>" title="View">View</a>]</li>
+<? } elseif (check_paranoia_here('collages+')) { ?>
+				<li>Collages started: <?=number_format((int)$NumCollages)?></li>
+<? } ?>
+<? if (check_paranoia_here('collagecontribs')) { ?>
 				<li>Collages contributed to: <?=number_format((int)$NumCollageContribs)?> [<a href="collages.php?userid=<?=$UserID?>&amp;contrib=1" title="View">View</a>]</li>
-<? if($ViewUploaded) {
-	$TotalBounty = get_size($TotalBounty);
-	$TotalSpent = get_size($TotalSpent);
-?>
-				<li>Requests filled: <?=number_format((int)$RequestsFilled)?> for <?=$TotalBounty?> [<a href="requests.php?type=filled&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
-				<li>Requests voted: <?=number_format((int)$RequestsVoted)?> for <?=$TotalSpent?> [<a href="requests.php?type=voted&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+<? } elseif(check_paranoia_here('collagecontribs+')) { ?>
+				<li>Collages contributed to: <?=number_format((int)$NumCollageContribs)?></li>
+<? } ?>
+<? if (check_paranoia_here('requestsfilled_list')) { ?>
+				<li>Requests filled: <?=number_format((int)$RequestsFilled)?> for <?=get_size($TotalBounty)?> [<a href="requests.php?type=filled&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+<? } elseif (check_paranoia_here(array('requestsfilled_count', 'requestsfilled_bounty'))) { ?>
+				<li>Requests filled: <?=number_format((int)$RequestsFilled)?> for <?=get_size($TotalBounty)?></li>
+<? } elseif (check_paranoia_here('requestsfilled_count')) { ?>
+				<li>Requests filled: <?=number_format((int)$RequestsFilled)?></li>
+<? } elseif (check_paranoia_here('requestsfilled_bounty')) { ?>
+				<li>Requests filled: <?=get_size($TotalBounty)?> collected</li>
+<? } ?>
+<? if (check_paranoia_here('requestsvoted_list')) { ?>
+				<li>Requests voted: <?=number_format((int)$RequestsVoted)?> for <?=get_size($TotalSpent)?> [<a href="requests.php?type=voted&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+<? } elseif (check_paranoia_here(array('requestsvoted_count', 'requestsvoted_bounty'))) { ?>
+				<li>Requests voted: <?=number_format((int)$RequestsVoted)?> for <?=get_size($TotalSpent)?></li>
+<? } elseif (check_paranoia_here('requestsvoted_count')) { ?>
+				<li>Requests voted: <?=number_format((int)$RequestsVoted)?></li>
+<? } elseif (check_paranoia_here('requestsvoted_bounty')) { ?>
+				<li>Requests voted: <?=get_size($TotalSpent)?> spent</li>
+<? } ?>
+<? if (check_paranoia_here('uploads')) { ?>
 				<li>Uploaded: <?=number_format((int)$Uploads)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>" title="View">View</a>]<? if(check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=uploads&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
-<?
-	$DB->query("SELECT COUNT(DISTINCT GroupID) FROM torrents WHERE UserID = '$UserID'");
-	list($UniqueGroups) = $DB->next_record();
-?>
-	<li>Unique Groups: <?=number_format((int)$UniqueGroups)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=uniquegroup">View</a>]</li>
+<? } elseif (check_paranoia_here('uploads+')) { ?>
+				<li>Uploaded: <?=number_format((int)$Uploads)?></li>
+<? } ?>
+<? if (check_paranoia_here('uniquegroups')) { ?>
+				<li>Unique Groups: <?=number_format((int)$UniqueGroups)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=uniquegroup">View</a>]</li>
+<? } elseif (check_paranoia_here('uniquegroups+')) { ?>
+				<li>Unique Groups: <?=number_format((int)$UniqueGroups)?></li>
+<? } ?>
+<? if (check_paranoia_here('perfectflacs')) { ?>
+				<li>"Perfect" FLACs: <?=number_format((int)$PerfectFLACs)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=perfectflac">View</a>]</li>
+<? } elseif (check_paranoia_here('perfectflacs+')) { ?>
+				<li>"Perfect" FLACs: <?=number_format((int)$PerfectFLACs)?></li>
+<? } ?>
 <?
 
-	$DB->query("SELECT COUNT(ID) FROM torrents WHERE ((LogScore = 100 AND Format = 'FLAC') OR (Media = 'Vinyl' AND Format = 'FLAC') OR (Media = 'WEB' AND Format = 'FLAC') OR (Media = 'DVD' AND Format = 'FLAC') OR (Media = 'Soundboard' AND Format = 'FLAC') OR (Media = 'Cassette' AND Format = 'FLAC') OR (Media = 'SACD' AND Format = 'FLAC') OR (Media = 'Blu-ray' AND Format = 'FLAC') OR (Media = 'DAT' AND Format = 'FLAC')) AND UserID = '$UserID'");
-	list($PerfectFLACs) = $DB->next_record();
-?>
-	<li>"Perfect" FLACs: <?=number_format((int)$PerfectFLACs)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=perfectflac">View</a>]</li>
-<?
-}
-
-if ($Paranoia < 1 || check_perms('users_view_seedleech') || check_perms('users_override_paranoia') || $OwnProfile) {
-
-	$DB->query("SELECT COUNT(x.uid) FROM xbt_files_users AS x INNER JOIN torrents AS t ON t.ID=x.fid WHERE x.uid='$UserID' AND x.remaining>0");
-	list($Leeching) = $DB->next_record();
+if (check_paranoia_here('seeding+')) {
 	$DB->query("SELECT COUNT(x.uid) FROM xbt_files_users AS x INNER JOIN torrents AS t ON t.ID=x.fid WHERE x.uid='$UserID' AND x.remaining=0");
 	list($Seeding) = $DB->next_record();
-?>
-				<li>Seeding: <?=number_format((int)$Seeding)?> [<a href="torrents.php?type=seeding&amp;userid=<?=$UserID?>" title="View">View</a>]<? if (check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=seeding&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
-				<li>Leeching: <?=number_format((int)$Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
-<?
 }
-
-if ($Paranoia < 2 || check_perms('users_view_seedleech') || check_perms('users_override_paranoia') || $OwnProfile) {
+if (check_paranoia_here('leeching+')) {
+	$DB->query("SELECT COUNT(x.uid) FROM xbt_files_users AS x INNER JOIN torrents AS t ON t.ID=x.fid WHERE x.uid='$UserID' AND x.remaining>0");
+	list($Leeching) = $DB->next_record();
+}
 ?>
+<? if (check_paranoia_here('seeding')) { ?>
+				<li>Seeding: <?=number_format((int)$Seeding)?> [<a href="torrents.php?type=seeding&amp;userid=<?=$UserID?>" title="View">View</a>]<? if (check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=seeding&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
+<? } elseif (check_paranoia_here('seeding+')) { ?>
+				<li>Seeding: <?=number_format((int)$Seeding)?></li>
+<? } ?>
+<? if (check_paranoia_here('leeching')) { ?>
+				<li>Leeching: <?=number_format((int)$Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+<? } elseif (check_paranoia_here('leeching+')) { ?>
+				<li>Leeching: <?=number_format((int)$Leeching)?></li>
+<? } ?>
+<? if (check_paranoia_here('snatched+')) { ?>
 				<li>Snatched: <?=number_format((int)$Snatched)?> 
-<?				if(check_perms('site_view_torrent_snatchlist')) {?>
-						(<?=number_format((int)$UniqueSnatched)?>)
-<?				}?>
-				[<a href="torrents.php?type=snatched&amp;userid=<?=$UserID?>" title="View">View</a>]<? if(check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=snatches&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
+<? 	if(check_perms('site_view_torrent_snatchlist', $Class)) { ?>
+					(<?=number_format((int)$UniqueSnatched)?>)
+<?	} ?>
+<? } ?>
+<? if (check_paranoia_here('snatched')) { ?>
+				[<a href="torrents.php?type=snatched&amp;userid=<?=$UserID?>" title="View">View</a>]<? if(check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=snatches&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?>
+ 				</li>
 <? }
 
-if(check_perms('site_view_torrent_snatchlist')) {
+if(check_perms('site_view_torrent_snatchlist', $Class)) {
 	$DB->query("SELECT COUNT(ud.UserID), COUNT(DISTINCT ud.TorrentID) FROM users_downloads AS ud INNER JOIN torrents AS t ON t.ID=ud.TorrentID WHERE ud.UserID='$UserID'");
 	list($NumDownloads, $UniqueDownloads) = $DB->next_record();
 ?>
@@ -401,7 +502,7 @@ if(check_perms('site_view_torrent_snatchlist')) {
 <?
 }
 
-if ($Paranoia < 2 || check_perms('users_view_invites') || check_perms('users_override_paranoia') || $OwnProfile) {
+if(check_paranoia_here('invitedcount')) {
 	$DB->query("SELECT COUNT(UserID) FROM users_info WHERE Inviter='$UserID'");
 	list($Invited) = $DB->next_record();
 ?>
@@ -409,6 +510,10 @@ if ($Paranoia < 2 || check_perms('users_view_invites') || check_perms('users_ove
 <? } ?>
 			</ul>
 		</div>
+<?
+
+
+?>
 	</div>
 	<div class="main_column">
 <?
@@ -439,7 +544,7 @@ if ($RatioWatchEnds!='0000-00-00 00:00:00'
 			</div>
 		</div>
 <?
-if ($Snatched > 4 && $Paranoia < 2) {
+if ($Snatched > 4 && check_paranoia_here('snatched')) {
 	$RecentSnatches = $Cache->get_value('recent_snatches_'.$UserID);
 	if(!is_array($RecentSnatches)){
 		$DB->query("SELECT
@@ -481,7 +586,7 @@ if ($Snatched > 4 && $Paranoia < 2) {
 }
 
 if(!isset($Uploads)) { $Uploads = 0; }
-if ($Uploads > 4 && $Paranoia < 3) {
+if ($Uploads > 4 && check_paranoia_here('uploads')) {
 	$RecentUploads = $Cache->get_value('recent_uploads_'.$UserID);
 	if(!is_array($RecentUploads)){
 		$DB->query("SELECT 
@@ -568,24 +673,25 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
 }
 
 // Requests
-$DB->query("SELECT
-		r.ID,
-		r.CategoryID,
-		r.Title,
-		r.Year,
-		r.TimeAdded,
-		COUNT(rv.UserID) AS Votes,
-		SUM(rv.Bounty) AS Bounty
-	FROM requests AS r
-		LEFT JOIN users_main AS u ON u.ID=UserID
-		LEFT JOIN requests_votes AS rv ON rv.RequestID=r.ID
-	WHERE r.UserID = ".$UserID."
-		AND r.TorrentID = 0
-	GROUP BY r.ID
-	ORDER BY Votes DESC");
-
-if($DB->record_count() > 0) {
-	$Requests = $DB->to_array();
+if (check_paranoia_here('requestsvoted_list')) {
+	$DB->query("SELECT
+			r.ID,
+			r.CategoryID,
+			r.Title,
+			r.Year,
+			r.TimeAdded,
+			COUNT(rv.UserID) AS Votes,
+			SUM(rv.Bounty) AS Bounty
+		FROM requests AS r
+			LEFT JOIN users_main AS u ON u.ID=UserID
+			LEFT JOIN requests_votes AS rv ON rv.RequestID=r.ID
+		WHERE r.UserID = ".$UserID."
+			AND r.TorrentID = 0
+		GROUP BY r.ID
+		ORDER BY Votes DESC");
+	
+	if($DB->record_count() > 0) {
+		$Requests = $DB->to_array();
 ?>
 		<div class="box">
 			<div class="head">Requests <a href="#" onclick="$('#requests').toggle();return false;">(View)</a></div>
@@ -606,16 +712,16 @@ if($DB->record_count() > 0) {
 						</td>
 					</tr>
 <?
-	foreach($Requests as $Request) {
-		list($RequestID, $CategoryID, $Title, $Year, $TimeAdded, $Votes, $Bounty) = $Request;
+		foreach($Requests as $Request) {
+			list($RequestID, $CategoryID, $Title, $Year, $TimeAdded, $Votes, $Bounty) = $Request;
 
-		$Request = get_requests(array($RequestID));
-		$Request = $Request['matches'][$RequestID];
-		if(empty($Request)) {
-			continue;
-		}
+			$Request = get_requests(array($RequestID));
+			$Request = $Request['matches'][$RequestID];
+			if(empty($Request)) {
+				continue;
+			}
 
-		list($RequestID, $RequestorID, $RequestorName, $TimeAdded, $LastVote, $CategoryID, $Title, $Year, $Image, $Description, $CatalogueNumber, $ReleaseType,
+			list($RequestID, $RequestorID, $RequestorName, $TimeAdded, $LastVote, $CategoryID, $Title, $Year, $Image, $Description, $CatalogueNumber, $ReleaseType,
 			$BitrateList, $FormatList, $MediaList, $LogCue, $FillerID, $FillerName, $TorrentID, $TimeFilled) = $Request;
 		
 			$CategoryName = $Categories[$CategoryID - 1];
@@ -637,22 +743,22 @@ if($DB->record_count() > 0) {
 							<?=$FullName?>
 							<div class="tags">
 <?			
-		$Tags = $Request['Tags'];
-		$TagList = array();
-		foreach($Tags as $TagID => $TagName) {
-			$TagList[] = "<a href='requests.php?tag=".$TagID."'>".display_str($TagName)."</a>";
-		}
-		$TagList = implode(', ', $TagList);
+			$Tags = $Request['Tags'];
+			$TagList = array();
+			foreach($Tags as $TagID => $TagName) {
+				$TagList[] = "<a href='requests.php?tag=".$TagID."'>".display_str($TagName)."</a>";
+			}
+			$TagList = implode(', ', $TagList);
 ?>
 								<?=$TagList?>
 							</div>
 						</td>
 						<td>
 							<?=$Votes?> 
-<?  	if(check_perms('site_vote')){ ?>
+<?		  	if(check_perms('site_vote')){ ?>
 							<input type="hidden" id="auth" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 				&nbsp;&nbsp; <a href="javascript:Vote(20971520)"><strong>(+)</strong></a>
-<?		} ?> 
+<?			} ?> 
 						</td>
 						<td>
 							<?=get_size($Bounty)?>
@@ -661,11 +767,12 @@ if($DB->record_count() > 0) {
 							<?=time_diff($TimeAdded)?>
 						</td>
 					</tr>
-<?	} ?>
+<?		} ?>
 				</table>
 			</div>
 		</div>
 <?
+	}
 }
 ?>
 <br />
@@ -905,7 +1012,7 @@ if($DB->record_count() > 0) {
 					<input type="checkbox" name="DisableWiki" id="DisableWiki"<? if ($DisableWiki==1) { ?>checked="checked"<? } ?> /> <label for="DisableWiki">Wiki</label> |
 					<input type="checkbox" name="DisableLeech" id="DisableLeech"<? if ($DisableLeech==0) { ?>checked="checked"<? } ?> /><label for="DisableLeech">Leech</label> |
 					<input type="checkbox" name="DisablePM" id="DisablePM"<? if ($DisablePM==1) { ?>checked="checked"<? } ?> /><label for="DisablePM">PM</label> |
-					<input type="checkbox" name="DisableIRC" id="DisableIRC"<? if ($DisableIRC==1) { ?>checked="checked"<? } ?> /><label for="DisableIRC">IRC</label> |
+					<input type="checkbox" name="DisableIRC" id="DisableIRC"<? if ($DisableIRC==1) { ?>checked="checked"<? } ?> /><label for="DisableIRC">IRC</label>
 					<??>
 				</td>
 			</tr>
