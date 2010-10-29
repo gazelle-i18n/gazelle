@@ -44,16 +44,20 @@ if($Err) {
 // Reduce the user's input paranoia until it becomes consistent
 if (isset($_POST['p_uniquegroups_l'])) {
 	$_POST['p_uploads_l'] = 'on';
+	$_POST['p_uploads_c'] = 'on';
 }
 
 if (isset($_POST['p_uploads_l'])) {
 	$_POST['p_uniquegroups_l'] = 'on';
+	$_POST['p_uniquegroups_c'] = 'on';
 	$_POST['p_perfectflacs_l'] = 'on';
+	$_POST['p_perfectflacs_c'] = 'on';
 	$_POST['p_artistsadded'] = 'on';
 }
 
 if (isset($_POST['p_collagecontribs_l'])) {
 	$_POST['p_collages_l'] = 'on';
+	$_POST['p_collages_c'] = 'on';
 }
 
 if (isset($_POST['p_snatched_c']) && isset($_POST['p_seeding_c']) && isset($_POST['p_downloaded'])) {
@@ -85,11 +89,11 @@ foreach($Checkboxes as $C) {
 
 $SimpleSelects = array('torrentcomments', 'collages', 'collagecontribs', 'uploads', 'uniquegroups', 'perfectflacs', 'seeding', 'leeching', 'snatched');
 foreach ($SimpleSelects as $S) {
-	if (!isset($_POST['p_'.$S.'_c'])) {
-		// very paranoid
+	if(!isset($_POST['p_'.$S.'_c']) && !isset($_POST['p_'.$S.'_l'])) {
+		// Very paranoid - don't show count or list
 		$Paranoia[] = $S . '+';
-	} elseif (!isset($_POST['p_'.$S.'_l'])) {
-		// a little paranoid
+	} elseif (!isset($_POST['p_'.$S.'_c'])) {
+		// A little paranoid - show count, don't show list
 		$Paranoia[] = $S;
 	}
 }

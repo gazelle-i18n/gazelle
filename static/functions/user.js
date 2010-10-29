@@ -53,6 +53,7 @@ function AlterParanoia() {
 	UncheckIfDisabled($('input[name=p_requestsvoted_list]').raw());
 	UncheckIfDisabled($('input[name=p_uploads_l]').raw());
 	UncheckIfDisabled($('input[name=p_uniquegroups_l]').raw());
+	UncheckIfDisabled($('input[name=p_perfectflacs_l]').raw());
 	UncheckIfDisabled($('input[name=p_seeding_l]').raw());
 	UncheckIfDisabled($('input[name=p_leeching_l]').raw());
 	UncheckIfDisabled($('input[name=p_snatched_l]').raw());

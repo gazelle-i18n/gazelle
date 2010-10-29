@@ -14,7 +14,7 @@ if (!$Support = $Cache->get_value('staff')) {
 		JOIN users_main AS m ON m.ID=i.UserID
 		JOIN permissions AS p ON p.ID=m.PermissionID
 		WHERE p.DisplayStaff!='1' AND i.SupportFor!=''");
-	$FrontLineSupport = $DB->to_array();
+	$FrontLineSupport = $DB->to_array(false, MYSQLI_BOTH, array(4));
 	$DB->query("SELECT
 		m.ID,
 		p.Level,
@@ -28,7 +28,7 @@ if (!$Support = $Cache->get_value('staff')) {
 		JOIN permissions AS p ON p.ID=m.PermissionID
 		WHERE p.DisplayStaff='1'
 		ORDER BY p.Level, m.LastAccess ASC");
-	$Staff = $DB->to_array();
+	$Staff = $DB->to_array(false, MYSQLI_BOTH, array(4));
 	$Cache->cache_value('staff',array($FrontLineSupport,$Staff),180);
 } else { list($FrontLineSupport,$Staff) = $Support; }
 ?>

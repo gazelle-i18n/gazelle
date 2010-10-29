@@ -136,7 +136,6 @@ switch($_GET['type']) {
 		$From = "xbt_files_users AS xfu JOIN torrents AS t ON t.ID=xfu.fid";
 		break;
 	case 'uploaded':
-		if(!check_perms('users_view_uploaded') && $UserID != $LoggedUser['ID'] && $Paranoia>=3) { error(403); }
 		$Time = 'unix_timestamp(t.Time)';
 		$UserField = 't.UserID';
 		$ExtraWhere = 'AND flags!=1';
@@ -153,7 +152,7 @@ switch($_GET['type']) {
 		error(404);
 }
 
-if(!empty($_GET['filter'])) {
+if(!empty($_GET['filter']) && (($_GET['filter'] == "perfectflac") || ($_GET['filter'] == "uniquegroup"))) {
 	if($_GET['filter'] == "perfectflac") {
 		if (!check_paranoia('perfectflacs', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$ExtraWhere .= ' AND t.Format = \'FLAC\'';
@@ -170,9 +169,9 @@ if(!empty($_GET['filter'])) {
 	} elseif($_GET['filter'] == "uniquegroup") {
 		if (!check_paranoia('uniquegroups', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$GroupBy = "tg.ID";
-	} else {
-		if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 	}
+} else {
+	if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 }
 
 if(empty($GroupBy)) {

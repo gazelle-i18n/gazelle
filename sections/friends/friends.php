@@ -66,7 +66,7 @@ if($Results == 0) {
 	echo '<p>You have no friends! :(</p>';
 }
 // Start printing out friends
-while(list($FriendID, $Comment, $Username, $Uploaded, $Downloaded, $Class, $Enabled, $Paranoia, $Donor, $Warned, $Title, $LastAccess, $Avatar) = $DB->next_record()) {
+while(list($FriendID, $Comment, $Username, $Uploaded, $Downloaded, $Class, $Enabled, $Paranoia, $Donor, $Warned, $Title, $LastAccess, $Avatar) = $DB->next_record(MYSQLI_BOTH, array(7))) {
 ?>
 <form action="friends.php" method="post">
 	<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />

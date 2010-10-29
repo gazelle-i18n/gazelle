@@ -205,8 +205,6 @@ if (check_perms('admin_reports')) {
 		</div>
 <?
 
-
-
 if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
 	$DB->query("SELECT COUNT(DISTINCT r.ID), SUM(rv.Bounty) FROM requests AS r LEFT JOIN requests_votes AS rv ON r.ID=rv.RequestID WHERE r.FillerID = ".$UserID);
 	list($RequestsFilled, $TotalBounty) = $DB->next_record();
@@ -219,8 +217,6 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
 	$RequestsVoted = 0;
 	$TotalSpent = 0;
 }
-
-$TotalSpent = get_size($TotalSpent);
 
 if(check_paranoia_here('uploads+')) {
 	$DB->query("SELECT COUNT(ID) FROM torrents WHERE UserID='$UserID'");
@@ -261,26 +257,26 @@ $OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank
 			<div class="head colhead_dark">Percentile Rankings (Hover for values)</div>
 			<ul class="stats nobullet">
 <? if (check_paranoia_here('uploaded')) { ?>
-				<li title="<?=$ViewStats ? get_size($Uploaded) : 'Hidden'?>">Data uploaded: <?=number_format((int)$UploadedRank)?></li>
+				<li title="<?=get_size($Uploaded)?>">Data uploaded: <?=number_format($UploadedRank)?></li>
 <? } ?>
 <? if (check_paranoia_here('downloaded')) { ?>
-				<li title="<?=$ViewStats ? get_size($Downloaded) : 'Hidden'?>">Data downloaded: <?=number_format((int)$DownloadedRank)?></li>
+				<li title="<?=get_size($Downloaded)?>">Data downloaded: <?=number_format($DownloadedRank)?></li>
 <? } ?>
 <? if (check_paranoia_here('uploads+')) { ?>
-				<li title="<?=$ViewUploaded ? $Uploads : 'Hidden'?>">Torrents uploaded: <?=number_format((int)$UploadsRank)?></li>
+				<li title="<?=$Uploads?>">Torrents uploaded: <?=number_format($UploadsRank)?></li>
 <? } ?>
 <? if (check_paranoia_here('requestsfilled_count')) { ?>
-				<li title="<?=$ViewRequested ? $RequestsFilled : 'Hidden'?>">Requests filled: <?=number_format((int)$RequestRank)?></li>
+				<li title="<?=$RequestsFilled?>">Requests filled: <?=number_format($RequestRank)?></li>
 <? } ?>
 <? if (check_paranoia_here('requestsvoted_bounty')) { ?>
-				<li title="<?=$ViewRequested ? get_size($TotalSpent) : 'Hidden'?>">Bounty spent: <?=number_format((int)$BountyRank)?></li>
+				<li title="<?=get_size($TotalSpent)?>">Bounty spent: <?=number_format($BountyRank)?></li>
 <? } ?>
-				<li title="<?=$ForumPosts?>">Posts made: <?=number_format((int)$PostRank)?></li>
+				<li title="<?=$ForumPosts?>">Posts made: <?=number_format($PostRank)?></li>
 <? if (check_paranoia_here('artistsadded')) { ?>
-				<li title="<?=$ArtistsAdded?>">Artists added: <?=number_format((int)$ArtistsRank)?></li>
+				<li title="<?=$ArtistsAdded?>">Artists added: <?=number_format($ArtistsRank)?></li>
 <? } ?>
 <? if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
-				<li><strong>Overall rank: <?=number_format((int)$OverallRank)?></strong></li>
+				<li><strong>Overall rank: <?=number_format($OverallRank)?></strong></li>
 <? } ?>
 			</ul>
 		</div>
@@ -328,10 +324,7 @@ $OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank
 ?>
 		</ul>
 	</div>
-<?	} 
-
-
-?>
+<?	} ?>
 		<div class="box">
 			<div class="head colhead_dark">Personal</div>
 			<ul class="stats nobullet">
@@ -386,9 +379,6 @@ if (check_perms('users_view_invites')) {
 			</ul>
 		</div>
 <?
-
-
-
 // These stats used to be all together in one UNION'd query
 // But we broke them up because they had a habit of locking each other to death.
 // They all run really quickly anyways.
@@ -510,10 +500,6 @@ if(check_paranoia_here('invitedcount')) {
 <? } ?>
 			</ul>
 		</div>
-<?
-
-
-?>
 	</div>
 	<div class="main_column">
 <?
