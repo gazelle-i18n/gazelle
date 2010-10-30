@@ -56,7 +56,6 @@ if($Data) {
 
 ob_start();
 
-
 // Requests
 $Requests = $Cache->get_value('artists_requests_'.$ArtistID);
 if(!is_array($Requests)) {

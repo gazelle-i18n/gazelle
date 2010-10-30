@@ -10,7 +10,7 @@ if(!check_perms('zip_downloader')) {
 }
 
 if ($UserID != $LoggedUser['ID']) {
-	$DB->query("SELECT m.Paranoia, p.Level FROM users_main AS m JOIN permissions AS p ON p.ID=m.PermissionID WHERE ID='".$UserID."'");
+	$DB->query("SELECT m.Paranoia, p.Level FROM users_main AS m JOIN permissions AS p ON p.ID=m.PermissionID WHERE m.ID='".$UserID."'");
 	list($Paranoia, $UserClass)=$DB->next_record();
 }
 

@@ -92,7 +92,7 @@ foreach ($SimpleSelects as $S) {
 	if(!isset($_POST['p_'.$S.'_c']) && !isset($_POST['p_'.$S.'_l'])) {
 		// Very paranoid - don't show count or list
 		$Paranoia[] = $S . '+';
-	} elseif (!isset($_POST['p_'.$S.'_c'])) {
+	} elseif (!isset($_POST['p_'.$S.'_l'])) {
 		// A little paranoid - show count, don't show list
 		$Paranoia[] = $S;
 	}

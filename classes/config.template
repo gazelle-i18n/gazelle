@@ -68,6 +68,11 @@ define('SPHINX_PORT', 9312);
 define('SPHINX_MAX_MATCHES', 1000); // Must be <= the server's max_matches variable (default 1000)
 define('SPHINX_INDEX', 'torrents');
 
+// Ocelot details
+define('TRACKER_HOST', 'localhost');
+define('TRACKER_PORT', 2710);
+define('TRACKER_SECRET', ''); // Must be 32 characters and match site_password in Ocelot's config.cpp
+
 // Found in the 'permissions' table
 // Name of class	Class ID (NOT level)
 define('USER',		'2');
