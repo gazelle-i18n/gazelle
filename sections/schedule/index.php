@@ -133,7 +133,7 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 		SET h.Finished='0', 
 		h.LastTime=unix_timestamp(now()) 
 		WHERE h.Finished='1' 
-		AND h.Date=UTC_DATE();");
+		AND h.Date=UTC_DATE()+0;");
 	$DB->query("INSERT INTO users_torrent_history
 		(UserID, NumTorrents, Date)
 		SELECT UserID, NumTorrents, UTC_DATE()+0
@@ -449,7 +449,7 @@ if($Day != next_day() || $_GET['runday']){
 		$Cache->update_row(false, array('RatioWatchEnds'=>time_plus(60*60*24*14),'RatioWatchDownload'=>0));
 		$Cache->commit_transaction(0);
 		send_pm($UserID, 0, db_string("You have been put on Ratio Watch"), db_string("This happens when your ratio falls below the requirements we have outlined in the rules located [url=http://what.cd/rules.php?p=ratio]here[/url].\n For information about ratio watch, click the link above."), '');
-		echo "Ratio watch on: $ID\n";
+		echo "Ratio watch on: $UserID\n";
 	}
 	
 	sleep(5);
@@ -493,7 +493,7 @@ if($Day != next_day() || $_GET['runday']){
 		$Cache->update_row(false, array('RatioWatchEnds'=>'0000-00-00 00:00:00','RatioWatchDownload'=>0));
 		$Cache->commit_transaction(0);
 		send_pm($UserID, 0, db_string("Your downloading rights have been disabled"), db_string("As you did not raise your ratio in time, your downloading rights have been revoked. You will not be able to download any torrents until your ratio is above your new required ratio."), '');
-		echo "Ratio watch disabled: $ID\n";
+		echo "Ratio watch disabled: $UserID\n";
 	}
 
 	$DB->set_query_id($UserQuery);
@@ -542,7 +542,7 @@ if($Day != next_day() || $_GET['runday']){
 		");
 	$Cache->decrement('stats_user_count',$DB->affected_rows());
 	
-	echo 'disabled unconfirmed';
+	echo "disabled unconfirmed\n";
 	
 	//------------- Demote users --------------------------------------------//
 	sleep(10);
@@ -598,8 +598,10 @@ if($Day != next_day() || $_GET['runday']){
 	
 	sleep(10);
 	//remove dead torrents that were never announced to -- XBTT will not delete those with a pid of 0, only those that belong to them (valid pids)
+	
 	$DB->query("DELETE FROM torrents WHERE flags = 1 AND pid = 0");
 	sleep(10);
+	
 	$i = 0;
 	$DB->query("SELECT
 		t.ID,

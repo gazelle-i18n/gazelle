@@ -113,6 +113,8 @@ class BENCODE {
 		} elseif($Type == 'd') { // Element is a dictionary
 			$this->Val[$Key] = new BENCODE_DICT(substr($this->Str, $this->Pos));
 			$this->Pos += $this->Val[$Key]->Pos;
+			// Sort by key to respect spec
+			ksort($this->Val[$Key]->Val);
 		
 		} else {
 			die('Invalid torrent file');
@@ -217,8 +219,6 @@ class BENCODE_DICT extends BENCODE {
 			
 			
 		}
-		// Sort by key to respect spec
-		ksort($this->Val);
 		return true;
 	}
 }
