@@ -79,7 +79,7 @@ if(!isset($_REQUEST['action'])) {
 			enforce_login();
 			if (!$_GET['post'] || !is_number($_GET['post'])) { error(0); }
 			$DB->query("SELECT Body FROM requests_comments WHERE ID='".db_string($_GET['post'])."'");
-			list($Body) = $DB->next_record(MYSQLI_NUM,false);
+			list($Body) = $DB->next_record(MYSQLI_NUM);
 		
 			echo trim($Body);
 			break;

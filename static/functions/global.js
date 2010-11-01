@@ -11,19 +11,21 @@ function toggleChecks(formElem,masterElem) {
 var lightbox = {
 	init: function (image, size) {
 		if (image.naturalWidth === undefined) {
-			tmp = document.createElement('img');
+			var tmp = document.createElement('img');
 			tmp.style.visibility = 'hidden';
 			tmp.src = image.src;
 			image.naturalWidth = tmp.width;
-			tmp.parentNode.removeChild(tmp); //unset()
+			delete tmp;
 		}
 		if (image.naturalWidth > size) {
 			lightbox.box(image);
 		}
 	},
 	box: function (image) {
-		$('#lightbox').show().listen('click',lightbox.unbox).raw().innerHTML = '<img src="' + image.src + '" />';
-		$('#curtain').show().listen('click',lightbox.unbox);
+		if(image.parentNode.tagName.toUpperCase() != 'A') {
+			$('#lightbox').show().listen('click',lightbox.unbox).raw().innerHTML = '<img src="' + image.src + '" />';
+			$('#curtain').show().listen('click',lightbox.unbox);
+		}
 	},
 	unbox: function (data) {
 		$('#curtain').hide();

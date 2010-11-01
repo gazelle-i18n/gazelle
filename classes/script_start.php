@@ -1804,6 +1804,17 @@ function update_tracker($Action, $Updates) {
 	}
 	return ($Return == "success");
 }
+/*
+function ends_with($Haystack, $Needle) {
+	return strrpos($Haystack, $Needle) === strlen($Haystack)-strlen($Needle);
+}
+*/
+
+/** This ends_with is slightly slower when the string is found, but a lot faster when it isn't.
+ */
+function ends_with($Haystack, $Needle) {
+	return substr($Haystack, strlen($Needle) * -1) == $Needle;
+}
 
 
 

@@ -20,7 +20,7 @@ $PostID = $_GET['post'];
 
 // Mainly 
 $DB->query("SELECT Body FROM collages_comments WHERE ID='$PostID'");
-list($Body) = $DB->next_record(MYSQLI_BOTH, false);
+list($Body) = $DB->next_record(MYSQLI_NUM);
 
 // This gets sent to the browser, which echoes it wherever 
 

@@ -34,6 +34,12 @@ function function_exists(function_name) {
 	return (typeof this.window[function_name] === 'function');
 }
 
+function html_entity_decode(str) {
+    var el = document.createElement("div");
+    el.innerHTML = str;
+    return el.childNodes[0].nodeValue;
+}
+
 function get_size(size) {
 	steps = 0;
 	while(size>=1024) {

@@ -144,5 +144,5 @@ function is_valid_torrenthash($Str) {
 //After adjusting / deleting logs, recalculate the score for the torrent.
 function set_torrent_logscore($TorrentID) {
 	global $DB;
-	$DB->query("UPDATE torrents SET LogScore = (SELECT AVG(Score) FROM torrents_logs_new WHERE TorrentID = ".$TorrentID.") WHERE ID = ".$TorrentID);
+	$DB->query("UPDATE torrents SET LogScore = (SELECT FLOOR(AVG(Score)) FROM torrents_logs_new WHERE TorrentID = ".$TorrentID.") WHERE ID = ".$TorrentID);
 }

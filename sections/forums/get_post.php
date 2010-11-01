@@ -28,7 +28,7 @@ $DB->query("SELECT
 		WHERE 
 		p.ID='$PostID' AND 
 		f.MinClassRead<='$LoggedUser[Class]'");
-list($Body) = $DB->next_record(MYSQLI_BOTH, false);
+list($Body) = $DB->next_record(MYSQLI_NUM);
 
 // This gets sent to the browser, which echoes it wherever 
 

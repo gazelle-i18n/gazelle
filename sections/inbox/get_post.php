@@ -26,7 +26,7 @@ $DB->query("SELECT
 		JOIN pm_conversations_users AS u ON m.ConvID=u.ConvID 
 		WHERE m.ID='$PostID'
 		AND u.UserID=".$LoggedUser['ID']);
-list($Body) = $DB->next_record(MYSQLI_BOTH, false);
+list($Body) = $DB->next_record(MYSQLI_NUM);
 
 // This gets sent to the browser, which echoes it wherever 
 

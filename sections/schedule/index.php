@@ -43,6 +43,7 @@ if (check_perms('admin_schedule')) {
 
 $DB->query("SELECT NextHour, NextDay, NextBiWeekly FROM schedule");
 list($Hour, $Day, $BiWeek) = $DB->next_record();
+$DB->query("UPDATE schedule SET NextHour = ".next_hour().", NextDay = ".next_day().", NextBiWeekly = ".next_biweek());
 
 $sqltime = sqltime();
 
@@ -258,8 +259,6 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 	//------------- Lower Login Attempts ------------------------------------//
 	$DB->query("UPDATE login_attempts SET Attempts=Attempts-1 WHERE Attempts>0");
 	$DB->query("DELETE FROM login_attempts WHERE LastAttempt<'".time_minus(3600*24*90)."'");
-	
-	$Hour = next_hour();
 
         //------------- Remove expired warnings ---------------------------------//
         $DB->query("SELECT UserID FROM users_info WHERE Warned<'$sqltime'");
@@ -828,8 +827,6 @@ if($Day != next_day() || $_GET['runday']){
 
 
 	}
-
-	$Day = next_day();
 }
 /*************************************************************************\
 //--------------Run twice per month -------------------------------------//
@@ -936,11 +933,8 @@ if($BiWeek != next_biweek() || $_GET['runbiweek']) {
 		$DB->query("TRUNCATE TABLE top_snatchers;");
 		$DB->query("INSERT INTO top_snatchers (UserID) SELECT uid FROM xbt_snatched GROUP BY uid ORDER BY COUNT(uid) DESC LIMIT 100;");
 	}
-	
-	$BiWeek = next_biweek();
 }
 
-$DB->query("UPDATE schedule SET NextHour = $Hour, NextDay = $Day, NextBiWeekly = $BiWeek");
 
 echo "-------------------------\n\n";
 if (check_perms('admin_schedule')) {	
