@@ -326,7 +326,7 @@ function user_info($UserID) {
 			m.ID,
 			m.Username,
 			m.PermissionID,
-			m.Paranoia
+			m.Paranoia,
 			i.Artist,
 			i.Donor,
 			i.Warned,

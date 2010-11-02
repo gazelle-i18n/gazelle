@@ -136,6 +136,7 @@ switch($_GET['type']) {
 		$From = "xbt_files_users AS xfu JOIN torrents AS t ON t.ID=xfu.fid";
 		break;
 	case 'uploaded':
+		if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$Time = 'unix_timestamp(t.Time)';
 		$UserField = 't.UserID';
 		$ExtraWhere = 'AND flags!=1';
@@ -170,8 +171,6 @@ if(!empty($_GET['filter']) && (($_GET['filter'] == "perfectflac") || ($_GET['fil
 		if (!check_paranoia('uniquegroups', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 		$GroupBy = "tg.ID";
 	}
-} else {
-	if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) { error(403); }
 }
 
 if(empty($GroupBy)) {
