@@ -623,31 +623,32 @@ class TORRENT_FORM {
 	function simple_form($CategoryID) {
 		$Torrent = $this->Torrent; 
 ?>		<table cellpadding="3" cellspacing="1" border="0" class="border slice" width="100%">
-<? 		if($this->NewTorrent) {  ?> 
 			<tr id="name">
-<?			if ($this->Categories[$CategoryID] == 'E-Books') { ?>
-				<td class="label">Author - Title</td>
-<?			} else { ?>
-				<td class="label">Title</td>
-<?			} ?>
-			<td>
+<?				if ($this->NewTorrent) { 
+					if ($this->Categories[$CategoryID] == 'E-Books') { ?>
+						<td class="label">Author - Title</td>
+<?					} else { ?>
+						<td class="label">Title</td>
+<?					} 
+?>
+				<td>
 					<input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" />
 				</td>
-			</tr>
-			<tr>
-				<td class="label">Tags</td>
-				<td>
-					<input type="text" id="tags" name="tags" size="60" value="<?=display_str($Torrent['TagList']) ?>" />
-				</td>
-			</tr>
-			<tr>
-				<td class="label">Description</td>
-				<td>
-					<textarea name="desc" id="desc" cols="60" rows="8"><?=display_str($Torrent['GroupDescription']); ?></textarea>
-				</td>
-			</tr>
-<?		 }//if
-?>
+				</tr>
+				<tr>
+					<td class="label">Tags</td>
+					<td>
+						<input type="text" id="tags" name="tags" size="60" value="<?=display_str($Torrent['TagList']) ?>" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Description</td>
+					<td>
+						<textarea name="desc" id="desc" cols="60" rows="8"><?=display_str($Torrent['GroupDescription']); ?></textarea>
+					</td>
+				</tr>
+<?				} ?>
+
 		</table>
 <?	}//function simple_form
 }//class

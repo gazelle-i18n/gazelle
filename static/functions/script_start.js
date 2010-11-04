@@ -37,7 +37,10 @@ function function_exists(function_name) {
 function html_entity_decode(str) {
     var el = document.createElement("div");
     el.innerHTML = str;
-    return el.childNodes[0].nodeValue;
+    for(var i = 0, ret = ''; i < el.childNodes.length; i++) {
+    	ret += el.childNodes[i].nodeValue;
+    }
+    return ret;
 }
 
 function get_size(size) {
