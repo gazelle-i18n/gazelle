@@ -59,6 +59,7 @@ if($DB->record_count() == 0) {
 
 	$Cache->delete_value('collage_'.$CollageID);
 	$Cache->delete_value('torrents_details_'.$GroupID);
+	$Cache->delete_value('torrent_collages_'.$GroupID);
 } else {
 	error('Torrent already in collage!');
 }

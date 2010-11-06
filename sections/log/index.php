@@ -107,7 +107,7 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 			case "Artist":
 				$ArtistID = $MessageParts[++$i];
 				if (is_numeric($ArtistID)) {
-					$Message = $Message.' Arist <a href="artist.php?id='.$ArtistID.'"> '.$ArtistID.'</a>';
+					$Message = $Message.' Artist <a href="artist.php?id='.$ArtistID.'"> '.$ArtistID.'</a>';
 				} else {
 					$Message = $Message.' Artist '.$ArtistID;
 				}

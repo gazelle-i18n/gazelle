@@ -50,6 +50,7 @@ $Properties['Bitrate'] = $_POST['bitrate'];
 $Properties['Encoding'] = $_POST['bitrate'];
 $Properties['Trumpable'] = (isset($_POST['make_trumpable'])) ? 1 : 0;
 $Properties['TorrentDescription'] = $_POST['release_desc'];
+$Properties['Name'] = $_POST['title'];
 if($_POST['album_desc']) {
 	$Properties['GroupDescription'] = $_POST['album_desc'];
 }
@@ -181,8 +182,9 @@ switch ($Type) {
 	case 'Comics':
 	case 'E-Books':
 	case 'E-Learning Videos':
-		$Validate->SetFields('title',
+		/*$Validate->SetFields('title',
 			'1','string','Title must be between 2 and 300 characters.',array('maxlength'=>300, 'minlength'=>2));
+			^ this is commented out because there is no title field on these pages*/
 		break;
 }
 
