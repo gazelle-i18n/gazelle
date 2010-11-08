@@ -279,7 +279,7 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 
         $UserIDs = $DB->collect('ID');
         if(count($UserIDs) > 0) {
-                disable_users($UserIDs, "Disabled by ratio watch system for downloading more than 10 gigs on ratio watch", 2);
+                disable_users($UserIDs, "Disabled by ratio watch system for downloading more than 10 gigs on ratio watch\n\n", 2);
         }
 
 }
@@ -478,7 +478,6 @@ if($Day != next_day() || $_GET['runday']){
 	if(count($UserIDs) > 0) {
 		$DB->query("UPDATE users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 			SET 
-			i.RatioWatchDownload='0',
 			m.can_leech='0',
 			i.AdminComment=CONCAT('$sqltime - Leeching ability disabled by ratio watch system - required ratio: ', m.RequiredRatio,'
 
@@ -522,7 +521,7 @@ if($Day != next_day() || $_GET['runday']){
 		AND um.Enabled!='2'");
 
 	if($DB->record_count() > 0) {
-		disable_users($DB->collect('ID'), "Disabled for inactivity", 3);
+		disable_users($DB->collect('ID'), "Disabled for inactivity\n\n", 3);
 	}
 
 	//------------- Disable unconfirmed users ------------------------------//

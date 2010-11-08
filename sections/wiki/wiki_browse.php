@@ -22,10 +22,9 @@ $DB->query($sql);
 $Title = 'Browse articles';
 if($Letter) { $Title.= ' ('.$Letter.')'; }
 show_header($Title);
-
-if($Letter) {
 ?>
 <div class="thin">
+<? if($Letter) { ?>
 	<h2>Browse articles (<?=$Letter?>)</h2>
 	<table width="100%" style="margin-bottom:10px;">
 		<tr class="colhead">

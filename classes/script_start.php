@@ -787,31 +787,13 @@ function send_email($To,$Subject,$Body,$From='noreply',$ContentType='text/plain'
 }
 
 function get_size($Size, $Levels = 2) {
+	$Units = array(' B',' KB',' MB',' GB',' TB',' PB',' EB',' ZB',' YB');
 	$Size = (double) $Size;
-	$Negative = false;
-	if($Size<0) {
-		$Negative = true;
-		$Size = abs($Size);
+	for($Steps = 0; abs($Size) >= 1024; $Size /= 1024, $Steps++) {}
+	if(func_num_args() == 1 && $Steps >= 4) {
+		$Levels++;
 	}
-	$Steps = 0;
-	while($Size>=1024) {
-		$Steps++;
-		$Size=$Size/1024;
-	}
-	
-	if($Negative) {
-		$Size = $Size*-1;
-	}
-	
-	if ($Steps==0) { return number_format($Size,$Levels).' B'; }
-	elseif ($Steps==1) { return number_format($Size,$Levels).' KB'; }
-	elseif ($Steps==2) { return number_format($Size,$Levels).' MB'; }
-	elseif ($Steps==3) { return number_format($Size,$Levels).' GB'; }
-	elseif ($Steps==4) { return number_format($Size,$Levels).' TB'; }
-	elseif ($Steps==5) { return number_format($Size,$Levels).' PB'; }
-	elseif ($Steps==6) { return number_format($Size,$Levels).' EB'; }
-	elseif ($Steps==7) { return number_format($Size,$Levels).' ZB'; }
-	elseif ($Steps==8) { return number_format($Size,$Levels).' YB'; }
+	return number_format($Size,$Levels).$Units[$Steps];
 }
 
 function human_format($Number) {
@@ -1507,8 +1489,8 @@ function get_groups($GroupIDs, $Return = true, $GetArtists = true) {
 		}
 	
 		$DB->query("SELECT
-			ID, GroupID, Media, Format, Encoding, RemasterYear, Remastered, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers, Seeders, Snatched, Time, tf.TorrentID AS HasFile
-			FROM torrents AS t LEFT JOIN torrents_files AS tf ON tf.TorrentID = t.ID WHERE GroupID IN($IDs) ORDER BY GroupID, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Format, Encoding");
+			ID, GroupID, Media, Format, Encoding, RemasterYear, Remastered, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers, Seeders, Snatched, Time, ID AS HasFile
+			FROM torrents AS t WHERE GroupID IN($IDs) ORDER BY GroupID, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Format, Encoding");
 		while($Torrent = $DB->next_record(MYSQLI_ASSOC, true)) {
 			$Found[$Torrent['GroupID']]['Torrents'][$Torrent['ID']] = $Torrent;
 	
