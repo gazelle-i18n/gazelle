@@ -390,11 +390,6 @@ CREATE TABLE `news` (
   KEY `Time` (`Time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `old_freeleech` (
-  `TorrentID` int(10) DEFAULT NULL,
-  `FreeLeechType` enum('0','1','2','3') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `permissions` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Level` int(10) unsigned NOT NULL,

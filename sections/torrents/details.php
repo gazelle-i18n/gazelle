@@ -59,13 +59,17 @@ if ($TorrentTags != '') {
 		$Tags[$TagKey]['userid']=$TorrentTagUserIDs[$TagKey];
 	}
 	uasort($Tags, 'compare');
-}	
+}
+
+/*if (check_perms('site_debug')) {
+	print_r($TorrentTags);
+	print_r($Tags);
+	print_r($TorrentTagUserIDs);
+	die();
+}*/
 
 // Start output
-
-
-show_header($Title,'browse,comments');
-
+show_header($Title,'browse,comments,torrent');
 ?>
 <div class="thin">
 	<h2><?=$DisplayName?></h2>
@@ -123,7 +127,7 @@ if($Categories[$GroupCategoryID-1] == 'Music') {
 ?>
 		<div class="box box_artists">
 			<div class="head"><strong>Artists</strong>
-			
+			<?=(check_perms('torrents_edit')) ? '<span style="float:right;"><a onclick="ArtistManager(); return false;" href="#">[Edit]</a></span>' : ''?>
 			</div>
 			<ul class="stats nobullet" id="artist_list">
 <?

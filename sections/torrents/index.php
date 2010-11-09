@@ -146,6 +146,10 @@ if(!empty($_REQUEST['action'])) {
 			include(SERVER_ROOT.'/sections/torrents/notify.php');
 			break;
 
+		case 'manage_artists':
+			enforce_login();
+			require(SERVER_ROOT.'/sections/torrents/manage_artists.php');			
+			break;
 		case 'notify_clear':
 			enforce_login();
 			authorize();

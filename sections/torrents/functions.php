@@ -33,7 +33,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0) {
 			g.Time,
 			GROUP_CONCAT(DISTINCT tags.Name SEPARATOR '|'),
 			GROUP_CONCAT(DISTINCT tags.ID SEPARATOR '|'),
-			GROUP_CONCAT(tags.UserID SEPARATOR '|'),
+			GROUP_CONCAT(tt.UserID SEPARATOR '|'),
 			GROUP_CONCAT(tt.PositiveVotes SEPARATOR '|'),
 			GROUP_CONCAT(tt.NegativeVotes SEPARATOR '|')
 			FROM torrents_group AS g

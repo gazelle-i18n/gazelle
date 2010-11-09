@@ -25,7 +25,7 @@ $DB->query("UPDATE reports
 				ResolverID='".$LoggedUser['ID']."'
 			WHERE ID='".db_string($ReportID)."'");
 
-$Channels = array(ADMIN_CHAN);
+$Channels = array("#forumreports");
 if($Type == "request_update") {
 	$Channels[] = "#requestedits";
 }

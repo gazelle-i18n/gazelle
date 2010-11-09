@@ -72,7 +72,7 @@ $DB->query("INSERT INTO reports
 				(".db_string($LoggedUser['ID']).", ".$ID." , '".$Short."', '".sqltime()."', '".db_string($Reason)."')");
 $ReportID = $DB->inserted_id();
 
-$Channels = array(ADMIN_CHAN);
+$Channels = array("#forumreports");
 
 if($Short == "request_update") {
 	$Channels[] = "#requestedits";
