@@ -171,14 +171,6 @@ CREATE TABLE `comments_edits` (
   KEY `EditUser` (`EditUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `delays` (
-  `UserID` int(10) NOT NULL DEFAULT '0',
-  `Enable` tinyint(1) NOT NULL DEFAULT '0',
-  `Item` enum('upload','account','invites','leeching','posting') NOT NULL,
-  `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `StaffID` int(10) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 CREATE TABLE `do_not_upload` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
@@ -207,14 +199,6 @@ CREATE TABLE `drives` (
   PRIMARY KEY (`DriveID`),
   KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `featured_albums` (
-  `GroupID` int(10) NOT NULL DEFAULT '0',
-  `ThreadID` int(10) NOT NULL DEFAULT '0',
-  `Title` varchar(35) NOT NULL DEFAULT '',
-  `Started` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Ended` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `forums` (
   `ID` int(6) unsigned NOT NULL AUTO_INCREMENT,
@@ -344,19 +328,6 @@ CREATE TABLE `ip_bans` (
   KEY `FromIP` (`FromIP`,`ToIP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `irc_channels` (
-  `Name` varchar(50) DEFAULT NULL,
-  `Class` int(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `irc_country_bans` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `Code` varchar(2) DEFAULT NULL,
-  `Reason` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `Code` (`Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `log` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Message` varchar(400) NOT NULL,
@@ -436,27 +407,6 @@ CREATE TABLE `pm_messages` (
   KEY `ConvID` (`ConvID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `polls` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `UserID` int(10) unsigned NOT NULL,
-  `Question` varchar(255) NOT NULL,
-  `Answers` text NOT NULL,
-  `Responses` text NOT NULL,
-  `Expires` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `TopicID` int(10) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `UserID` (`UserID`),
-  KEY `Time` (`Time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `polls_responses` (
-  `PollID` int(10) unsigned NOT NULL,
-  `UserID` int(10) unsigned NOT NULL,
-  `Response` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`PollID`,`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `reports` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -473,15 +423,6 @@ CREATE TABLE `reports` (
   KEY `Type` (`Type`),
   KEY `ResolvedTime` (`ResolvedTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `reports_searches` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `UserID` int(10) NOT NULL,
-  `SearchID` int(10) NOT NULL,
-  `Time` datetime NOT NULL,
-  `Checked` enum('0','1') DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `reportsv2` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -556,48 +497,12 @@ CREATE TABLE `requests_comments` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `requests_old` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `UserID` int(10) unsigned NOT NULL DEFAULT '0',
-  `Name` varchar(225) DEFAULT NULL,
-  `Description` text NOT NULL,
-  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `FillerID` int(10) unsigned NOT NULL DEFAULT '0',
-  `Filled` int(10) unsigned NOT NULL DEFAULT '0',
-  `Bounty` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `ArtistID` int(10) unsigned NOT NULL DEFAULT '0',
-  `TimeFilled` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Visible` enum('0','1') NOT NULL DEFAULT '1',
-  PRIMARY KEY (`ID`),
-  KEY `Userid` (`UserID`),
-  KEY `Bounty` (`Bounty`),
-  KEY `Name` (`Name`),
-  KEY `ArtistID` (`ArtistID`),
-  KEY `Filled` (`Filled`),
-  KEY `FillerID` (`FillerID`),
-  KEY `Visible` (`Visible`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `requests_saved_tax` (
-  `SavedTax` bigint(20) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `requests_tags` (
   `TagID` int(10) NOT NULL DEFAULT '0',
   `RequestID` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`TagID`,`RequestID`),
   KEY `TagID` (`TagID`),
   KEY `RequestID` (`RequestID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `requests_tags_old` (
-  `TagID` int(10) NOT NULL DEFAULT '0',
-  `RequestID` int(10) NOT NULL DEFAULT '0',
-  `UserID` int(10) DEFAULT NULL,
-  PRIMARY KEY (`TagID`,`RequestID`),
-  KEY `TagID` (`TagID`),
-  KEY `RequestID` (`RequestID`),
-  KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `requests_votes` (
@@ -608,14 +513,6 @@ CREATE TABLE `requests_votes` (
   KEY `RequestID` (`RequestID`),
   KEY `UserID` (`UserID`),
   KEY `Bounty` (`Bounty`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `requests_votes_old` (
-  `RequestID` int(10) NOT NULL DEFAULT '0',
-  `UserID` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`RequestID`,`UserID`),
-  KEY `RequestID` (`RequestID`),
-  KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `schedule` (
@@ -773,21 +670,6 @@ CREATE TABLE `tags` (
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tmp_geoip_disabled` (
-  `Code` varchar(2) DEFAULT NULL,
-  `Users` int(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `tmp_geoip_invites` (
-  `Code` varchar(2) DEFAULT NULL,
-  `Users` int(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `tmp_geoip_uploads` (
-  `Code` varchar(2) DEFAULT NULL,
-  `Uploads` int(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `top10_history` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -891,13 +773,6 @@ CREATE TABLE `torrents_artists` (
   KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `torrents_bad_filenames` (
-  `TorrentID` int(10) NOT NULL DEFAULT '0',
-  `UserID` int(10) NOT NULL DEFAULT '0',
-  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  KEY `TimeAdded` (`TimeAdded`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `torrents_bad_files` (
   `TorrentID` int(11) NOT NULL DEFAULT '0',
   `UserID` int(11) NOT NULL DEFAULT '0',
@@ -929,13 +804,6 @@ CREATE TABLE `torrents_balance_history` (
   KEY `TorrentID` (`TorrentID`),
   KEY `Time` (`Time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-CREATE TABLE `torrents_cassette_approved` (
-  `TorrentID` int(10) NOT NULL DEFAULT '0',
-  `UserID` int(10) NOT NULL DEFAULT '0',
-  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  KEY `TimeAdded` (`TimeAdded`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `torrents_comments` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
@@ -998,13 +866,6 @@ CREATE TABLE `torrents_logs_new` (
   KEY `TorrentID` (`TorrentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `torrents_lossymaster_approved` (
-  `TorrentID` int(10) NOT NULL DEFAULT '0',
-  `UserID` int(10) NOT NULL DEFAULT '0',
-  `TimeAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  KEY `TimeAdded` (`TimeAdded`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 CREATE TABLE `torrents_peerlists` (
   `GroupID` int(10) NOT NULL,
   `SeedersList` varchar(512) DEFAULT NULL,
@@ -1050,13 +911,6 @@ CREATE TABLE `torrents_tags_votes` (
   `Way` enum('up','down') NOT NULL DEFAULT 'up',
   PRIMARY KEY (`GroupID`,`TagID`,`UserID`,`Way`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `user_avatar_warnings` (
-  `UserID` int(10) NOT NULL DEFAULT '0',
-  `Time` datetime DEFAULT NULL,
-  PRIMARY KEY (`UserID`),
-  KEY `Time` (`Time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `users_downloads` (
   `UserID` int(10) NOT NULL,

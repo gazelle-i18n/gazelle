@@ -245,7 +245,7 @@ show_header('Uploading Rules');
 			</li>
 			<li id="r2.1.23"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.23">2.1.23.</a> <strong>Edition Information must be provided for digitally-sourced torrents.</strong> Digitally-sourced (including CD-sourced) rips of material first released before the availability of their source medium must have accurate edition information. For example, if a CD rip of an album whose original release date was 1957, predating the creation and distribution of CDs, then the uploader must make note of the correct year the CD was pressed, and preferably catalog identification as well. Rips for which Edition Information cannot be provided must be marked as an 'Unknown Release'. Under no circumstances must you guess or feign Edition Information.
 			</li>		
-			<li id="r2.1.24"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.24">2.1.24.</a> <strong>Downsampling of analog rips is allowed.</strong> Analog rips that have been dowsampled may be uploaded (e.g. a 24/96 vinyl rip downsampled to 16/44). Any downsampled torrents must include the specific programs and methods used to downsample in addition to the lineage for the original rip or it will be deleted. <i>NOTE: downsampling of CDs is expressly forbidden.</i>
+			<li id="r2.1.24"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.24">2.1.24.</a> <strong>Downsampling of analog rips is allowed.</strong> Analog rips that have been downsampled may be uploaded (e.g. a 24/96 vinyl rip downsampled to 16/44). Any downsampled torrents must include the specific programs and methods used to downsample in addition to the lineage for the original rip or it will be deleted. <i>NOTE: downsampling of CDs is expressly forbidden.</i>
 			</li>
 		</ul>
 

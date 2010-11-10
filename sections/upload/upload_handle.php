@@ -599,18 +599,21 @@ $DB->query("INSERT IGNORE INTO users_points (UserID, GroupID, Points) VALUES ('$
 	$T['FreeLeechType']="'0'";
 }*/
 
+$T['FreeLeech']="'0'";
+$T['FreeLeechType']="'0'";
+
 // Torrent
 $DB->query("
 	INSERT INTO torrents
 		(GroupID, UserID, Media, Format, Encoding, 
 		Remastered, RemasterYear, RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, 
 		Scene, HasLog, HasCue, info_hash, FileCount, FileList, FilePath, Size, Time, 
-		Description, LogScore) 
+		Description, LogScore, FreeTorrent, FreeLeechType) 
 	VALUES
 		(".$GroupID.", ".$LoggedUser['ID'].", ".$T['Media'].", ".$T['Format'].", ".$T['Encoding'].", 
 		".$T['Remastered'].", ".$T['RemasterYear'].", ".$T['RemasterTitle'].", ".$T['RemasterRecordLabel'].", ".$T['RemasterCatalogueNumber'].", 
 		".$T['Scene'].", ".$HasLog.", ".$HasCue.", '".db_string($InfoHash)."', ".$NumFiles.", ".$FileString.", '".$FilePath."', ".$TotalSize.", '".sqltime()."',
-		".$T['TorrentDescription'].", '".(($HasLog == "'1'") ? $LogScoreAverage : 0)."')");
+		".$T['TorrentDescription'].", '".(($HasLog == "'1'") ? $LogScoreAverage : 0)."', ".$T['FreeLeech'].", ".$T['FreeLeechType'].")");
 
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
