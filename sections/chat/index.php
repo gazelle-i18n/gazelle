@@ -30,7 +30,7 @@ if(empty($IRCKey)) {
 				Be respectful to IRC Operators and Administrators. These people are site staff who volunteer their time for little compensation. They are there for the benefit of all and to aid in conflict resolution, do not waste their time.
 			</li>
 			<li>
-				Do not link shock sites or anything NSFW (not safe for work) without a warning. If in doubt, ask a staff member in #what.cd-help about it.
+				Do not link shock sites or anything NSFW (not safe for work) without a warning. If in doubt, ask a staff member in <?=BOT_HELP_CHAN?> about it.
 			</li>
 			<li>
 				Excessive swearing will get you kicked, keep swearing to a minimum.
@@ -100,7 +100,7 @@ if(empty($IRCKey)) {
 				<param name="nick" value="<?=$nick?>">
 				<param name="alternatenick" value="WhatGuest????">
 				<param name="name" value="Java IRC User">
-				<param name="host" value="irc.what-network.net">
+				<param name="host" value="<?=BOT_SERVER?>">
 				<param name="multiserver" value="true">
 				<param name="autorejoin" value="false">
 

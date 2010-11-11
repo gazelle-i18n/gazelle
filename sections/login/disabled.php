@@ -5,8 +5,8 @@ if(empty($_POST['submit']) || empty($_POST['username'])) {
 <p class="warning">
 Your account has been disabled.<br />
 This is either due to inactivity or rule violation.<br />
-To discuss this come to our IRC at: irc.what-network.net<br />
-And join #what.cd-disabled<br /><br />
+To discuss this come to our IRC at: <?=BOT_SERVER?><br />
+And join <?=BOT_DISABLED_CHAN?><br /><br />
 Be honest - at this point, lying will get you nowhere.<br /><br />
 </p>
 <p class="strong">
@@ -42,7 +42,7 @@ Please use your What.CD? username.
 				<param name="nick" value="<?=$nick?>">
 				<param name="alternatenick" value="WhatGuest????">
 				<param name="name" value="Java IRC User">
-				<param name="host" value="irc.what-network.net">
+				<param name="host" value="<?=BOT_SERVER?>">
 				<param name="multiserver" value="false">
 				<param name="autorejoin" value="false">
 

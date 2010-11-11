@@ -75,20 +75,8 @@ if($CategoryID == '1' && $Image != "") {
 $DB->query("INSERT INTO users_downloads (UserID, TorrentID, Time) VALUES ('$UserID', '$TorrentID', '".sqltime()."') ON DUPLICATE KEY UPDATE Time=VALUES(Time)");
 
 
-
 $DB->query("SELECT File FROM torrents_files WHERE TorrentID='$TorrentID'");
-if($DB->record_count() == 0) {
-	show_header();
-?>
-	<div class="box pad thin">
-		<h1>This torrent was lost in the recent downtime.</h1>
-		<br />
-		<p>If you have a copy of this .torrent, please add it at <a href="better.php?method=missing">http://what.cd/better.php?method=missing</a></p>
-	</div>
-<?
-	show_footer();
-	die();
-}
+
 list($Contents) = $DB->next_record(MYSQLI_NUM, array(0));
 $Contents = unserialize(base64_decode($Contents));
 $Tor = new TORRENT($Contents, true); // New TORRENT object

@@ -23,7 +23,7 @@ if(!empty($_GET['search'])) {
 $SS->SetFilter('logscore', array(100));
 $SS->limit(0, TORRENTS_PER_PAGE);
 
-$SS->set_index('what delta');
+$SS->set_index(SPHINX_INDEX.' delta');
 
 $Results = $SS->search($Query, 'torrent_group', 0, array(), '', '');
 

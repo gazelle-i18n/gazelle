@@ -162,6 +162,7 @@ if(count($_GET)){
 	$Val->SetFields('passkey', '0', 'string', 'Invalid passkey', array('maxlength'=>32));
 	$Val->SetFields('avatar', '0', 'string', 'Avatar URL too long', array('maxlength'=>512));
 	$Val->SetFields('stylesheet', '0', 'inarray', 'Invalid stylesheet', array_unique(array_keys($Stylesheets)));
+	$Val->SetFields('cc', '0', 'inarray', 'Invalid Country Code', array('maxlength'=>2));
 
 	$Err = $Val->ValidateForm($_GET);
 
@@ -229,6 +230,22 @@ if(count($_GET)){
 				$Where[]= ' hi.IP '.$Match.wrap($_GET['ip']);
 			} else {
 				$Where[]='um1.IP'.$Match.wrap($_GET['ip']);
+			}
+		}
+
+		if (!empty($_GET['cc'])) {
+			$Conditions = "";
+			$DB->query("SELECT StartIP, EndIP FROM geoip_country WHERE Code = '".$_GET['cc']."'");
+			while (list($StartIP, $EndIP) = $DB->next_record()) {
+				if (strlen($Conditions) > 0) {
+					$Conditions .= " OR INET_ATON(um1.IP) BETWEEN ".$StartIP." AND ".$EndIP;
+				} else {
+					$Conditions = " (INET_ATON(um1.IP) BETWEEN ".$StartIP." AND ".$EndIP;
+				}
+			}
+			if (strlen($Conditions) > 0 ) {
+				$Conditions .= ")";
+				$Where[] = $Conditions;
 			}
 		}
 
@@ -577,8 +594,9 @@ show_header('User search');
 <? } ?>
 					</select>
 				</td>
-				<td class="label nobr"></td>
+				<td class="label nobr">Country Code:</td>
 				<td>
+					<input type="text" name="cc" size="2" value="<?=display_str($_GET['cc'])?>" />
 				</td>
 			</tr>
 			

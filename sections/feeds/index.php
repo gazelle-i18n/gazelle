@@ -33,15 +33,7 @@ if(!$Enabled = $Cache->get_value('enabled_'.$User)){
 if (md5($User.RSS_HASH.$_GET['passkey']) != $_GET['auth'] || $Enabled != 1) {
 	$Feed->open_feed();
 	$Feed->channel('Blocked', 'RSS feed.');
-//</strip>
-/*
-	for($i = 1; $i<50; $i++) {
-		$Item = $Feed->item('Banned for being a douchebag x'.rand(), 'I have been banned from What.CD for being a complete jerk. In fact, you could say that I am over '.rand().' times as much of a douchebag as the next biggest douchebag on earth. That\'s a lot!', 'http://what.cd/torrents.php?id='.rand(), 'What.CD staff', 'http://what.cd?id='.rand(), 'scumoftheearth');
-		$Feed->populate('feed_banned', $Item);
-	}
-	$Feed->retrieve('feed_banned',$_GET['authkey'],$_GET['passkey']); 
-*/ 
-//</strip>
+
 
 	$Feed->close_feed();
 	die();

@@ -214,7 +214,7 @@ if((empty($_GET['search']) || trim($_GET['search']) == '') && $Order!='Name') {
 		GROUP BY TorrentID, Time");
 	
 	if(!empty($_GET['search']) && trim($_GET['search']) != '') {
-		$Words = array_unique(explode(' ', db_string($_GET['search'])));
+		$Words = array_unique(explode(' ', db_string(mb_convert_encoding($_GET['search'], 'UTF-8', 'ISO-8859-1'))));
 	}
 
 	$SQL = "SELECT SQL_CALC_FOUND_ROWS 

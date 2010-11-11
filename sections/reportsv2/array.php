@@ -223,7 +223,7 @@ $Types = array(
 					'upload' => '0',
 					'warn' => '2',
 					'delete' => '1',
-					'pm' => 'No transcodes or re-encodes of lossy releases are acceptable here. For more information about transcodes, please visit this wiki page : http://what.cd/wiki.php?action=article&id=14'
+					'pm' => 'No transcodes or re-encodes of lossy releases are acceptable here. For more information about transcodes, please visit this wiki page : http://'.NONSSL_SITE_URL.'/wiki.php?action=article&id=14'
 				)
 			),
 			'low' => array(
@@ -290,7 +290,7 @@ $Types = array(
 					'upload' => '0',
 					'warn' => '0',
 					'delete' => '0',
-					'pm' => 'The [url=http://what.cd/rules.php?p=upload#r2.3.12]Uploading Rules[/url] require all uploads to be properly tagged. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
+					'pm' => 'The [url=http://'.NONSSL_SITE_URL.'/rules.php?p=upload#r2.3.12]Uploading Rules[/url] require all uploads to be properly tagged. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
 [b]You can avoid a 1-week warning by fixing this torrent yourself![/b] It\'s easy, and only takes a few minutes: Add or fix the required tags, and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Tag Trump", indicate in the report comments that you have fixed the tags, and provide a link (PL) to the new torrent.')
 			),
 			'folders_bad' => array(
@@ -305,7 +305,7 @@ $Types = array(
 					'upload' => '0',
 					'warn' => '0',
 					'delete' => '0',
-					'pm' => 'The [url=http://what.cd/rules.php?p=upload#2.3.2]Uploading Rules[/url] require all uploads to have meaningful directory names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
+					'pm' => 'The [url=http://'.NONSSL_SITE_URL.'/rules.php?p=upload#2.3.2]Uploading Rules[/url] require all uploads to have meaningful directory names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
 [b]You can fix this torrent yourself![/b]It\'s easy, and only takes a few minutes: Add or fix the folder/directory name(s), and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Folder Trump", indicate in the report comments that you have fixed the directory name(s), and provide a link (PL) to the new torrent.')
 			),
 			'wrong_format' => array(
@@ -463,7 +463,7 @@ $Types = array(
 					'upload' => '0',
 					'warn' => '0',
 					'delete' => '0',
-					'pm' => "The [url=http://what.cd/rules.php?p=upload#r2.3.10]Uploading Rules[/url] require all uploads to have proper file names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time. [b]You can avoid a 1-week warning by fixing this torrent yourself![/b] It\'s easy, and only takes a few minutes: Fix the required file names and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason \"Bad File Names Trump\", indicate in the report comments that you have fixed the file names, and provide a link (PL) to the new torrent"
+					'pm' => "The [url=http://'.NONSSL_SITE_URL.'/rules.php?p=upload#r2.3.10]Uploading Rules[/url] require all uploads to have proper file names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time. [b]You can avoid a 1-week warning by fixing this torrent yourself![/b] It\'s easy, and only takes a few minutes: Fix the required file names and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason \"Bad File Names Trump\", indicate in the report comments that you have fixed the file names, and provide a link (PL) to the new torrent"
 				)
 			),
 			'cassette' => array(

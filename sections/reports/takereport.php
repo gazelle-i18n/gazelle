@@ -79,7 +79,7 @@ if($Short == "request_update") {
 }
 
 foreach($Channels as $Channel) {
-	send_irc("PRIVMSG ".$Channel." :".$ReportID." - ".$LoggedUser['Username']." just reported a ".$Short.": http://what.cd/".$Link." : ".$Reason);
+	send_irc("PRIVMSG ".$Channel." :".$ReportID." - ".$LoggedUser['Username']." just reported a ".$Short.": http://".NONSSL_SITE_URL."/".$Link." : ".$Reason);
 }
 
 $Cache->delete_value('num_other_reports');

@@ -99,7 +99,7 @@ foreach ($_REQUEST['list'] as $Priority => $Selection) {
 		case '46': $SQL .= "t.Format='AAC' AND t.Encoding='192'"; break;
 		default: error(0);
 	}
-	$SQL .= " THEN $Priority ";
+	$SQL .= " THEN '".db_string($Priority)."' ";
 }
 $SQL .= "ELSE 100 END AS Rank,
 t.GroupID,

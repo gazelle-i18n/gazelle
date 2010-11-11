@@ -321,7 +321,7 @@ if ($DisableAvatar!=$Cur['DisableAvatar'] && check_perms('users_disable_any')) {
 	$EditSummary[]="avatar status changed";
 	$HeavyUpdates['DisableAvatar']=$DisableAvatar;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your avatar privileges have been disabled'),db_string("Your avatar privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your avatar privileges have been disabled'),db_string("Your avatar privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 }
 
@@ -330,7 +330,7 @@ if ($DisableLeech!=$Cur['can_leech'] && check_perms('users_disable_any')) {
 	$EditSummary[]="leeching status changed";
 	$HeavyUpdates['DisableLeech']=$DisableLeech;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your leeching privileges have been disabled'),db_string("Your leeching privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your leeching privileges have been disabled'),db_string("Your leeching privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 	update_tracker('update_user', array('passkey' => $Cur['torrent_pass'], 'can_leech' => $DisableLeech));
 }
@@ -340,7 +340,7 @@ if ($DisableInvites!=$Cur['DisableInvites'] && check_perms('users_disable_any'))
 	if ($DisableInvites == 1) { 
 		//$UpdateSet[]="Invites='0'"; 
 		if (!empty($UserReason)) {
-			send_pm($UserID, 0, db_string('Your invite privileges have been disabled'),db_string("Your invite privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+			send_pm($UserID, 0, db_string('Your invite privileges have been disabled'),db_string("Your invite privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 		}
 	}
 	$EditSummary[]="invites status changed";
@@ -352,7 +352,7 @@ if ($DisablePosting!=$Cur['DisablePosting'] && check_perms('users_disable_posts'
 	$EditSummary[]="posting status changed";
 	$HeavyUpdates['DisablePosting']=$DisablePosting;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your forum posting privileges have been disabled'),db_string("Your forum posting privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your forum posting privileges have been disabled'),db_string("Your forum posting privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 }
 
@@ -361,7 +361,7 @@ if ($DisableForums!=$Cur['DisableForums'] && check_perms('users_disable_posts'))
 	$EditSummary[]="forums status changed";
 	$HeavyUpdates['DisableForums']=$DisableForums;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your forum privileges have been disabled'),db_string("Your forum privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your forum privileges have been disabled'),db_string("Your forum privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 }
 
@@ -370,7 +370,7 @@ if ($DisableTagging!=$Cur['DisableTagging'] && check_perms('users_disable_any'))
 	$EditSummary[]="tagging status changed";
 	$HeavyUpdates['DisableTagging']=$DisableTagging;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your tagging privileges have been disabled'),db_string("Your tagging privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your tagging privileges have been disabled'),db_string("Your tagging privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 }
 
@@ -379,7 +379,7 @@ if ($DisableUpload!=$Cur['DisableUpload'] && check_perms('users_disable_any')) {
 	$EditSummary[]="upload status changed";
 	$HeavyUpdates['DisableUpload']=$DisableUpload;
 	if ($DisableUpload == 1) {
-		send_pm($UserID, 0, db_string('Your upload privileges have been disabled'),db_string("Your upload privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your upload privileges have been disabled'),db_string("Your upload privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 }
 
@@ -389,7 +389,7 @@ if ($DisableWiki!=$Cur['DisableWiki'] && check_perms('users_disable_any')) {
 	$HeavyUpdates['DisableWiki']=$DisableWiki;
 	$HeavyUpdates['site_edit_wiki']=0;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your site editing privileges have been disabled'),db_string("Your site editing privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your site editing privileges have been disabled'),db_string("Your site editing privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 	
 }
@@ -399,7 +399,7 @@ if ($DisablePM!=$Cur['DisablePM'] && check_perms('users_disable_any')) {
 	$EditSummary[]="PM status changed";
 	$HeavyUpdates['DisablePM']=$DisablePM;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your PM privileges have been disabled'),db_string("Your PM privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
+		send_pm($UserID, 0, db_string('Your PM privileges have been disabled'),db_string("Your PM privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]."));
 	}
 }
 
@@ -408,7 +408,7 @@ if ($DisableIRC!=$Cur['DisableIRC'] && check_perms('users_disable_any')) {
 	$EditSummary[]="IRC status changed";
 	$HeavyUpdates['DisableIRC']=$DisableIRC;
 	if (!empty($UserReason)) {
-		send_pm($UserID, 0, db_string('Your IRC privileges have been disabled'),db_string("Your IRC privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join #what.cd-disabled on our IRC network. Instructions can be found [url=http://what.cd/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]. This loss of privileges does not affect the ability to join and talk to staff in #what.cd-disabled."));
+		send_pm($UserID, 0, db_string('Your IRC privileges have been disabled'),db_string("Your IRC privileges have been disabled. The reason given was: $UserReason. If you would like to discuss this please join ".BOT_DISABLED_CHAN." on our IRC network. Instructions can be found [url=http://".NONSSL_SITE_URL."/wiki.php?action=article&name=IRC+-+How+to+join]here[/url]. This loss of privileges does not affect the ability to join and talk to staff in #what.cd-disabled."));
 	}
 }
 
@@ -456,7 +456,7 @@ IRC Server: ".BOT_SERVER."
 Port: ".BOT_PORT." (6697 SSL)
 
 Once you are connected to our server you'll need to join our disabled channel.
-Type: /join #".NONSSL_SITE_URL."-disabled
+Type: /join ".BOT_DISABLED_CHAN."
 
 Please visit us soon so we can help you resolve this matter.");
 }

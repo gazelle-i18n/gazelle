@@ -15,13 +15,6 @@ require 'config.php'; //The config contains all site wide configuration informat
 //Deal with dumbasses
 if(isset($_REQUEST['info_hash']) && isset($_REQUEST['peer_id'])) { die('d14:failure reason40:Invalid .torrent, try downloading again.e'); }
 
-/* Nginx header based redirects (in the corresponding order)
-http://www.what.cd/ -> http://what.cd/
-https://www.what.cd/ -> https://ssl.what.cd/
-http://ssl.what.cd/ -> https://ssl.what.cd/
-https://what.cd/ -> http://what.cd/
-http://www.m.what.cd/ -> http://m.what.cd */
-
 require(SERVER_ROOT.'/classes/class_proxies.php');
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && proxyCheck($_SERVER['REMOTE_ADDR'])) {
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -86,12 +79,6 @@ $OperatingSystem = $UA->operating_system($_SERVER['HTTP_USER_AGENT']);
 //$Mobile = $UA->mobile($_SERVER['HTTP_USER_AGENT']);
 $Mobile = in_array($_SERVER['HTTP_HOST'], array('m.'.NONSSL_SITE_URL, 'm.'.NONSSL_SITE_URL));
 
-
-/*
-if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR']) {
-	send_irc('PRIVMSG #what.cd-laboratory :Proxy: '.$_SERVER['REMOTE_ADDR'].' for '.$_SERVER['HTTP_X_FORWARDED_FOR']);
-}
-*/
 
 $Debug->set_flag('start user handling');
 

@@ -388,7 +388,7 @@ if($Day != next_day() || $_GET['runday']){
 		$Cache->begin_transaction('user_info_heavy_'.$UserID);
 		$Cache->update_row(false, array('RatioWatchEnds'=>'0000-00-00 00:00:00','RatioWatchDownload'=>'0'));
 		$Cache->commit_transaction(0);
-		send_pm($UserID, 0, db_string("You have been taken off Ratio Watch"), db_string("Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=http://what.cd/rules.php?p=ratio]here[/url].\n"), '');
+		send_pm($UserID, 0, db_string("You have been taken off Ratio Watch"), db_string("Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=http://".NONSSL_SITE_URL."/rules.php?p=ratio]here[/url].\n"), '');
 		echo "Ratio watch off: $UserID\n";
 	}
 	$DB->set_query_id($UserQuery);
@@ -416,7 +416,7 @@ if($Day != next_day() || $_GET['runday']){
                 $Cache->begin_transaction('user_info_heavy_'.$UserID);
                 $Cache->update_row(false, array('RatioWatchEnds'=>'0000-00-00 00:00:00','RatioWatchDownload'=>'0'));
                 $Cache->commit_transaction(0);
-                send_pm($UserID, 0, db_string("You have been taken off Ratio Watch"), db_string("Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=http://what.cd/rules.php?p=ratio]here[/url].\n"), '');
+                send_pm($UserID, 0, db_string("You have been taken off Ratio Watch"), db_string("Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=http://".NONSSL_SITE_URL."/rules.php?p=ratio]here[/url].\n"), '');
                 echo "Ratio watch off: $UserID\n";
         }
         $DB->set_query_id($UserQuery);
@@ -447,7 +447,7 @@ if($Day != next_day() || $_GET['runday']){
 		$Cache->begin_transaction('user_info_heavy_'.$UserID);
 		$Cache->update_row(false, array('RatioWatchEnds'=>time_plus(60*60*24*14),'RatioWatchDownload'=>0));
 		$Cache->commit_transaction(0);
-		send_pm($UserID, 0, db_string("You have been put on Ratio Watch"), db_string("This happens when your ratio falls below the requirements we have outlined in the rules located [url=http://what.cd/rules.php?p=ratio]here[/url].\n For information about ratio watch, click the link above."), '');
+		send_pm($UserID, 0, db_string("You have been put on Ratio Watch"), db_string("This happens when your ratio falls below the requirements we have outlined in the rules located [url=http://".NONSSL_SITE_URL."/rules.php?p=ratio]here[/url].\n For information about ratio watch, click the link above."), '');
 		echo "Ratio watch on: $UserID\n";
 	}
 	
