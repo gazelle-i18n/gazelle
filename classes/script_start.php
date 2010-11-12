@@ -924,8 +924,11 @@ function format_username($UserID, $Username, $IsDonor = false, $IsWarned = '0000
 	}
 	$str='<a href="user.php?id='.$UserID.'">'.$Username.'</a>';
 	$str.=($IsDonor) ? '<a href="donate.php"><img src="'.STATIC_SERVER.'common/symbols/donor.png" alt="Donor" title="Donor" /></a>' : '';
+
+
 	$str.=($IsWarned!='0000-00-00 00:00:00') ? '<img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned" />' : '';
 	$str.=(!$IsEnabled) ? '<img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Be good, and you won\'t end up like this user" />' : '';
+
 	$str.=($Class) ? ' ('.make_class_string($Class).')' : '';
 	$str.=($Title) ? ' ('.$Title.')' : '';
 	return $str;

@@ -13,6 +13,11 @@ if (isset($_POST['convid']) && is_number($_POST['convid'])) {
 	$ConvID = $_POST['convid'];
 	$Subject='';
 	$ToID = explode(',', $_POST['toid']);
+	foreach($ToID as $TID) {
+		if(!is_number($TID)) {
+			$Err = "A recipient does not exist.";
+		}
+	}
 	$DB->query("SELECT UserID FROM pm_conversations_users WHERE UserID='$LoggedUser[ID]' AND ConvID='$ConvID'");
 	if($DB->record_count() == 0) {
 		error(403);

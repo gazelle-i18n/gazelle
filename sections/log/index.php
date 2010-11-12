@@ -118,7 +118,11 @@ while(list($Message, $LogTime) = $DB->next_record()) {
 				break;
 			case "torrent":
 				$TorrentID = substr($MessageParts[++$i], 0, strlen($MessageParts[$i]) - 1);
-				$Message = $Message.' torrent <a href="torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>,';
+				if (is_numeric($TorrentID)) {
+					$Message = $Message.' torrent <a href="torrents.php?torrentid='.$TorrentID.'"> '.$TorrentID.'</a>,';
+				} else {
+					$Message = $Message.' torrent '.$MessageParts[$i];
+				}
 				break;
 			case "by":
 				$UserID = 0;
