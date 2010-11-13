@@ -111,7 +111,7 @@ switch ($Type) {
 				'0','number','Invalid remaster year.');
 		}
 
-		if ($Properties['Remastered'] && $Properties['RemasterYear'] < 1982 && $Properties['Media'] == 'CD') {
+		if ($Properties['Remastered'] && $Properties['RemasterYear'] < 1982 && $Properties['Media'] == 'CD' && !$Properties['UnknownRelease']) {
 			$Validate->SetFields('remaster_year', '1', 'number', 'You have selected a year for an album that predates the media you say it was created on.');
 		}
 
