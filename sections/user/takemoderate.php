@@ -436,6 +436,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
 	$UpdateSet[]="torrent_pass='$Passkey'";
 	$EditSummary[]="passkey reset";
 	$HeavyUpdates['torrent_pass']=$Passkey;
+	$Cache->delete_value('user_'.$Cur['torrent_pass']);
 	//MUST come after the case for updating can_leech.
 	update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }

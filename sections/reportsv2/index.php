@@ -54,8 +54,8 @@ if(isset($_REQUEST['action'])) {
 			break;
 	}
 } else {
-	if(count($_GET)) {
-		include('static.php');
+	if(isset($_GET['view'])) {
+		include(SERVER_ROOT.'/sections/reportsv2/static.php');
 	} else {
 		include(SERVER_ROOT.'/sections/reportsv2/views.php');
 	}
