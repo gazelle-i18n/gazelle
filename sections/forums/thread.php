@@ -449,10 +449,7 @@ if(!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 <?
 	}
 }
-
-
 if(check_perms('site_moderate_forums')) {
-
 ?>
 	<br />
 	<h3>Edit thread</h3>
@@ -465,10 +462,6 @@ if(check_perms('site_moderate_forums')) {
 		<input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
 		</div>
 		<table cellpadding="6" cellspacing="1" border="0" width="100%" class="border">
-		
-			<?
-			 
-			?>
 			<tr>
 				<td class="label">Sticky</td>
 				<td>
@@ -481,18 +474,12 @@ if(check_perms('site_moderate_forums')) {
 					<input type="checkbox" name="locked"<? if($ThreadInfo['IsLocked']) { echo ' checked="checked"'; } ?> tabindex="2" />
 				</td>
 			</tr>
-			<?
-			
-			?>
 			<tr>
 				<td class="label">Title</td>
 				<td>
 					<input type="text" name="title" size="50" value="<?=display_str($ThreadInfo['Title'])?>" tabindex="2" />
 				</td>
 			</tr>
-			<?
-			 
-			?>
 			<tr>
 				<td class="label">Move thread</td>
 				<td>
@@ -527,9 +514,6 @@ foreach ($Forums as $Forum) {
 					<input type="checkbox" name="delete" tabindex="2" />
 				</td>
 			</tr>
-			<?
-			
-			?>
 			<tr>
 				<td colspan="2" class="center">
 					<input type="submit" value="Edit thread" tabindex="2" />

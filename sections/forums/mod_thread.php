@@ -16,10 +16,7 @@ if(!is_number($_POST['threadid'])) { error(404); }
 if($_POST['title'] == ''){ error(0); }
 // End injection check
 // Make sure they are moderators
-
-
 if(!check_perms('site_moderate_forums')) { error(403); }
-
 authorize();
 
 // Variables for database input
@@ -30,8 +27,6 @@ $Locked = (isset($_POST['locked'])) ? 1 : 0;
 $Title = db_string($_POST['title']);
 $ForumID = (int)$_POST['forumid'];
 $Page = (int)$_POST['page'];
-
-
 
 if ($Locked == 1) {
 	$DB->query("DELETE FROM forums_last_read_topics WHERE TopicID='$TopicID'");

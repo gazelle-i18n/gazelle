@@ -24,7 +24,7 @@ for($i = 0; $i < count($AliasNames); $i++) {
 	}
 	
 	if(strlen($AliasName) > 0) {
-		$DB->query("SELECT AliasID, ArtistID, Redirect, Name FROM artists_alias WHERE Name ='$AliasName'");
+		$DB->query("SELECT AliasID, ArtistID, Redirect, Name FROM artists_alias WHERE Name LIKE '$AliasName'");
 		if($DB->record_count() == 0) {
 			$DB->query("INSERT INTO artists_group (Name) VALUES ('$AliasName')");
 			$ArtistID = $DB->inserted_id();
@@ -62,6 +62,12 @@ for($i = 0; $i < count($AliasNames); $i++) {
 				NumArtists=VALUES(NumArtists);");
 			
 			write_log("Artist ".$ArtistID." (".$ArtistName.") was added to the group ".$GroupID." (".$GroupName.") by user ".$LoggedUser['ID']." (".$LoggedUser['Username'].")");
+		} else {
+			list($OldAliasID) = $DB->next_record();
+			if($OldAliasID == 0) {
+				$Changed = true;
+				$DB->query('UPDATE torrents_artists SET AliasID='.$AliasID.' WHERE GroupID='.$GroupID.' AND ArtistID='.$ArtistID);
+			}
 		}
 	}
 }

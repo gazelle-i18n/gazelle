@@ -10,7 +10,11 @@ var listener = {
 		if (document.addEventListener) {
 			el.addEventListener(type, callback, false);
 		} else {
-			el.attachEvent('on'+type, callback);
+			// IE hack courtesy of http://blog.stchur.com/2006/10/12/fixing-ies-attachevent-failures
+			var f = function() {
+				callback.call(el);
+			};
+			el.attachEvent('on'+type, f);
 		}
 	}
 };

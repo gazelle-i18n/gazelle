@@ -31,11 +31,11 @@ if($DB->record_count() == 0) {
 } else {
 	list($ArtistID, $AliasID, $Redirect, $ArtistName) = $DB->next_record();
 	if($Redirect) {
-		$AliasID = $ArtistID;
+		$AliasID = $Redirect;
 	}
 }
 
-$DB->query(" INSERT INTO torrents_group
+$DB->query("INSERT INTO torrents_group
 	(ArtistID, NumArtists, CategoryID, Name, Year, Time, WikiBody, WikiImage, SearchText) 
 	VALUES
 	($ArtistID, '1', '1', '$Title', '$Year', '".sqltime()."', '', '', '$SearchText')");
