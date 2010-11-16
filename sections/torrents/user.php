@@ -436,9 +436,9 @@ foreach($Categories as $CatKey => $CatName) {
 			</td>
 			<td class="nobr"><?=time_diff($Time,1)?></td>
 			<td class="nobr"><?=get_size($Torrent['Size'])?></td>
-			<td><?=number_format((int)$Torrent['Snatched'])?></td>
-			<td<?=((int)$Torrent['Seeders']==0)?' class="r00"':''?>><?=number_format((int)$Torrent['Seeders'])?></td>
-			<td><?=number_format((int)$Torrent['Leechers'])?></td>
+			<td><?=number_format($Torrent['Snatched'])?></td>
+			<td<?=($Torrent['Seeders']==0)?' class="r00"':''?>><?=number_format($Torrent['Seeders'])?></td>
+			<td><?=number_format($Torrent['Leechers'])?></td>
 		</tr>
 <?
 		}

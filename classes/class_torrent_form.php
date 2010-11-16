@@ -375,6 +375,7 @@ class TORRENT_FORM {
 				<td class="label">Media</td>
 				<td>
 					<select name="media" onchange="Media(); CheckYear();" id="media">
+						<option>---</option>
 <?		foreach($this->Media as $Media) {
 			echo "<option value='$Media'";
 			if(isset($Torrent['Media']) && $Media == $Torrent['Media']) { echo " selected='selected'"; }

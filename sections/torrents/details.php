@@ -436,9 +436,9 @@ foreach ($TorrentList as $Torrent) {
 					<a href="#" onclick="$('#torrent_<?=$TorrentID?>').toggle(); return false;">&raquo; <?=$ExtraInfo; ?></a>
 				</td>
 				<td class="nobr"><?=get_size($Size)?></td>
-				<td><?=number_format((int)$Snatched)?></td>
-				<td><?=number_format((int)$Seeders)?></td>
-				<td><?=number_format((int)$Leechers)?></td>
+				<td><?=number_format($Snatched)?></td>
+				<td><?=number_format($Seeders)?></td>
+				<td><?=number_format($Leechers)?></td>
 			</tr>
 			<tr class="pad <? if(!isset($_GET['torrentid']) || $_GET['torrentid']!=$TorrentID) { ?>hidden<? } ?>" id="torrent_<?=$TorrentID; ?>">
 				<td colspan="5">

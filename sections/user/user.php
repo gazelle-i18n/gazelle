@@ -304,22 +304,22 @@ $OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank
 		<div class="head colhead_dark">History</div>
 		<ul class="stats nobullet">
 <?	if (check_perms('users_view_email',$Class)) { ?>
-<li>Emails: <?=number_format((int)$EmailChanges)?> [<a href="userhistory.php?action=email&amp;userid=<?=$UserID?>">View</a>]&nbsp;[<a href="userhistory.php?action=email&amp;userid=<?=$UserID?>&amp;usersonly=1">View Users</a>]</li>
+<li>Emails: <?=number_format($EmailChanges)?> [<a href="userhistory.php?action=email&amp;userid=<?=$UserID?>">View</a>]&nbsp;[<a href="userhistory.php?action=email&amp;userid=<?=$UserID?>&amp;usersonly=1">View Users</a>]</li>
 <?
 	}
 	if (check_perms('users_view_ips',$Class)) {
 ?>
-	<li>IPs: <?=number_format((int)$IPChanges)?> [<a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>">View</a>]&nbsp;[<a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>&amp;usersonly=1">View Users</a>]</li>
+	<li>IPs: <?=number_format($IPChanges)?> [<a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>">View</a>]&nbsp;[<a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>&amp;usersonly=1">View Users</a>]</li>
 <?
 	}
 	if (check_perms('users_view_keys',$Class)) {
 ?>
-			<li>Passkeys: <?=number_format((int)$PasskeyChanges)?> [<a href="userhistory.php?action=passkeys&amp;userid=<?=$UserID?>">View</a>]</li>
+			<li>Passkeys: <?=number_format($PasskeyChanges)?> [<a href="userhistory.php?action=passkeys&amp;userid=<?=$UserID?>">View</a>]</li>
 <?
 	}
 	if (check_perms('users_mod', $Class)) {
 ?>
-			<li>Passwords: <?=number_format((int)$PasswordChanges)?> [<a href="userhistory.php?action=passwords&amp;userid=<?=$UserID?>">View</a>]</li>
+			<li>Passwords: <?=number_format($PasswordChanges)?> [<a href="userhistory.php?action=passwords&amp;userid=<?=$UserID?>">View</a>]</li>
 			<li>Stats: N/A [<a href="userhistory.php?action=stats&amp;userid=<?=$UserID?>">View</a>]</li>
 <?
 			
@@ -375,7 +375,7 @@ if (check_perms('users_view_invites')) {
 	
 ?>
 				<li>Invited By: <?=$Invited?></li>
-				<li>Invites: <? if($DisableInvites) { echo 'X'; } else { echo number_format((int)$Invites); } ?></li>
+				<li>Invites: <? if($DisableInvites) { echo 'X'; } else { echo number_format($Invites); } ?></li>
 <?
 }
 ?>
@@ -406,54 +406,54 @@ list($PerfectFLACs) = $DB->next_record();
 		<div class="box">
 			<div class="head colhead_dark">Community</div>
 			<ul class="stats nobullet">
-				<li>Forum Posts: <?=number_format((int)$ForumPosts)?> [<a href="userhistory.php?action=posts&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Forum Posts: <?=number_format($ForumPosts)?> [<a href="userhistory.php?action=posts&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
 <? if (check_paranoia_here('torrentcomments')) { ?>
-				<li>Torrent Comments: <?=number_format((int)$NumComments)?> [<a href="comments.php?id=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Torrent Comments: <?=number_format($NumComments)?> [<a href="comments.php?id=<?=$UserID?>" title="View">View</a>]</li>
 <? } elseif (check_paranoia_here('torrentcomments+')) { ?>
-				<li>Torrent Comments: <?=number_format((int)$NumComments)?></li>
+				<li>Torrent Comments: <?=number_format($NumComments)?></li>
 <? } ?>
 <? if (check_paranoia_here('collages')) { ?>
-				<li>Collages started: <?=number_format((int)$NumCollages)?> [<a href="collages.php?userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Collages started: <?=number_format($NumCollages)?> [<a href="collages.php?userid=<?=$UserID?>" title="View">View</a>]</li>
 <? } elseif (check_paranoia_here('collages+')) { ?>
-				<li>Collages started: <?=number_format((int)$NumCollages)?></li>
+				<li>Collages started: <?=number_format($NumCollages)?></li>
 <? } ?>
 <? if (check_paranoia_here('collagecontribs')) { ?>
-				<li>Collages contributed to: <?=number_format((int)$NumCollageContribs)?> [<a href="collages.php?userid=<?=$UserID?>&amp;contrib=1" title="View">View</a>]</li>
+				<li>Collages contributed to: <?=number_format($NumCollageContribs)?> [<a href="collages.php?userid=<?=$UserID?>&amp;contrib=1" title="View">View</a>]</li>
 <? } elseif(check_paranoia_here('collagecontribs+')) { ?>
-				<li>Collages contributed to: <?=number_format((int)$NumCollageContribs)?></li>
+				<li>Collages contributed to: <?=number_format($NumCollageContribs)?></li>
 <? } ?>
 <? if (check_paranoia_here('requestsfilled_list')) { ?>
-				<li>Requests filled: <?=number_format((int)$RequestsFilled)?> for <?=get_size($TotalBounty)?> [<a href="requests.php?type=filled&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Requests filled: <?=number_format($RequestsFilled)?> for <?=get_size($TotalBounty)?> [<a href="requests.php?type=filled&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
 <? } elseif (check_paranoia_here(array('requestsfilled_count', 'requestsfilled_bounty'))) { ?>
-				<li>Requests filled: <?=number_format((int)$RequestsFilled)?> for <?=get_size($TotalBounty)?></li>
+				<li>Requests filled: <?=number_format($RequestsFilled)?> for <?=get_size($TotalBounty)?></li>
 <? } elseif (check_paranoia_here('requestsfilled_count')) { ?>
-				<li>Requests filled: <?=number_format((int)$RequestsFilled)?></li>
+				<li>Requests filled: <?=number_format($RequestsFilled)?></li>
 <? } elseif (check_paranoia_here('requestsfilled_bounty')) { ?>
 				<li>Requests filled: <?=get_size($TotalBounty)?> collected</li>
 <? } ?>
 <? if (check_paranoia_here('requestsvoted_list')) { ?>
-				<li>Requests voted: <?=number_format((int)$RequestsVoted)?> for <?=get_size($TotalSpent)?> [<a href="requests.php?type=voted&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Requests voted: <?=number_format($RequestsVoted)?> for <?=get_size($TotalSpent)?> [<a href="requests.php?type=voted&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
 <? } elseif (check_paranoia_here(array('requestsvoted_count', 'requestsvoted_bounty'))) { ?>
-				<li>Requests voted: <?=number_format((int)$RequestsVoted)?> for <?=get_size($TotalSpent)?></li>
+				<li>Requests voted: <?=number_format($RequestsVoted)?> for <?=get_size($TotalSpent)?></li>
 <? } elseif (check_paranoia_here('requestsvoted_count')) { ?>
-				<li>Requests voted: <?=number_format((int)$RequestsVoted)?></li>
+				<li>Requests voted: <?=number_format($RequestsVoted)?></li>
 <? } elseif (check_paranoia_here('requestsvoted_bounty')) { ?>
 				<li>Requests voted: <?=get_size($TotalSpent)?> spent</li>
 <? } ?>
 <? if (check_paranoia_here('uploads')) { ?>
-				<li>Uploaded: <?=number_format((int)$Uploads)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>" title="View">View</a>]<? if(check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=uploads&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
+				<li>Uploaded: <?=number_format($Uploads)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>" title="View">View</a>]<? if(check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=uploads&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
 <? } elseif (check_paranoia_here('uploads+')) { ?>
-				<li>Uploaded: <?=number_format((int)$Uploads)?></li>
+				<li>Uploaded: <?=number_format($Uploads)?></li>
 <? } ?>
 <? if (check_paranoia_here('uniquegroups')) { ?>
-				<li>Unique Groups: <?=number_format((int)$UniqueGroups)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=uniquegroup">View</a>]</li>
+				<li>Unique Groups: <?=number_format($UniqueGroups)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=uniquegroup">View</a>]</li>
 <? } elseif (check_paranoia_here('uniquegroups+')) { ?>
-				<li>Unique Groups: <?=number_format((int)$UniqueGroups)?></li>
+				<li>Unique Groups: <?=number_format($UniqueGroups)?></li>
 <? } ?>
 <? if (check_paranoia_here('perfectflacs')) { ?>
-				<li>"Perfect" FLACs: <?=number_format((int)$PerfectFLACs)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=perfectflac">View</a>]</li>
+				<li>"Perfect" FLACs: <?=number_format($PerfectFLACs)?> [<a href="torrents.php?type=uploaded&amp;userid=<?=$UserID?>&amp;filter=perfectflac">View</a>]</li>
 <? } elseif (check_paranoia_here('perfectflacs+')) { ?>
-				<li>"Perfect" FLACs: <?=number_format((int)$PerfectFLACs)?></li>
+				<li>"Perfect" FLACs: <?=number_format($PerfectFLACs)?></li>
 <? } ?>
 <?
 
@@ -467,19 +467,19 @@ if (check_paranoia_here('leeching+')) {
 }
 ?>
 <? if (check_paranoia_here('seeding')) { ?>
-				<li>Seeding: <?=number_format((int)$Seeding)?> [<a href="torrents.php?type=seeding&amp;userid=<?=$UserID?>" title="View">View</a>]<? if (check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=seeding&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
+				<li>Seeding: <?=number_format($Seeding)?> [<a href="torrents.php?type=seeding&amp;userid=<?=$UserID?>" title="View">View</a>]<? if (check_perms('zip_downloader')) { ?> [<a href="torrents.php?action=redownload&amp;type=seeding&amp;userid=<?=$UserID?>" onclick="return confirm('If you no longer have the content, your ratio WILL be affected, be sure to check the size of all albums before redownloading.');">Download</a>]<? } ?></li>
 <? } elseif (check_paranoia_here('seeding+')) { ?>
-				<li>Seeding: <?=number_format((int)$Seeding)?></li>
+				<li>Seeding: <?=number_format($Seeding)?></li>
 <? } ?>
 <? if (check_paranoia_here('leeching')) { ?>
-				<li>Leeching: <?=number_format((int)$Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Leeching: <?=number_format($Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
 <? } elseif (check_paranoia_here('leeching+')) { ?>
-				<li>Leeching: <?=number_format((int)$Leeching)?></li>
+				<li>Leeching: <?=number_format($Leeching)?></li>
 <? } ?>
 <? if (check_paranoia_here('snatched+')) { ?>
-				<li>Snatched: <?=number_format((int)$Snatched)?> 
+				<li>Snatched: <?=number_format($Snatched)?> 
 <? 	if(check_perms('site_view_torrent_snatchlist', $Class)) { ?>
-					(<?=number_format((int)$UniqueSnatched)?>)
+					(<?=number_format($UniqueSnatched)?>)
 <?	} ?>
 <? } ?>
 <? if (check_paranoia_here('snatched')) { ?>
@@ -491,7 +491,7 @@ if(check_perms('site_view_torrent_snatchlist', $Class)) {
 	$DB->query("SELECT COUNT(ud.UserID), COUNT(DISTINCT ud.TorrentID) FROM users_downloads AS ud INNER JOIN torrents AS t ON t.ID=ud.TorrentID WHERE ud.UserID='$UserID'");
 	list($NumDownloads, $UniqueDownloads) = $DB->next_record();
 ?>
-				<li>Downloaded: <?=number_format((int)$NumDownloads)?> (<?=number_format((int)$UniqueDownloads)?>) [<a href="torrents.php?type=downloaded&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Downloaded: <?=number_format($NumDownloads)?> (<?=number_format($UniqueDownloads)?>) [<a href="torrents.php?type=downloaded&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
 <?
 }
 
@@ -499,7 +499,7 @@ if(check_paranoia_here('invitedcount')) {
 	$DB->query("SELECT COUNT(UserID) FROM users_info WHERE Inviter='$UserID'");
 	list($Invited) = $DB->next_record();
 ?>
-				<li>Invited: <?=number_format((int)$Invited)?></li>
+				<li>Invited: <?=number_format($Invited)?></li>
 <? } ?>
 			</ul>
 		</div>

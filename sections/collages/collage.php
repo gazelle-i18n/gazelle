@@ -193,9 +193,9 @@ foreach ($TorrentList as $GroupID=>$Group) {
 			&nbsp;&nbsp;&raquo;&nbsp; <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=torrent_info($Torrent)?></a>
 		</td>
 		<td class="nobr"><?=get_size($Torrent['Size'])?></td>
-		<td><?=number_format((int)$Torrent['Snatched'])?></td>
-		<td<?=((int)$Torrent['Seeders']==0)?' class="r00"':''?>><?=number_format((int)$Torrent['Seeders'])?></td>
-		<td><?=number_format((int)$Torrent['Leechers'])?></td>
+		<td><?=number_format($Torrent['Snatched'])?></td>
+		<td<?=($Torrent['Seeders']==0)?' class="r00"':''?>><?=number_format($Torrent['Seeders'])?></td>
+		<td><?=number_format($Torrent['Leechers'])?></td>
 	</tr>
 <?
 		}
@@ -225,9 +225,9 @@ foreach ($TorrentList as $GroupID=>$Group) {
 			<?=$TorrentTags?>
 		</td>
 		<td class="nobr"><?=get_size($Torrent['Size'])?></td>
-		<td><?=number_format((int)$Torrent['Snatched'])?></td>
-		<td<?=($Torrent['Seeders']==0)?' class="r00"':''?>><?=number_format((int)$Torrent['Seeders'])?></td>
-		<td><?=number_format((int)$Torrent['Leechers'])?></td>
+		<td><?=number_format($Torrent['Snatched'])?></td>
+		<td<?=($Torrent['Seeders']==0)?' class="r00"':''?>><?=number_format($Torrent['Seeders'])?></td>
+		<td><?=number_format($Torrent['Leechers'])?></td>
 	</tr>
 <?
 	}

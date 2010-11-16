@@ -845,9 +845,9 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 		<td><?=$Data['FileCount']?></td>
 		<td class="nobr"><?=time_diff($Data['Time'],1)?></td>
 		<td class="nobr"><?=get_size($Data['Size'])?></td>
-		<td><?=number_format((int)$Data['Snatched'])?></td>
-		<td<?=((int)$Data['Seeders']==0)?' class="r00"':''?>><?=number_format((int)$Data['Seeders'])?></td>
-		<td><?=number_format((int)$Data['Leechers'])?></td>
+		<td><?=number_format($Data['Snatched'])?></td>
+		<td<?=($Data['Seeders']==0)?' class="r00"':''?>><?=number_format($Data['Seeders'])?></td>
+		<td><?=number_format($Data['Leechers'])?></td>
 	</tr>
 <?
 		}

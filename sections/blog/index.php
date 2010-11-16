@@ -63,6 +63,10 @@ if(check_perms('admin_manage_blog')) {
 				
 				$DB->query("INSERT INTO blog (UserID, Title, Body, Time, ThreadID) VALUES ('$LoggedUser[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', '".sqltime()."', ".$ThreadID.")");
 				$Cache->delete_value('blog');
+				if(isset($_POST['subscribe'])) {
+					$DB->query("INSERT IGNORE INTO users_subscriptions VALUES ('$LoggedUser[ID]', $ThreadID)");
+					$Cache->delete_value('subscriptions_user_'.$LoggedUser['ID']);
+				}
 		
 				header('Location: blog.php');
 				break;
@@ -89,6 +93,8 @@ if(check_perms('admin_manage_blog')) {
 					<input type="text" name="thread" size="8"<? if(!empty($ThreadID)) { echo 'value="'.display_str($ThreadID).'"'; } ?> />
 					(Leave blank to create thread automatically)
 					<br /><br />
+					<input id="subscribebox" type="checkbox" name="subscribe"<?=!empty($HeavyInfo['AutoSubscribe'])?' checked="checked"':''?> tabindex="2" />
+					<label for="subscribebox">Subscribe</label>
 					<div class="center">
 						<input type="submit" value="<?=((!isset($_GET['action'])) ? 'Create blog post' : 'Edit blog post') ?>" />
 					</div>

@@ -152,9 +152,9 @@ $Pages=get_pages($Page,$TorrentCount,NOTIFICATIONS_PER_PAGE,9);
 		<td><?=$FileCount ?></td>
 		<td style="text-align:right" class="nobr"><?=time_diff($NotificationTime)?></td>
 		<td class="nobr" style="text-align:right"><?=get_size($Size)?></td>
-		<td style="text-align:right"><?=number_format((int)$Snatched)?></td>
-		<td style="text-align:right"><?=number_format((int)$Seeders)?></td>
-		<td style="text-align:right"><?=number_format((int)$Leechers)?></td>
+		<td style="text-align:right"><?=number_format($Snatched)?></td>
+		<td style="text-align:right"><?=number_format($Seeders)?></td>
+		<td style="text-align:right"><?=number_format($Leechers)?></td>
 	</tr>
 <?
 		}

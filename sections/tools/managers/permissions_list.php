@@ -31,7 +31,7 @@ if($DB->record_count()) {
 		<tr>
 			<td><?=display_str($Name); ?></td>
 			<td><?=$Level; ?></td>
-			<td><?=number_format((int) $UserCount); ?></td>
+			<td><?=number_format($UserCount); ?></td>
 			<td class="center">[<a href="tools.php?action=permissions&amp;id=<?=$ID ?>">Edit</a> | <a href="#" onclick="return confirmDelete(<?=$ID?>)">Remove</a>]</td>
 		</tr>
 <?	} ?>

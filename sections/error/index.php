@@ -13,10 +13,7 @@ if(!empty($_GET['e']) && in_array($_GET['e'],$Errors)) {
 } else {
 	//Gazelle error (Come from the error() function)
 	switch ($Error) {
-		case 'js':
-			send_irc("PRIVMSG ".LAB_CHAN." :JS error \"'".$_GET['report']."\" by ".(!empty($LoggedUser['ID']) ? "http://".NONSSL_SITE_URL."/user.php?id=".$LoggedUser['ID'] ." (".$LoggedUser['Username'].")" : $_SERVER['REMOTE_ADDR']." (".geoip($_SERVER['REMOTE_ADDR']).")")." accessing http://".NONSSL_SITE_URL."".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER'])? " from ".$_SERVER['HTTP_REFERER'] : ''));
-			die();
-			break;
+
 		case '403':
 			$Title = "Error 403";
 			$Description = "You just tried to go to a page that you don't have enough permission to view.";
