@@ -259,6 +259,11 @@ CREATE TABLE `forums_posts` (
   KEY `AuthorID` (`AuthorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `forums_specific_rules` (
+  `ForumID` int(6) unsigned DEFAULT NULL,
+  `ThreadID` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `forums_topics` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Title` varchar(150) NOT NULL,

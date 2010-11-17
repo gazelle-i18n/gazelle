@@ -58,7 +58,12 @@ class SPHINX_SEARCH extends SphinxClient {
 		$this->Time+=($QueryEndTime-$QueryStartTime)*1000;
 		
 		if($Result === false) {
-			send_irc('PRIVMSG '.LAB_CHAN.' :Search for "'.$Query.'" ('.str_replace("\n",'',print_r($this->Filters, true)).') failed: '.$this->GetLastError());
+			if($this->_connerror && !$Cache->get_value('sphinx_crash_reported')) {
+				send_irc('PRIVMSG '.ADMIN_CHAN.' :!dev Connection to searchd failed');
+				$Cache->cache_value('sphinx_crash_reported', 1, 3600);
+			} else {
+				send_irc('PRIVMSG '.LAB_CHAN.' :Search for "'.$Query.'" ('.str_replace("\n",'',print_r($this->Filters, true)).') failed: '.$this->GetLastError());
+			}
 		}
 		
 		$this->TotalResults = $Result['total'];

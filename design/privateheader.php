@@ -218,7 +218,16 @@ if(check_perms('admin_reports')) {
 		$ModBar[] = '<a href="reports.php">'.$NumOtherReports.(($NumTorrentReports == 1) ? ' Other Report' : ' Other Reports').'</a>';
 	}
 } else if(check_perms('project_team')) {
+	$NumUpdateReports = $Cache->get_value('num_update_reports');
+	if ($NumUpdateReports === false) {
+		$DB->query("SELECT COUNT(ID) FROM reports WHERE Status='New' AND Type = 'request_update'");
+		list($NumUpdateReports) = $DB->next_record();
+		$Cache->cache_value('num_update_reports', $NumUpdateReports, 0);
+	}
+	
+	if ($NumUpdateReports > 0) {
 		$ModBar[] = '<a href="reports.php">'.'Request update reports'.'</a>';
+	}
 }
 
 
