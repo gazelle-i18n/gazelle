@@ -22,14 +22,24 @@ if(!$Forums = $Cache->get_value('forums_list')) {
 		um.Username,
 		f.LastPostTopicID,
 		f.LastPostTime,
+		COUNT(sr.ThreadID) AS SpecificRules,
 		t.Title,
 		t.IsLocked,
 		t.IsSticky
 		FROM forums AS f
 		LEFT JOIN forums_topics as t ON t.ID = f.LastPostTopicID
 		LEFT JOIN users_main AS um ON um.ID=f.LastPostAuthorID
+		LEFT JOIN forums_specific_rules AS sr ON sr.ForumID = f.ID
+		GROUP BY f.ID
 		ORDER BY f.CategoryID, f.Sort");
 	$Forums = $DB->to_array('ID', MYSQLI_ASSOC, false);
+	foreach($Forums as $ForumID => $Forum) {
+		if(count($Forum['SpecificRules'])) {
+			$DB->query("SELECT ThreadID FROM forums_specific_rules WHERE ForumID = ".$ForumID);
+			$ThreadIDs = $DB->collect('ThreadID');
+			$Forums[$ForumID]['SpecificRules'] = $ThreadIDs;
+		}
+	}
 	$Cache->cache_value('forums_list', $Forums, 0); //Inf cache.
 }
 
@@ -98,6 +108,9 @@ if(!empty($_POST['action'])){
 			break;
 		case 'sticky_post':
 			require(SERVER_ROOT.'/sections/forums/sticky_post.php');
+			break;
+		case 'edit_rules':
+			require(SERVER_ROOT.'/sections/forums/edit_rules.php');
 			break;
 		default:
 			error(404);

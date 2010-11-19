@@ -345,7 +345,7 @@ foreach($FileList as $File) {
 	}
 
 	// Forbidden files
-	if($Type == 'Music' && preg_match('/\.(mov|avi|mpg|exe|zip|rar|mkv|bat|iso|dat|torrent|!ut|nzb)$/i', $Name)) {
+	if($Type == 'Music' && preg_match('/\.(mov|avi|mpg|exe|zip|rar|mkv|bat|iso|dat|torrent|!ut|nzb|wav)$/i', $Name)) {
 		$Err = 'The torrent contained one or more invalid files ('.$Name.').';
 	}
 	if($Type == 'Music' && preg_match('/demonoid.*\.txt$/i', $Name)) {

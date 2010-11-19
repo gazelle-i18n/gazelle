@@ -96,7 +96,9 @@ if(empty($UserSubscriptions)) {
 	$UserSubscriptions = array();
 }
 
-
+if(in_array($ThreadID, $UserSubscriptions)) {
+	$Cache->delete_value('subscriptions_user_new_'.$LoggedUser['ID']);
+}
 // Start printing
 show_header('Forums'.' > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
 ?>

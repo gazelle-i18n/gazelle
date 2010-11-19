@@ -234,7 +234,13 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && (!check_perms('site_
 	$ThreadInfo['Posts']++;
 }
 
-
+$DB->query("SELECT UserID FROM users_subscriptions WHERE TopicID = ".$TopicID);
+if($DB->record_count() > 0) {
+	$Subscribers = $DB->collect('UserID');
+	foreach($Subscribers as $Subscriber) {
+		$DB->delete_value('subscriptions_user_new_'.$Subscribers);
+	}
+}
 
 header('Location: forums.php?action=viewthread&threadid='.$TopicID.'&page='.ceil($ThreadInfo['Posts']/$PerPage));
 die();

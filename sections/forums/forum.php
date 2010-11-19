@@ -8,6 +8,8 @@ Things to expect in $_GET:
 
 ********************************************************************************/
 
+include(SERVER_ROOT.'/sections/forums/functions.php');
+
 //---------- Things to sort out before it can start printing/generating content
 
 // Check for lame SQL injection attempts
@@ -71,6 +73,24 @@ show_header('Forums > '. $Forums[$ForumID]['Name']);
 <? if($LoggedUser['Class'] >= $Forums[$ForumID]['MinClassCreate']){ ?>
 	<div class="linkbox">
 		[<a href="forums.php?action=new&amp;forumid=<?=$ForumID?>">New Thread</a>]
+	</div>
+<? } ?>
+<? if(!empty($Forums[$ForumID]['SpecificRules'])) { ?>
+	<div class="linkbox">
+<? if(check_perms('site_moderate_forums')) { ?>
+		<a href="forums.php?action=edit_rules&amp;forumid=<?=$ForumID?>">
+<? } ?>
+		<strong>Forum Specific Rules</strong>
+<? if(check_perms('site_moderate_forums')) { ?>
+		</a>
+<? } ?>
+
+<? foreach($Forums[$ForumID]['SpecificRules'] as $ThreadIDs) {
+	$Thread = get_thread_info($ThreadIDs);
+?>
+		<br />
+		[<a href="forums.php?action=viewthread&amp;threadid=<?=$Thread['ID']?>"><?=$Thread['Title']?></a>]
+<? } ?>
 	</div>
 <? } ?>
 	<div class="linkbox pager">

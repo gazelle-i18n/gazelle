@@ -114,6 +114,22 @@ if(check_perms('site_send_unlimited_invites')) {
 			<li><a onmousedown="Stats('notifications');" href="user.php?action=notify">Notifications</a></li>
 <? } ?>
 <!--			<li><a href="userhistory.php?action=posts&amp;userid=<?=$LoggedUser['ID']?>">Posts</a></li>-->
+<?
+//Subscriptions
+$NewSubscriptions = $Cache->get_value('subscriptions_user_new_'.$LoggedUser['ID']);
+if($NewSubscriptions === FALSE) {
+	$DB->query("SELECT COUNT(s.TopicID)
+		FROM users_subscriptions AS s
+			JOIN forums_last_read_topics AS l ON s.UserID = l.UserID AND s.TopicID = l.TopicID
+			JOIN forums_topics AS t ON l.TopicID = t.ID
+			JOIN forums AS f ON t.ForumID = f.ID
+		WHERE f.MinClassRead <= ".$LoggedUser['Class']."
+			AND l.PostID < t.LastPostID
+			AND s.UserID = ".$LoggedUser['ID']);
+	list($NewSubscriptions) = $DB->next_record();
+	$Cache->cache_value('subscriptions_user_new_'.$LoggedUser['ID'], $NewSubscriptions, 0);
+}
+?>
 			<li><a onmousedown="Stats('subscriptions');" href="userhistory.php?action=subscriptions"<?=($NewSubscriptions ? 'class="new-subscriptions"' : '')?>>Subscriptions</a></li>
 			<li><a onmousedown="Stats('comments');" href="comments.php">Comments</a></li>
 			<li><a onmousedown="Stats('friends');" href="friends.php">Friends</a></li>
@@ -139,7 +155,6 @@ if(check_perms('site_send_unlimited_invites')) {
 $Alerts = array();
 $ModBar = array();
 
-/*
 // News
 $MyNews = $LoggedUser['LastReadNews'];
 $CurrentNews = $Cache->get_value('news_latest_id');
@@ -155,7 +170,6 @@ if ($CurrentNews === false) {
 if ($MyNews < $CurrentNews) {
 	$Alerts[] = '<a href="index.php">'.'New Announcement!'.'</a>';
 }
-*/
 
 //Inbox
 $NewMessages = $Cache->get_value('inbox_new_'.$LoggedUser['ID']);
@@ -168,8 +182,6 @@ if ($NewMessages === false) {
 if ($NewMessages > 0) {
 	$Alerts[] = '<a href="inbox.php">'.'You have '.$NewMessages.(($NewMessages > 1) ? ' new messages' : ' new message').'</a>';
 }
-
-
 
 if($LoggedUser['RatioWatch']){
 	$Alerts[] = '<a href="rules.php?p=ratio">'.'Ratio Watch'.'</a>: '.'You have '.time_diff($LoggedUser['RatioWatchEnds'], 3).' to get your ratio over your required ratio.';

@@ -11,6 +11,7 @@
 /*------------------------------------------------------*/
 /********************************************************/
 require 'config.php'; //The config contains all site wide configuration information
+include(SERVER_ROOT.'/classes/translate.php');
 
 //Deal with dumbasses
 if(isset($_REQUEST['info_hash']) && isset($_REQUEST['peer_id'])) { die('d14:failure reason40:Invalid .torrent, try downloading again.e'); }
