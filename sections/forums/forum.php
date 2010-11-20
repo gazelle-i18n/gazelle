@@ -75,21 +75,19 @@ show_header('Forums > '. $Forums[$ForumID]['Name']);
 		[<a href="forums.php?action=new&amp;forumid=<?=$ForumID?>">New Thread</a>]
 	</div>
 <? } ?>
+<? if(check_perms('site_moderate_forums')) { ?>
+	<div class="linkbox">
+		<a href="forums.php?action=edit_rules&amp;forumid=<?=$ForumID?>">Change specific rules</a>
+	</div>
+<? } ?>
 <? if(!empty($Forums[$ForumID]['SpecificRules'])) { ?>
 	<div class="linkbox">
-<? if(check_perms('site_moderate_forums')) { ?>
-		<a href="forums.php?action=edit_rules&amp;forumid=<?=$ForumID?>">
-<? } ?>
-		<strong>Forum Specific Rules</strong>
-<? if(check_perms('site_moderate_forums')) { ?>
-		</a>
-<? } ?>
-
+			<strong>Forum Specific Rules</strong>
 <? foreach($Forums[$ForumID]['SpecificRules'] as $ThreadIDs) {
 	$Thread = get_thread_info($ThreadIDs);
 ?>
 		<br />
-		[<a href="forums.php?action=viewthread&amp;threadid=<?=$Thread['ID']?>"><?=$Thread['Title']?></a>]
+		[<a href="forums.php?action=viewthread&amp;threadid=<?=$ThreadIDs?>"><?=$Thread['Title']?></a>]
 <? } ?>
 	</div>
 <? } ?>

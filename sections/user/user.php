@@ -84,6 +84,7 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		m.Invites,
 		m.Title,
 		m.torrent_pass,
+		m.can_leech,
 		i.JoinDate,
 		i.Info,
 		i.Avatar,
@@ -105,7 +106,7 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		header("Location: log.php?search=User+".$UserID);
 	}
 
-	list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $JoinDate, $Info, $Avatar, $Country, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName, $RatioWatchEnds, $RatioWatchDownload) = $DB->next_record(MYSQLI_NUM, array(9,11));
+	list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Country, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName, $RatioWatchEnds, $RatioWatchDownload) = $DB->next_record(MYSQLI_NUM, array(9,11));
 }
 
 $Paranoia = unserialize($Paranoia);
@@ -472,10 +473,11 @@ if (check_paranoia_here('leeching+')) {
 				<li>Seeding: <?=number_format($Seeding)?></li>
 <? } ?>
 <? if (check_paranoia_here('leeching')) { ?>
-				<li>Leeching: <?=number_format($Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]</li>
+				<li>Leeching: <?=number_format($Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]<?=$DisableLeech == 0 ? "<strong> (Disabled)</strong>" : ""?></li>
 <? } elseif (check_paranoia_here('leeching+')) { ?>
 				<li>Leeching: <?=number_format($Leeching)?></li>
-<? } ?>
+<? } 
+?>
 <? if (check_paranoia_here('snatched+')) { ?>
 				<li>Snatched: <?=number_format($Snatched)?> 
 <? 	if(check_perms('site_view_torrent_snatchlist', $Class)) { ?>

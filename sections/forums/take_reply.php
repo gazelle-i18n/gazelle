@@ -238,7 +238,7 @@ $DB->query("SELECT UserID FROM users_subscriptions WHERE TopicID = ".$TopicID);
 if($DB->record_count() > 0) {
 	$Subscribers = $DB->collect('UserID');
 	foreach($Subscribers as $Subscriber) {
-		$DB->delete_value('subscriptions_user_new_'.$Subscribers);
+		$Cache->delete_value('subscriptions_user_new_'.$Subscriber);
 	}
 }
 

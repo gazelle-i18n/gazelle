@@ -112,9 +112,7 @@ if(check_perms('site_send_unlimited_invites')) {
 			<li><a onmousedown="Stats('bookmarks');" href="bookmarks.php">Bookmarks</a></li>
 <? if (check_perms('site_torrents_notify')) { ?>
 			<li><a onmousedown="Stats('notifications');" href="user.php?action=notify">Notifications</a></li>
-<? } ?>
-<!--			<li><a href="userhistory.php?action=posts&amp;userid=<?=$LoggedUser['ID']?>">Posts</a></li>-->
-<?
+<? }
 //Subscriptions
 $NewSubscriptions = $Cache->get_value('subscriptions_user_new_'.$LoggedUser['ID']);
 if($NewSubscriptions === FALSE) {

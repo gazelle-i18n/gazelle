@@ -351,6 +351,11 @@ foreach ($News as $NewsItem) {
 	}
 }
 ?>
+		<div id="more_news" class="box">
+			<div class="head">
+				<em>For older news posts, <a href="forums.php?action=viewforum&amp;forumid=19">click here</a></em>
+			</div>
+		</div>
 	</div>
 </div>
 <?

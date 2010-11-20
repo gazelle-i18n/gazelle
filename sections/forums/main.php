@@ -38,7 +38,7 @@ $LastCategoryID=0;
 $OpenTable = false;
 
 foreach ($Forums as $Forum) {
-	list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastPostAuthorName, $LastTopicID, $LastTime, $LastTopic, $Locked, $Sticky) = array_values($Forum);
+	list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastPostAuthorName, $LastTopicID, $LastTime, $SpecificRules, $LastTopic, $Locked, $Sticky) = array_values($Forum);
 	if ($MinRead>$LoggedUser['Class']) {
 		continue;
 	}

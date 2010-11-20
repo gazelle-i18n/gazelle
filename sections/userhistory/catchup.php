@@ -13,5 +13,6 @@ if(!empty($UserSubscriptions)) {
 		WHERE ID IN (".implode(',',$UserSubscriptions).")
 		ON DUPLICATE KEY UPDATE PostID=LastPostID");
 }
+$Cache->delete_value('subscriptions_user_new_'.$LoggedUser['ID']);
 header('Location: userhistory.php?action=subscriptions');
 ?>

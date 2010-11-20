@@ -30,3 +30,4 @@ if(($Key = array_search($_GET['topicid'],$UserSubscriptions)) !== FALSE) {
 	array_push($UserSubscriptions, $_GET['topicid']);
 }
 $Cache->replace_value('subscriptions_user_'.$LoggedUser['ID'], $UserSubscriptions, 0);
+$Cache->delete_value('subscriptions_user_new_'.$LoggedUser['ID']);

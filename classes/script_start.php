@@ -11,7 +11,6 @@
 /*------------------------------------------------------*/
 /********************************************************/
 require 'config.php'; //The config contains all site wide configuration information
-include(SERVER_ROOT.'/classes/translate.php');
 
 //Deal with dumbasses
 if(isset($_REQUEST['info_hash']) && isset($_REQUEST['peer_id'])) { die('d14:failure reason40:Invalid .torrent, try downloading again.e'); }
@@ -48,7 +47,6 @@ require(SERVER_ROOT.'/classes/class_useragent.php'); //Require the useragent cla
 require(SERVER_ROOT.'/classes/class_time.php'); //Require the time class
 require(SERVER_ROOT.'/classes/class_search.php'); //Require the searching class
 require(SERVER_ROOT.'/classes/class_paranoia.php'); //Require the paranoia check_paranoia function
-
 
 $Debug = new DEBUG;
 $Debug->handle_errors();
@@ -974,6 +972,59 @@ function delete_torrent($ID, $GroupID=0) {
 			}
 		}
 	}
+	
+	
+	$DB->query("SELECT info_hash FROM torrents WHERE ID = ".$ID);
+	list($InfoHash) = $DB->next_record(MYSQLI_BOTH, false);
+	$DB->query("DELETE FROM torrents WHERE ID = ".$ID);
+	update_tracker('delete_torrent', array('info_hash' => rawurlencode($InfoHash), 'id' => $ID));
+	
+	$Cache->decrement('stats_torrent_count');
+
+	$DB->query("SELECT COUNT(ID) FROM torrents WHERE GroupID='$GroupID' AND flags <> 1");
+	list($Count) = $DB->next_record();
+
+	if($Count == 0) {
+		delete_group($GroupID);
+	} else {
+		update_hash($GroupID);
+		//Artists
+		$DB->query("SELECT ArtistID
+				FROM torrents_artists 
+				WHERE GroupID = ".$GroupID);
+		$ArtistIDs = $DB->collect('ArtistID');
+		foreach($ArtistIDs as $ArtistID) {
+			$Cache->delete_value('artist_'.$ArtistID);
+		}
+	}
+
+	// Torrent notifications
+	$DB->query("SELECT UserID FROM users_notify_torrents WHERE TorrentID='$ID'");
+	while(list($UserID) = $DB->next_record()) {
+		$Cache->delete_value('notifications_new_'.$UserID);
+	}
+	$DB->query("DELETE FROM users_notify_torrents WHERE TorrentID='$ID'");
+	$DB->query("DELETE FROM torrents_files WHERE TorrentID='$ID'");
+	$DB->query("DELETE FROM torrents_bad_tags WHERE TorrentID = ".$ID);
+	$DB->query("DELETE FROM torrents_bad_folders WHERE TorrentID = ".$ID);
+	$DB->query("DELETE FROM torrents_bad_files WHERE TorrentID = ".$ID);
+	$Cache->delete_value('torrent_download_'.$ID);
+	$Cache->delete_value('torrent_group_'.$GroupID);
+	$Cache->delete_value('torrents_details_'.$GroupID);
+}
+
+function delete_group($GroupID) {
+	global $DB, $Cache;
+
+	write_log("Group ".$GroupID." automatically deleted (No torrents have this group).");
+
+	//Never call this unless you're certain the group is no longer used by any torrents
+	$DB->query("SELECT CategoryID FROM torrents_group WHERE ID='$GroupID'");
+	list($Category) = $DB->next_record();
+	if($Category == 1) {
+		$Cache->decrement('stats_album_count');
+	}
+	$Cache->decrement('stats_group_count');
 	
 	
 	

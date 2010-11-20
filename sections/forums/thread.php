@@ -79,10 +79,20 @@ if(!$Catalogue = $Cache->get_value('thread_'.$ThreadID.'_catalogue_'.$CatalogueI
 }
 $Thread = catalogue_select($Catalogue,$Page,$PerPage,THREAD_CATALOGUE);
 
+$LastPost = end($Thread);
+$LastPost = $LastPost['ID'];
+reset($Thread);
+
 //Handle last read
 if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
 	$DB->query("SELECT PostID From forums_last_read_topics WHERE UserID='$LoggedUser[ID]' AND TopicID='$ThreadID'");
 	list($LastRead) = $DB->next_record();
+	if($LastRead < $LastPost) {
+		$DB->query("INSERT INTO forums_last_read_topics
+			(UserID, TopicID, PostID) VALUES
+			('$LoggedUser[ID]', '".$ThreadID ."', '".db_string($LastPost)."')
+			ON DUPLICATE KEY UPDATE PostID='$LastPost'");
+	}
 }
 
 //Handle subscriptions
@@ -99,6 +109,7 @@ if(empty($UserSubscriptions)) {
 if(in_array($ThreadID, $UserSubscriptions)) {
 	$Cache->delete_value('subscriptions_user_new_'.$LoggedUser['ID']);
 }
+
 // Start printing
 show_header('Forums'.' > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
 ?>
@@ -299,10 +310,6 @@ if ($ThreadInfo['NoPoll'] == 0) {
 <? 
 } //End Polls
 
-$LastPost = end($Thread);
-$LastPost = $LastPost['ID'];
-reset($Thread);
-
 //Sqeeze in stickypost
 if($ThreadInfo['StickyPostID']) {
 	if($ThreadInfo['StickyPostID'] != $Thread[0]['ID']) {
@@ -383,13 +390,6 @@ if($PostID == $ThreadInfo['StickyPostID']) { ?>
 	<?=$Pages?>
 </div>
 <?
-if((!$ThreadInfo['IsLocked']  || $ThreadInfo['IsSticky']) && $LastRead<$LastPost){
-	$DB->query("INSERT INTO forums_last_read_topics
-		(UserID, TopicID, PostID) VALUES
-		('$LoggedUser[ID]', '".$ThreadID ."', '".db_string($LastPost)."')
-		ON DUPLICATE KEY UPDATE PostID='$LastPost'");
-}
-
 if(!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 	if($Forums[$ForumID]['MinClassWrite'] <= $LoggedUser['Class'] && !$LoggedUser['DisablePosting']) {
 	//TODO: Preview, come up with a standard, make it look like post or just a block of formatted bbcode, but decide and write some proper html

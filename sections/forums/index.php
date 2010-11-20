@@ -1,4 +1,5 @@
 <?
+
 enforce_login();
 
 if(!empty($LoggedUser['DisableForums'])) {
