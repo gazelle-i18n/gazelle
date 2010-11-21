@@ -28,6 +28,7 @@ $DB->query("UPDATE reports
 $Channels = array("#forumreports");
 if($Type == "request_update") {
 	$Channels[] = "#requestedits";
+	$Cache->decrement('num_update_reports');
 }
 
 $DB->query("SELECT COUNT(ID) FROM reports WHERE Status = 'New'");

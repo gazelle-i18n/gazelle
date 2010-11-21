@@ -1803,7 +1803,7 @@ function update_tracker($Action, $Updates) {
 		} else {
 			$Attempts++;
 			$Err = "Failed to fsockopen() - ".$ErrorNum." - ".$ErrorString;
-			sleep(3);
+			sleep(6);
 			continue;
 		}
 

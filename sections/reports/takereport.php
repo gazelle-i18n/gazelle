@@ -76,6 +76,7 @@ $Channels = array("#forumreports");
 
 if($Short == "request_update") {
 	$Channels[] = "#requestedits";
+	$Cache->increment('num_update_reports');
 }
 
 foreach($Channels as $Channel) {
