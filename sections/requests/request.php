@@ -78,7 +78,7 @@ $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && (($CategoryID ==
 $UserCanEdit = (!$IsFilled && $LoggedUser['ID'] == $RequestorID && $VoteCount < 2);
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
-show_header('View request: '.$FullName, 'comments,requests');
+show_header('View request: '.$FullName, 'comments,requests,bbcode');
 
 ?>
 <div class="thin">

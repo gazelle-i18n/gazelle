@@ -107,7 +107,7 @@ class CACHE extends Memcache {
 		}
 
 		$Return = $this->get($Key);
-		if ($Return) {
+		if ($Return && !$NoCache) {
 			$this->CacheHits[$Key] = $Return;
 		}
 		$this->Time+=(microtime(true)-$StartTime)*1000;

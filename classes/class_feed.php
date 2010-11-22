@@ -53,7 +53,7 @@ class FEED {
 
 	function populate($CacheKey,$Item) {
 		global $Cache;
-		$Entries = $Cache->get_value($CacheKey);
+		$Entries = $Cache->get_value($CacheKey,true);
 		if(!$Entries){
 			$Entries = array();
 		} else {

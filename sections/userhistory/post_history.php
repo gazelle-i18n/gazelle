@@ -47,7 +47,7 @@ if(check_perms('site_proxy_images') && !empty($Avatar)) {
 	$Avatar = 'http://'.SITE_URL.'/image.php?c=1&i='.urlencode($Avatar);
 }
 
-show_header('Post history for '.$Username,'subscriptions,comments');
+show_header('Post history for '.$Username,'subscriptions,comments,bbcode');
 
 $ShowUnread = ($UserID == $LoggedUser['ID'] && (!isset($_GET['showunread']) || !!$_GET['showunread']));
 $ShowGrouped = ($UserID == $LoggedUser['ID'] && (!isset($_GET['group']) || !!$_GET['group']));

@@ -69,7 +69,7 @@ if ($TorrentTags != '') {
 }*/
 
 // Start output
-show_header($Title,'browse,comments,torrent');
+show_header($Title,'browse,comments,torrent,bbcode');
 ?>
 <div class="thin">
 	<h2><?=$DisplayName?></h2>

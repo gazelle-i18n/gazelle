@@ -651,7 +651,8 @@ margin-left:20px;
 #forums .forum_post blockquote,
 #userhistory .forum_post blockquote,
 #collage .forum_post blockquote,
-#torrents .forum_post blockquote {
+#torrents .forum_post blockquote,
+#wiki .box blockquote {
 	border: 1px solid #323232;
 	background-color: #212121;
 	padding: 6px;

@@ -4,7 +4,7 @@ if(!check_perms('admin_manage_news')){ error(403); }
 
 include(SERVER_ROOT.'/classes/class_text.php');
 $Text = new TEXT;
-show_header('Manage news');
+show_header('Manage news','bbcode');
 
 switch($_GET['action']) {
 	case 'takeeditnews':

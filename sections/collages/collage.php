@@ -38,7 +38,7 @@ if($CollageCategoryID == 0 && !check_perms('site_collages_delete')) {
 	}
 }
 
-show_header($Name,'browse,collage');
+show_header($Name,'browse,collage,bbcode');
 // Build the data for the collage and the torrent list
 
 if(!is_array($TorrentList)) {

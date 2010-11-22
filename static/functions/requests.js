@@ -1,6 +1,6 @@
 
 function Vote(amount, requestid) {
-	if(amount != 0) {
+	if(typeof amount == 'undefined') {
 		amount = parseInt($('#amount').raw().value);
 	}
 	if(amount == 0) {
@@ -38,6 +38,8 @@ function Vote(amount, requestid) {
 
 				save_message("Your vote of " + get_size(amount) + ", adding a " + get_size(amount * (1 - $('#request_tax').raw().value)) + " bounty, has been added");
 				$('#button').raw().disabled = true;
+			} else {
+				save_message("Your vote of " + get_size(amount) + " has been added");
 			}
 		}
 	);

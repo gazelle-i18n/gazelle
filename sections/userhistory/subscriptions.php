@@ -17,7 +17,7 @@ if (isset($LoggedUser['PostsPerPage'])) {
 }
 list($Page,$Limit) = page_limit($PerPage);
 
-show_header('Subscribed topics','subscriptions');
+show_header('Subscribed topics','subscriptions,bbcode');
 if(($UserSubscriptions = $Cache->get_value('subscriptions_user_'.$LoggedUser['ID'])) === FALSE) {
 	$DB->query('SELECT TopicID FROM users_subscriptions WHERE UserID = '.$LoggedUser['ID']);
 	if($UserSubscriptions = $DB->collect(0)) {
@@ -79,7 +79,7 @@ if(!empty($UserSubscriptions)) {
 			FROM forums_posts AS p
 			LEFT JOIN forums_topics AS t ON t.ID = p.TopicID
 			LEFT JOIN forums AS f ON f.ID = t.ForumID
-			LEFT JOIN users_main AS um ON um.ID = (SELECT AuthorID FROM forums_posts WHERE ID = p.ID)
+			LEFT JOIN users_main AS um ON um.ID = p.AuthorID
 			LEFT JOIN users_info AS ui ON ui.UserID = um.ID
 			LEFT JOIN users_main AS ed ON ed.ID = um.ID
 			WHERE p.ID IN ('.implode(',',$PostIDs).')

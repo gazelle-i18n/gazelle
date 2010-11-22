@@ -33,7 +33,7 @@ $Article = $Alias->article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
 if($Read > $LoggedUser['Class']){ error(404); }
 
-show_header($Title,'wiki');
+show_header($Title,'wiki,bbcode');
 ?>
 <div class="thin">
 	<h2><?=$Title?></h2>

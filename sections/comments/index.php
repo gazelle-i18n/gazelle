@@ -105,7 +105,7 @@ $GroupIDs = $DB->collect('GroupID');
 $Artists = get_artists($GroupIDs);
 
 $DB->set_query_id($Comments);
-show_header($Title);
+show_header($Title,'bbcode');
 
 ?><div class="thin">
 	<h2>

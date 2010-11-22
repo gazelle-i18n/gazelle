@@ -313,7 +313,7 @@ $TorrentDisplayList = ob_get_clean();
 
 //----------------- End building list and getting stats
 
-show_header($Name, 'requests');
+show_header($Name, 'requests,bbcode');
 ?>
 <div class="thin">
 	<h2><?=$Name?><? if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<? } ?></h2>
@@ -581,10 +581,10 @@ if($NumRequests > 0) {
 				</div>
 			</td>
 			<td>
-				<?=$Votes?> 
+				<?=$Votes?>
 <?  	if(check_perms('site_vote')){ ?>
 				<input type="hidden" id="auth" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-				&nbsp;&nbsp; <a href="javascript:Vote(20971520)"><strong>(+)</strong></a>
+				&nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)"><strong>(+)</strong></a>
 <?		} ?> 
 			</td>
 			<td>

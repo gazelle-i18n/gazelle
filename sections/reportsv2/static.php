@@ -183,7 +183,7 @@ $DB->query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 $PageLinks=get_pages($Page,$Results,REPORTS_PER_PAGE,11);
 
-show_header('Reports V2!', 'reportsv2');
+show_header('Reports V2!', 'reportsv2,bbcode');
 include('header.php');
 
 ?>

@@ -58,7 +58,7 @@ if($UnRead=='1') {
 	$Cache->decrement('inbox_new_'.$UserID);
 }
 
-show_header('View conversation '.$Subject, 'comments,inbox');
+show_header('View conversation '.$Subject, 'comments,inbox,bbcode');
 
 // Get messages
 $DB->query("SELECT SentDate, SenderID, Body, ID FROM pm_messages AS m WHERE ConvID='$ConvID' ORDER BY ID");

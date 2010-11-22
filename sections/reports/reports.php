@@ -16,7 +16,7 @@ list($Page,$Limit) = page_limit(REPORTS_PER_PAGE);
 include(SERVER_ROOT.'/sections/reports/array.php');
 
 // Header
-show_header('Reports');
+show_header('Reports','bbcode');
 
 if($_GET['id'] && is_number($_GET['id'])) {
 	$View = "Single report";

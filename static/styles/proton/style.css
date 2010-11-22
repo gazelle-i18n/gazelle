@@ -659,10 +659,22 @@ ul#userinfo_username {
 #torrents .forum_post blockquote,
 #comments .forum_post blockquote,
 #requests .forum_post blockquote,
+#wiki .box blockquote.spoiler,
 #blog blockquote {
 	border: 1px dotted #dcdcdc;
 	padding: 6px;
 	background: white url('images/quote_bg.png') -10px -5px no-repeat;
+}
+
+#forums .forum_post blockquote.spoiler,
+#userhistory .forum_post blockquote.spoiler,
+#collage .forum_post blockquote.spoiler,
+#torrents .forum_post blockquote.spoiler,
+#comments .forum_post blockquote.spoiler,
+#requests .forum_post blockquote.spoiler,
+#wiki .box blockquote.spoiler,
+#blog div.spoiler {
+	background: white;
 }
 
 #forums .forum_post .body,

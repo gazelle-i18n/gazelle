@@ -2,7 +2,7 @@
 enforce_login();
 
 define('ANNOUNCEMENT_FORUM_ID', 19);
-show_header('Blog');
+show_header('Blog','bbcode');
 require(SERVER_ROOT.'/classes/class_text.php');
 $Text = new TEXT;
 

@@ -376,6 +376,7 @@ $NumFiles = count($FileList);
 // The string that will make up the final torrent file
 $TorrentText = $Tor->enc();
 
+
 // Infohash
 
 $InfoHash = pack("H*", sha1($Tor->Val['info']->enc()));
@@ -712,6 +713,7 @@ send_irc('PRIVMSG #'.NONSSL_SITE_URL.'-announce :'.html_entity_decode($Announce)
 send_irc('PRIVMSG #'.NONSSL_SITE_URL.'-announce-ssl :'.$AnnounceSSL);
 //send_irc('PRIVMSG #'.NONSSL_SITE_URL.'-announce :'.html_entity_decode($Announce));
 
+
 // Manage notifications
 $UsedFormatBitrates = array();
 
@@ -866,6 +868,7 @@ if($DB->record_count()>0){
 	$InsertSQL.=implode(',', $Rows);
 	$DB->query($InsertSQL);
 
+
 	foreach ($FilterArray as $Filter) {
 		list($FilterID, $UserID, $Passkey) = $Filter;
 		$Feed->populate('torrents_notify_'.$FilterID.'_'.$Passkey,$Item);
@@ -873,6 +876,7 @@ if($DB->record_count()>0){
 }
 
 $Feed->populate('torrents_all',$Item);
+
 if($Type == 'Music'){
 	$Feed->populate('torrents_music',$Item);
 	if($Properties['Media'] == 'Vinyl')		{ $Feed->populate('torrents_vinyl',$Item); }

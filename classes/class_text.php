@@ -1,7 +1,7 @@
 <?
 class TEXT {
 	// tag=>max number of attributes
-	private $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'tex'=>0
+	private $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'tex'=>0, 'hide'=>1
 	);
 	private $Smileys = array(
 		':angry:'			=> 'angry.gif',
@@ -372,6 +372,9 @@ EXPLANATION OF PARSER LOGIC
 					
 					$Array[$ArrayPos] = array('Type'=>'pre', 'Val'=>$Block);
 					break;
+				case 'hide':
+					$Array[$ArrayPos] = array('Type'=>'hide', 'Attr'=>$Attrib, 'Val'=>$this->parse($Block));
+					break;
 				case '*':
 						$Array[$ArrayPos] = array('Type'=>'list');
 						$Array[$ArrayPos]['Val'] = explode('[*]', $Block);
@@ -480,7 +483,10 @@ EXPLANATION OF PARSER LOGIC
 					$Str.='<blockquote>'.$this->to_html($Block['Val']).'</blockquote>';
 					$this->NoImg--;
 					break;
-					
+				case 'hide':
+					$Str.='Hidden text'.(($Block['Attr']) ? ' ('.$Block['Attr'].')' : '').': <a href="javascript:void(0);" onclick="BBCode.spoiler(this);">Show</a>';
+					$Str.='<blockquote class="hidden spoiler">'.$this->to_html($Block['Val']).'</blockquote>';
+					break;
 				case 'img':
 					if($this->NoImg>0 && $this->valid_url($Block['Val'])) {
 						$Str.='<a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a> (image)';

@@ -111,7 +111,7 @@ if(in_array($ThreadID, $UserSubscriptions)) {
 }
 
 // Start printing
-show_header('Forums'.' > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions');
+show_header('Forums'.' > '.$Forums[$ForumID]['Name'].' > '.$ThreadInfo['Title'],'comments,subscriptions,bbcode');
 ?>
 <div class="thin">
 	<h2>

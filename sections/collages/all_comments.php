@@ -50,7 +50,7 @@ $DB->query("SELECT Name FROM collages WHERE ID='$CollageID'");
 list($Name) = $DB->next_record();
 
 // Start printing
-show_header('Comments for collage '.$Name, 'comments');
+show_header('Comments for collage '.$Name, 'comments,bbcode');
 ?>
 <div class="thin">
 	<h2>

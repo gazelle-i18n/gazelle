@@ -24,7 +24,7 @@ if ($LoggedUser['LastReadNews'] != $News[0][0]) {
 	$LoggedUser['LastReadNews'] = $News[0][0];
 }
 
-show_header('News');
+show_header('News','bbcode');
 ?>
 <div class="thin">
 	<div class="sidebar">
