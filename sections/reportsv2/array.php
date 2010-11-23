@@ -144,7 +144,7 @@ $Types = array(
 				'title' => 'Bad File Names Trump',
 				'report_messages' => array(
 					'Please describe what is wrong with the file names.',
-					'Please make sure you are reporting the torrent <strong>which has been trumped</strong> and should be deleted, not the torrent that you think should reamin on site.'
+					'Please make sure you are reporting the torrent <strong>which has been trumped</strong> and should be deleted, not the torrent that you think should remain on site.'
 				),
 				'report_fields' => array(
 					'sitelink' => '1'

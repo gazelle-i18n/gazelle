@@ -257,7 +257,7 @@ show_header('Uploading Rules');
 			<li id="r2.2.0"> <a href="#r2.2.0">2.2.0.</a> <strong>Overview</strong>
 
 			<p style="text-align:center">
-					<img src="static/common/trumpchart.gif" alt="Audio Dupe and Trump Chart" />					<br /><em>This chart is an overview of how the dupe and trump rules work. Thanks goes to <a href="user.php?id=501">lhnz</a> for creating it.</em>
+					<img src="static/common/trumpchart.png" alt="Audio Dupe and Trump Chart" />					<br /><em>This chart is an overview of how the dupe and trump rules work.</em>
 				</p>
 			</li>
 			<li id="r2.2.1"><a href="#h2.2"><strong>&uarr;_</strong></a> <a href="#r2.2.1">2.2.1.</a> <strong>Upload an allowed format if it doesn't exist on the site.</strong> If there is no existing torrent of the album in the format you've chosen, you can upload it in any bitrate that at least averages 192kbps.

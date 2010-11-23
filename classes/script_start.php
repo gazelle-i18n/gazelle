@@ -354,7 +354,8 @@ function user_heavy_info($UserID) {
 			i.DisableAvatar,
 			i.DisablePM,
 			i.SiteOptions,
-			i.DownloadAlt
+			i.DownloadAlt,
+			i.LastReadNews
 			FROM users_main AS m
 			INNER JOIN users_info AS i ON i.UserID=m.ID
 			WHERE m.ID='$UserID'");

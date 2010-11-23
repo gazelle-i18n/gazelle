@@ -484,7 +484,7 @@ EXPLANATION OF PARSER LOGIC
 					$this->NoImg--;
 					break;
 				case 'hide':
-					$Str.='Hidden text'.(($Block['Attr']) ? ' ('.$Block['Attr'].')' : '').': <a href="javascript:void(0);" onclick="BBCode.spoiler(this);">Show</a>';
+					$Str.='<strong>'.(($Block['Attr']) ? $Block['Attr'] : 'Hidden text').'</strong>: <a href="javascript:void(0);" onclick="BBCode.spoiler(this);">Show</a>';
 					$Str.='<blockquote class="hidden spoiler">'.$this->to_html($Block['Val']).'</blockquote>';
 					break;
 				case 'img':
