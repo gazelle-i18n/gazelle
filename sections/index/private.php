@@ -342,6 +342,9 @@ foreach ($News as $NewsItem) {
 		<div id="news<?=$NewsID?>" class="box">
 			<div class="head">
 				<strong><?=$Text->full_format($Title)?></strong> <?=time_diff($NewsTime);?>
+<? if(check_perms('admin_manage_news')) {?>
+				- <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>">[Edit]</a> 
+<? } ?>
 			</div>
 			<div class="pad"><?=$Text->full_format($Body)?></div>
 		</div>

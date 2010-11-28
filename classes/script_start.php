@@ -143,6 +143,9 @@ if(isset($LoginCookie)) {
 		
 		logout();
 	}
+
+	
+
 	// Up/Down stats
 	$UserStats = $Cache->get_value('user_stats_'.$LoggedUser['ID']);
 	if(!is_array($UserStats)) {
@@ -1475,7 +1478,7 @@ function display_artist($Artist, $MakeLink = true) {
 	if($MakeLink) {
 		return '<a href="artist.php?id='.$Artist['id'].'">'.display_str($Artist['name']).'</a>';
 	} else {
-		return $Artist['name'];
+		return display_str($Artist['name']);
 	}
 }
 

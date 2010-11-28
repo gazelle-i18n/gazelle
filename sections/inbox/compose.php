@@ -17,7 +17,7 @@ if(!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$ToID])) {
 $DB->query("SELECT Username FROM users_main WHERE ID='$ToID'");
 list($Username) = $DB->next_record();
 if(!$Username) { error(404); }
-show_header('Compose', 'inbox');
+show_header('Compose', 'inbox,bbcode');
 ?>
 <div class="thin">
 	<h2>Send a message to <a href="user.php?id=<?=$ToID?>"><?=$Username?></a></h2>

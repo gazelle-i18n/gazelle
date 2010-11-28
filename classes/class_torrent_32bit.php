@@ -230,6 +230,11 @@ class TORRENT extends BENCODE_DICT {
 		print_r($this->Val);
 	}
 	
+	function dump_data() {
+		// Function which serializes $this->Val for storage
+		return base64_encode(serialize($this->Val));
+	}
+	
 	function set_announce_url($Announce) {
 		$this->Val['announce'] = $Announce;
 	}

@@ -20,7 +20,7 @@ if($Forum === false) {
 
 
 if($LoggedUser['Class'] < $Forum['MinClassCreate']) { error(403); }
-show_header('Forums > '.$Forum['Name'].' > New Topic','comments');
+show_header('Forums > '.$Forum['Name'].' > New Topic','comments,bbcode');
 ?>
 <div class="thin">
 	<h2><a href="forums.php">Forums</a> &gt; <a href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>"><?=$Forum['Name']?></a> &gt; <span id="newthreadtitle">New Topic</span></h2>
