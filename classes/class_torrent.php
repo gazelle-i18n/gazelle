@@ -228,6 +228,20 @@ class TORRENT extends BENCODE_DICT {
 		return base64_encode(serialize($this->Val));
 	}
 	
+	/*
+	To use this, please remove the announce-list unset in make_private and be sure to still set_announce_url for backwards compatibility
+	function set_multi_announce() {
+		$Trackers = func_get_args();
+		$AnnounceList = new BENCODE_LIST(array(),true);
+		foreach ($Trackers as $Tracker) {
+			$SubList = new BENCODE_LIST(array($Tracker),true);
+			unset($SubList->Str);
+			$AnnounceList->Val[] = $SubList;
+		}
+		$this->Val['announce-list'] = $AnnounceList;
+	}
+	*/
+	
 	function set_announce_url($Announce) {
 		$this->Val['announce'] = $Announce;
 	}
