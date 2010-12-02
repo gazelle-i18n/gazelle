@@ -137,7 +137,9 @@ if(!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect($
 		</div>
 	</form>
 <?
-if(check_perms('users_mod') && (!$ForwardedID || $ForwardedID == $LoggedUser['ID'])) {
+$DB->query("SELECT SupportFor FROM users_info WHERE UserID = ".$LoggedUser['ID']);
+list($FLS) = $DB->next_record();
+if((check_perms('users_mod') || $FLS != "") && (!$ForwardedID || $ForwardedID == $LoggedUser['ID'])) {
 ?>
 	<h3>Forward conversation</h3>
 	<form action="inbox.php" method="post">
