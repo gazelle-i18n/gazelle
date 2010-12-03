@@ -172,9 +172,10 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 
 		if (count($UserIDs) > 0) {
 			foreach($UserIDs as $UserID) {
-				$Cache->begin_transaction('user_info_'.$UserID);
+				/*$Cache->begin_transaction('user_info_'.$UserID);
 				$Cache->update_row(false, array('PermissionID'=>$L['To']));
-				$Cache->commit_transaction(0);
+				$Cache->commit_transaction(0);*/
+				$Cache->delete_value('user_info_'.$UserID);
 				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Class changed to ".make_class_string($L['To'])." by System\n\n', AdminComment) WHERE UserID = ".$UserID);
 			}		
 			$DB->query("UPDATE users_main SET PermissionID=".$L['To']." WHERE ID IN(".implode(',',$UserIDs).")");
@@ -198,9 +199,10 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 		
 		if (count($UserIDs) > 0) {
 			foreach($UserIDs as $UserID) {
-				$Cache->begin_transaction('user_info_'.$UserID);
+				/*$Cache->begin_transaction('user_info_'.$UserID);
 				$Cache->update_row(false, array('PermissionID'=>$L['From']));
-				$Cache->commit_transaction(0);
+				$Cache->commit_transaction(0);*/
+				$Cache->delete_value('user_info_'.$UserID);
 				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Class changed to ".make_class_string($L['From'])." by System\n\n', AdminComment) WHERE UserID = ".$UserID);
 			}
 			$DB->query("UPDATE users_main SET PermissionID=".$L['From']." WHERE ID IN(".implode(',',$UserIDs).")");

@@ -32,17 +32,22 @@ if($Data) {
 	list($K, list($Name, $Image, $Body, $NumSimilar, $SimilarArray, $TorrentList, $Importances)) = each($Data);
 	
 } else {
-	$sql = "SELECT
-		a.Name,
-		wiki.Image,
-		wiki.body
-		FROM artists_group AS a
-		LEFT JOIN wiki_artists AS wiki ON wiki.RevisionID=a.RevisionID
-		WHERE ";
-	if($RevisionID){
-		$sql.=" wiki.RevisionID='$RevisionID' ";
+	if ($RevisionID) {
+		$sql = "SELECT
+			a.Name,
+			wiki.Image,
+			wiki.Body
+			FROM wiki_artists AS wiki 
+			LEFT JOIN artists_group AS a ON wiki.RevisionID=a.RevisionID
+			WHERE wiki.RevisionID='$RevisionID' ";
 	} else {
-		$sql.=" a.ArtistID='$ArtistID' ";
+		$sql = "SELECT
+			a.Name,
+			wiki.Image,
+			wiki.body
+			FROM artists_group AS a
+			LEFT JOIN wiki_artists AS wiki ON wiki.RevisionID=a.RevisionID
+			WHERE a.ArtistID='$ArtistID' ";
 	}
 	$sql .= " GROUP BY a.ArtistID";
 	$DB->query($sql, MYSQLI_NUM, true);
