@@ -355,6 +355,13 @@ CREATE TABLE `login_attempts` (
   KEY `IP` (`IP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `mystery_box` (
+  `UserID` int(10) NOT NULL,
+  `Time` datetime NOT NULL,
+  `Value` text NOT NULL,
+  PRIMARY KEY (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `news` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
