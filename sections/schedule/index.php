@@ -176,6 +176,9 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 				$Cache->update_row(false, array('PermissionID'=>$L['To']));
 				$Cache->commit_transaction(0);*/
 				$Cache->delete_value('user_info_'.$UserID);
+				$Cache->delete_value('user_info_heavy_'.$UserID);
+				$Cache->delete_value('user_stats_'.$UserID);
+				$Cache->delete_value('enabled_'.$UserID);
 				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Class changed to ".make_class_string($L['To'])." by System\n\n', AdminComment) WHERE UserID = ".$UserID);
 			}		
 			$DB->query("UPDATE users_main SET PermissionID=".$L['To']." WHERE ID IN(".implode(',',$UserIDs).")");
@@ -203,6 +206,9 @@ if($Hour != next_hour() || $_GET['runhour'] || isset($argv[2])){
 				$Cache->update_row(false, array('PermissionID'=>$L['From']));
 				$Cache->commit_transaction(0);*/
 				$Cache->delete_value('user_info_'.$UserID);
+				$Cache->delete_value('user_info_heavy_'.$UserID);
+				$Cache->delete_value('user_stats_'.$UserID);
+				$Cache->delete_value('enabled_'.$UserID);
 				$DB->query("UPDATE users_info SET AdminComment = CONCAT('".sqltime()." - Class changed to ".make_class_string($L['From'])." by System\n\n', AdminComment) WHERE UserID = ".$UserID);
 			}
 			$DB->query("UPDATE users_main SET PermissionID=".$L['From']." WHERE ID IN(".implode(',',$UserIDs).")");
@@ -601,6 +607,8 @@ if($Day != next_day() || $_GET['runday']){
 	$DB->query("DELETE FROM torrents WHERE flags = 1 AND pid = 0");
 	sleep(10);
 	
+
+/*
 	$i = 0;
 	$DB->query("SELECT
 		t.ID,
@@ -644,7 +652,7 @@ if($Day != next_day() || $_GET['runday']){
 		$DB->query('INSERT INTO log (Message, Time) VALUES '.$Values);
 		echo "\nDeleted $i torrents for inactivity\n";
 	}
-	
+*/
 	$DB->query("SELECT SimilarID FROM artists_similar_scores WHERE Score<=0");
 	$SimilarIDs = implode(',',$DB->collect('SimilarID'));
 	

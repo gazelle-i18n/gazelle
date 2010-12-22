@@ -87,7 +87,7 @@ show_header('View request: '.$FullName, 'comments,requests,bbcode');
 <? if($CanEdit) { ?> 
 		<a href="requests.php?action=edit&amp;id=<?=$RequestID?>">[Edit]</a>
 <? }
-if($UserCanEdit || check_perms('site_moderate_requests')) { ?>
+if($UserCanEdit || check_perms('users_mod')) { //check_perms('site_moderate_requests')) { ?>
 		<a href="requests.php?action=delete&amp;id=<?=$RequestID?>">[Delete]</a>
 <? } ?>
 		<a href="reports.php?action=report&amp;type=request&amp;id=<?=$RequestID?>">[Report Request]</a>

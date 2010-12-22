@@ -173,13 +173,12 @@ show_header('Uploading Rules');
 	<h5 id="h2.1"><a href="#h2.1k"><strong>&uarr;</strong></a> <a href="#h2.1">2.1.</a> General</h5>
 	<div class="box pad" style="padding:10px 10px 10px 20px;">
 		<ul>
-			<li id="r2.1.1"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.1">2.1.1.</a> <strong>The only formats allowed for music are those listed below:</strong>
-
+			<li id="r2.1.1"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.1">2.1.1.</a> <strong>The only formats allowed for music consist of the following lossy and lossless formats:</strong>
 				<ul>
-					<li>MP3, FLAC, Ogg Vorbis, AAC, AC3, DTS</li>
+					<li><strong>Lossy:</strong> MP3, Ogg Vorbis, AAC, AC3, DTS</li>
+					<li><strong>Lossless:</strong> FLAC</li>
 				</ul>
-				<p><em>Monkey's Audio (APE), Apple Lossless (ALAC/.M4A lossless), and Wavpack (WV) are depreciated. No more new uploads in either of these 3 formats are allowed after April 20, 2009. Only unique releases with no alternative upload in FLAC are permitted to remain on the site. However, you are encouraged to convert them to FLAC. See <a href="#r2.2.15.1">2.2.15.1.</a></em>
-				</p>
+				<p><em>Only standard versions of each format are allowed. Hybrid formats that combine both lossless and lossy audio data such as DTS-HD and mp3HD are not allowed.</em></p>
 			</li>
 			<li id="r2.1.2"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.2">2.1.2.</a> <strong>No transcodes or re-encodes of lossy releases are acceptable here.</strong> There are no exceptions regardless of how rare you claim the release is. The only acceptable transcodes are releases that were transcoded from a lossless source (e.g. CD, SBD, DAT, Vinyl, SACD, LPCM). <u>Exceptions</u>: Official lossy-mastered releases are not considered to be transcodes. They are allowed on the site. It is highly recommended you provide proof in at least one of the following forms: a) digital photo proving ownership of the CD or hi-res scan of the CD top b) a rip log c) confidence of 2 or more verification with AccurateRip in the rip log or after ripping (with <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=53583">arcue.pl</a> / <a href="http://www.hydrogenaudio.org/forums/index.php?showtopic=60440">arcue.exe</a>, <a href="http://wiki.hydrogenaudio.org/index.php?title=CueTools">CUE Tools</a>, or equivalent) in your <em>Release description</em>. You must provide this proof if requested by staff.
 			</li>

@@ -153,6 +153,7 @@ echo $Pages;
 				</tr>
 <?	} ?>
 			</table>
+<?			?>
 			<input type="submit" value="Delete message(s)" />
 		</form>
 <? } ?>

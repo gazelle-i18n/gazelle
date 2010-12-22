@@ -1,7 +1,7 @@
 <?
 class TEXT {
 	// tag=>max number of attributes
-	private $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'tex'=>0, 'hide'=>1
+	private $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'tex'=>0, 'hide'=>1, 'plain'=>0
 	);
 	private $Smileys = array(
 		':angry:'			=> 'angry.gif',
@@ -364,13 +364,13 @@ EXPLANATION OF PARSER LOGIC
 					$Array[$ArrayPos] = array('Type'=>'tex', 'Val'=>$Block);
 					break;
 				case 'pre':
-					
+				case 'plain':
 					$Block = strtr($Block, array('[inlineurl]'=>''));
 					$Block = preg_replace('/\[inlinesize\=3\](.*?)\[\/inlinesize\]/i', '====$1====', $Block);
 					$Block = preg_replace('/\[inlinesize\=5\](.*?)\[\/inlinesize\]/i', '===$1===', $Block);
 					$Block = preg_replace('/\[inlinesize\=7\](.*?)\[\/inlinesize\]/i', '==$1==', $Block);
 					
-					$Array[$ArrayPos] = array('Type'=>'pre', 'Val'=>$Block);
+					$Array[$ArrayPos] = array('Type'=>$TagName, 'Val'=>$Block);
 					break;
 				case 'hide':
 					$Array[$ArrayPos] = array('Type'=>'hide', 'Attr'=>$Attrib, 'Val'=>$this->parse($Block));
@@ -428,7 +428,7 @@ EXPLANATION OF PARSER LOGIC
 					$Str.='<span style="text-decoration: line-through">'.$this->to_html($Block['Val']).'</span>';
 					break;
 				case 'user':
-					$Str.='<a href="user.php?action=search&search='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
+					$Str.='<a href="user.php?action=search&amp;search='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
 					break;
 				case 'artist':
 					$Str.='<a href="artist.php?artistname='.urlencode(mb_convert_encoding($Block['Val'],"UTF-8","HTML-ENTITIES")).'">'.$Block['Val'].'</a>';
@@ -438,6 +438,9 @@ EXPLANATION OF PARSER LOGIC
 					break;
 				case 'tex':
 					$Str.='<img src="'.STATIC_SERVER.'blank.gif" onload="if (this.src.substr(this.src.length-9,this.src.length) == \'blank.gif\') { this.src = \'http://chart.apis.google.com/chart?cht=tx&amp;chf=bg,s,FFFFFF00&amp;chl='.urlencode(mb_convert_encoding($Block['Val'],"UTF-8","HTML-ENTITIES")).'&amp;chco=\' + hexify(getComputedStyle(this.parentNode,null).color); }" />';
+					break;
+				case 'plain':
+					$Str.=$Block['Val'];
 					break;
 				case 'pre':
 					$Str.='<pre>'.$Block['Val'].'</pre>';

@@ -1,5 +1,5 @@
 <?
-if(empty($LoggedUser['Rippy'])) $LoggedUser['Rippy'] = 'PM';
+
 define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
 $HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
 ?>
@@ -50,6 +50,7 @@ $HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
 	<link href="<?=$LoggedUser['StyleURL']?>" title="External CSS" rel="stylesheet" type="text/css" media="screen" />
 	<? } ?>
 <? } ?>
+
 	<link href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/global.css')?>" rel="stylesheet" type="text/css" />
 	<script src="<?=STATIC_SERVER?>functions/sizzle.js" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/script_start.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/script_start.js')?>" type="text/javascript"></script>
@@ -95,8 +96,7 @@ if(check_perms('site_send_unlimited_invites')) {
 }
 ?>
 			<li id="nav_invite" class="brackets"><a href="user.php?action=invite">Invite<?=$Invites?></a></li>
-<?
-			//<li id="nav_donate" class="brackets"><a href="donate.php">Donate<?//</a></li>?>
+			<li id="nav_donate" class="brackets"><a href="donate.php">Donate</a></li>
 		</ul>
 		<ul id="userinfo_stats">
 			<li id="stats_seeding"><a href="torrents.php?type=seeding&amp;userid=<?=$LoggedUser['ID']?>">Up</a>: <span class="stat"><?=get_size($LoggedUser['BytesUploaded'])?></span></li>

@@ -1,5 +1,9 @@
 <?
+
+/* replace
+$UserID = $LoggedUser['ID'];
 authorize();
+replace */
 
 if(!isset($_POST['messages']) || !is_array($_POST['messages'])){
 	error('You forgot to select messages to delete.');
@@ -15,7 +19,7 @@ foreach($Messages AS $ConvID) {
 	}
 }
 $ConvIDs = implode(',', $Messages);
-$DB->query("SELECT COUNT(ConvID) FROM pm_conversations_users WHERE ConvID IN ($ConvIDs) AND UserID='$LoggedUser[ID]'");
+$DB->query("SELECT COUNT(ConvID) FROM pm_conversations_users WHERE ConvID IN ($ConvIDs) AND UserID=$UserID");
 list($MessageCount) = $DB->next_record();
 if($MessageCount != count($Messages)){
 	error(0);
@@ -27,7 +31,8 @@ $DB->query("UPDATE pm_conversations_users SET
 	InSentbox='0',
 	Sticky='0',
 	UnRead='0'
-	WHERE ConvID IN($ConvIDs) AND UserID='$LoggedUser[ID]'");
-$Cache->delete_value('inbox_new_'.$LoggedUser['ID']);
+	WHERE ConvID IN($ConvIDs) AND UserID=$UserID");
+$Cache->delete_value('inbox_new_'.$UserID);
+
 header('Location: inbox.php');
 ?>

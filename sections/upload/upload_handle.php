@@ -7,6 +7,7 @@
 //******************************************************************************//
 
 ini_set('upload_max_filesize',2097152);
+ini_set('max_file_uploads',100);
 require(SERVER_ROOT.'/classes/class_torrent.php');
 include(SERVER_ROOT.'/classes/class_validate.php');
 include(SERVER_ROOT.'/classes/class_feed.php');

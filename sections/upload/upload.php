@@ -9,6 +9,7 @@
 // called again.													   //
 //*********************************************************************//
 
+ini_set('max_file_uploads',100);
 show_header('Upload','upload');
 
 if(!empty($_GET['groupid']) && is_number($_GET['groupid'])) {
