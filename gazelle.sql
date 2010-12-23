@@ -1083,6 +1083,7 @@ CREATE TABLE `users_notify_filters` (
   `RecordLabels` mediumtext NOT NULL,
   `Users` mediumtext NOT NULL,
   `Tags` varchar(500) NOT NULL DEFAULT '',
+  `NotTags` varchar(500) NOT NULL DEFAULT '',
   `Categories` varchar(500) NOT NULL DEFAULT '',
   `Formats` varchar(500) NOT NULL DEFAULT '',
   `Encodings` varchar(500) NOT NULL DEFAULT '',
