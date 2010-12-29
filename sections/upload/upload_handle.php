@@ -745,6 +745,8 @@ if(!$IsNewGroup) {
 // For RSS
 $Item = $Feed->item($Title, $Text->strip_bbcode($Body), 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID, $LoggedUser['Username'], 'torrents.php?id='.$GroupID, trim($Properties['TagList']));
 
+
+//Notifications
 $SQL = "SELECT unf.ID, unf.UserID, torrent_pass
 	FROM users_notify_filters AS unf
 	JOIN users_main AS um ON um.ID=unf.UserID
@@ -783,14 +785,20 @@ if(!empty($ArtistsUnescaped)) {
 	$SQL.="AND (Artists='') AND (";
 }
 
+
 reset($Tags);
 $TagSQL = array();
+$NotTagSQL = array();
 foreach($Tags as $Tag) {
 	$TagSQL[]=" Tags LIKE '%|".db_string(trim($Tag))."|%' ";
+	$NotTagSQL[]=" NotTags LIKE '%|".db_string(trim($Tag))."|%' ";
 }
 $TagSQL[]="Tags=''";
 $SQL.=implode(' OR ', $TagSQL);
-$SQL.=") AND (Categories LIKE '%|".db_string(trim($Type))."|%' OR Categories='') ";
+
+$SQL.= ") AND !(".implode(' OR ', $NotTagSQL).")";
+
+$SQL.=" AND (Categories LIKE '%|".db_string(trim($Type))."|%' OR Categories='') ";
 
 if($Properties['ReleaseType']) {
 	$SQL.=" AND (ReleaseTypes LIKE '%|".db_string(trim($ReleaseTypes[$Properties['ReleaseType']]))."|%' OR ReleaseTypes='') ";

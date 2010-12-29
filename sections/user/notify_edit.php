@@ -5,7 +5,7 @@ show_header('Manage notifications');
 <div class="thin">
 	<h2>Notify me of all new torrents with...<a href="torrents.php?action=notify">(View)</a></h2>
 <?
-$DB->query("SELECT ID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear FROM users_notify_filters WHERE UserID='$LoggedUser[ID]' UNION ALL SELECT NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL");
+$DB->query("SELECT ID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, NotTags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear FROM users_notify_filters WHERE UserID='$LoggedUser[ID]' UNION ALL SELECT NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL");
 $i = 0;
 $NumFilters = $DB->record_count()-1;
 
@@ -14,6 +14,7 @@ $Notifications = $DB->to_array();
 foreach($Notifications as $N) { //$N stands for Notifications
 	$N['Artists']		= implode(', ', explode('|', substr($N['Artists'],1,-1)));
 	$N['Tags']		= implode(', ', explode('|', substr($N['Tags'],1,-1)));
+	$N['NotTags']		= implode(', ', explode('|', substr($N['NotTags'],1,-1)));
 	$N['ReleaseTypes'] 	= explode('|', substr($N['ReleaseTypes'],1,-1));
 	$N['Categories'] 	= explode('|', substr($N['Categories'],1,-1));
 	$N['Formats'] 		= explode('|', substr($N['Formats'],1,-1));
@@ -65,6 +66,13 @@ foreach($Notifications as $N) { //$N stands for Notifications
 				<td class="label"><strong>At least one of these tags</strong></td>
 				<td>
 					<textarea name="tags" style="width:100%" rows="2"><?=display_str($N['Tags'])?></textarea>
+					<p class="min_padding">Comma-separated list - eg. <em>rock, jazz, pop</em></p>
+				</td>
+			</tr>
+			<tr>
+				<td class="label"><strong>None of these tags</strong></td>
+				<td>
+					<textarea name="nottags" style="width:100%" rows="2"><?=display_str($N['NotTags'])?></textarea>
 					<p class="min_padding">Comma-separated list - eg. <em>rock, jazz, pop</em></p>
 				</td>
 			</tr>

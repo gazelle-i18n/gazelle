@@ -295,6 +295,8 @@ $OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank
 		if (check_perms('users_view_ips',$Class)) {
 			$DB->query("SELECT COUNT(DISTINCT IP) FROM users_history_ips WHERE UserID='$UserID'");
 			list($IPChanges) = $DB->next_record();
+			$DB->query("SELECT COUNT(DISTINCT IP) FROM xbt_snatched WHERE uid='$UserID'");
+			list($TrackerIPs) = $DB->next_record();
 		}
 		if (check_perms('users_view_email',$Class)) {
 			$DB->query("SELECT COUNT(*) FROM users_history_emails WHERE UserID='$UserID'");
@@ -311,6 +313,7 @@ $OverallRank = $Rank->overall_score($UploadedRank, $DownloadedRank, $UploadsRank
 	if (check_perms('users_view_ips',$Class)) {
 ?>
 	<li>IPs: <?=number_format($IPChanges)?> [<a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>">View</a>]&nbsp;[<a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>&amp;usersonly=1">View Users</a>]</li>
+	<li>Tracker IPs: <?=number_format($TrackerIPs)?> [<a href="userhistory.php?action=tracker_ips&amp;userid=<?=$UserID?>">View</a>]</li>
 <?
 	}
 	if (check_perms('users_view_keys',$Class)) {
@@ -473,7 +476,7 @@ if (check_paranoia_here('leeching+')) {
 				<li>Seeding: <?=number_format($Seeding)?></li>
 <? } ?>
 <? if (check_paranoia_here('leeching')) { ?>
-				<li>Leeching: <?=number_format($Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]<?=$DisableLeech == 0 ? "<strong> (Disabled)</strong>" : ""?></li>
+				<li>Leeching: <?=number_format($Leeching)?> [<a href="torrents.php?type=leeching&amp;userid=<?=$UserID?>" title="View">View</a>]<?=($DisableLeech == 0 && check_perms('users_view_ips')) ? "<strong> (Disabled)</strong>" : ""?></li>
 <? } elseif (check_paranoia_here('leeching+')) { ?>
 				<li>Leeching: <?=number_format($Leeching)?></li>
 <? } 

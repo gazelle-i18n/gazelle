@@ -1329,6 +1329,7 @@ CREATE TABLE `xbt_snatched` (
   `uid` int(11) NOT NULL DEFAULT '0',
   `tstamp` int(11) NOT NULL,
   `fid` int(11) NOT NULL,
+  `IP` varchar(15) NOT NULL,
   KEY `fid` (`fid`),
   KEY `uid` (`uid`),
   KEY `tstamp` (`tstamp`)

@@ -608,7 +608,7 @@ if($Day != next_day() || $_GET['runday']){
 	sleep(10);
 	
 
-/*
+
 	$i = 0;
 	$DB->query("SELECT
 		t.ID,
@@ -652,7 +652,7 @@ if($Day != next_day() || $_GET['runday']){
 		$DB->query('INSERT INTO log (Message, Time) VALUES '.$Values);
 		echo "\nDeleted $i torrents for inactivity\n";
 	}
-*/
+
 	$DB->query("SELECT SimilarID FROM artists_similar_scores WHERE Score<=0");
 	$SimilarIDs = implode(',',$DB->collect('SimilarID'));
 	

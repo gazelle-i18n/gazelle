@@ -4,6 +4,7 @@ authorize();
 
 $ArtistList = '';
 $TagList = '';
+$NotTagList = '';
 $ReleaseTypeList = '';
 $CategoryList = '';
 $FormatList = '';
@@ -46,6 +47,15 @@ if($_POST['tags']){
 	$Tags = explode(',', $_POST['tags']);
 	foreach($Tags as $Tag){
 		$TagList.=db_string(trim($Tag)).'|';
+	}
+	$HasFilter = true;
+}
+
+if($_POST['nottags']){
+	$NotTagList = '|';
+	$Tags = explode(',', $_POST['nottags']);
+	foreach($Tags as $Tag){
+		$NotTagList.=db_string(trim($Tag)).'|';
 	}
 	$HasFilter = true;
 }
@@ -115,6 +125,7 @@ if($Err){
 
 $ArtistList = str_replace('||','|',$ArtistList);
 $TagList = str_replace('||','|',$TagList);
+$NotTagList = str_replace('||','|',$NotTagList);
 
 if($_POST['id'] && is_number($_POST['id'])){
 	$DB->query("UPDATE users_notify_filters SET
@@ -122,6 +133,7 @@ if($_POST['id'] && is_number($_POST['id'])){
 		ExcludeVA='$ExcludeVA',
 		NewGroupsOnly='$NewGroupsOnly',
 		Tags='$TagList',
+		NotTags='$NotTagList',
 		ReleaseTypes='$ReleaseTypeList',
 		Categories='$CategoryList',
 		Formats='$FormatList',
@@ -132,9 +144,9 @@ if($_POST['id'] && is_number($_POST['id'])){
 		WHERE ID='".db_string($_POST['id'])."' AND UserID='$LoggedUser[ID]'");
 } else {
 	$DB->query("INSERT INTO users_notify_filters 
-		(UserID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear)
+		(UserID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, NotTags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear)
 		VALUES
-		('$LoggedUser[ID]','".db_string($_POST['label'])."','$ArtistList','$ExcludeVA','$NewGroupsOnly','$TagList','$ReleaseTypeList','$CategoryList','$FormatList','$EncodingList','$MediaList', '$FromYear', '$ToYear')");
+		('$LoggedUser[ID]','".db_string($_POST['label'])."','$ArtistList','$ExcludeVA','$NewGroupsOnly','$TagList', '$NotTagList', '$ReleaseTypeList','$CategoryList','$FormatList','$EncodingList','$MediaList', '$FromYear', '$ToYear')");
 }
 
 $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);

@@ -19,6 +19,9 @@ if ($_GET['action']) {
 			//Load IP history page
 			include('ip_history.php');
 			break;
+		case 'tracker_ips':
+			include('ip_tracker_history.php');
+			break;
 		case 'passwords':
 			//Load Password history page
 			include('password_history.php');
