@@ -1059,6 +1059,7 @@ CREATE TABLE `users_main` (
   `RequiredRatio` double(10,8) NOT NULL DEFAULT '0.00000000',
   `RequiredRatioWork` double(10,8) NOT NULL DEFAULT '0.00000000',
   `Language` char(2) NOT NULL DEFAULT '',
+  `ipcc` varchar(2) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Username` (`Username`),
   KEY `Email` (`Email`),
@@ -1072,7 +1073,8 @@ CREATE TABLE `users_main` (
   KEY `Invites` (`Invites`),
   KEY `Cursed` (`Cursed`),
   KEY `torrent_pass` (`torrent_pass`),
-  KEY `RequiredRatio` (`RequiredRatio`)
+  KEY `RequiredRatio` (`RequiredRatio`),
+  KEY `cc_index` (`ipcc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `users_notify_filters` (
