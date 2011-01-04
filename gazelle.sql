@@ -200,6 +200,15 @@ CREATE TABLE `drives` (
   KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `email_blacklist` (
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `UserID` int(10) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Time` datetime NOT NULL,
+  `Comment` text NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `forums` (
   `ID` int(6) unsigned NOT NULL AUTO_INCREMENT,
   `CategoryID` tinyint(2) NOT NULL DEFAULT '0',
