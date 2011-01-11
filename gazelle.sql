@@ -1132,6 +1132,15 @@ CREATE TABLE `users_points` (
   KEY `GroupID` (`GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `users_points_requests` (
+  `UserID` int(10) NOT NULL,
+  `RequestID` int(10) NOT NULL,
+  `Points` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`RequestID`),
+  KEY `UserID` (`UserID`),
+  KEY `RequestID` (`RequestID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `users_sessions` (
   `UserID` int(10) NOT NULL,
   `SessionID` char(32) NOT NULL,
