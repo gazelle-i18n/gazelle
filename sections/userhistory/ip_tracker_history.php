@@ -56,7 +56,7 @@ foreach($Results as $Index => $Result) {
 
 ?>
 	<tr class="rowa">
-		<td><?=$IP?> (<?=geoip($IP)?>)<br /><?=get_host($IP)?> 
+		<td><?=$IP?> (<?=get_cc($IP)?>)<br /><?=get_host($IP)?> 
 		<td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>
 		<td><?=date("Y-m-d g:i:s", $Time)?></td>
 	</tr>

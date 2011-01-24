@@ -1,6 +1,8 @@
 <?
 ini_set('memory_limit', -1);
 
+if (!check_perms('site_debug')) { error(403); }
+
 show_header();
 
 //requires wget, unzip commands to be installed

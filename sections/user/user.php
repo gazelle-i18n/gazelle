@@ -42,6 +42,7 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		i.Artist,
 		i.Warned,
 		i.SupportFor,
+		i.RestrictedForums,
 		i.Inviter,
 		inviter.Username,
 		COUNT(posts.id) AS ForumPosts,
@@ -68,7 +69,7 @@ if(check_perms('users_mod')) { // Person viewing is a staff member
 		header("Location: log.php?search=User+".$UserID);
 	}
 
-	list($Username,	$Email,	$LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $JoinDate, $Info, $Avatar, $Country, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableIRC, $DisableCountry) = $DB->next_record(MYSQLI_NUM, array(8,11));
+	list($Username,	$Email,	$LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $JoinDate, $Info, $Avatar, $Country, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $RestrictedForums, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableIRC, $DisableCountry) = $DB->next_record(MYSQLI_NUM, array(8,11));
 } else { // Person viewing is a normal user
 	$DB->query("SELECT
 		m.Username,
@@ -361,7 +362,7 @@ if($ParanoiaLevel == 0) {
 
 if (check_perms('users_view_ips',$Class)) {
 ?>
-				<li>IP: <?=display_str($IP)?> (<?=geoip($IP)?>) [<a href="user.php?action=search&amp;ip_history=on&amp;ip=<?=display_str($IP)?>&matchtype=strict" title="Search">S</a>]</li>
+				<li>IP: <?=display_str($IP)?> (<?=get_cc($IP)?>) [<a href="user.php?action=search&amp;ip_history=on&amp;ip=<?=display_str($IP)?>&matchtype=strict" title="Search">S</a>]</li>
 				<li>Host: <?=get_host($IP)?></li>
 <?
 }
@@ -379,7 +380,16 @@ if (check_perms('users_view_invites')) {
 	
 ?>
 				<li>Invited By: <?=$Invited?></li>
-				<li>Invites: <? if($DisableInvites) { echo 'X'; } else { echo number_format($Invites); } ?></li>
+				<li>Invites: <? 
+				$DB->query("SELECT count(InviterID) FROM invites WHERE InviterID = '$UserID'");
+				list($Pending) = $DB->next_record();
+				if($DisableInvites) { 
+					echo 'X'; 
+				} else { 
+					echo number_format($Invites); 
+				} 
+				echo " (".$Pending.")"
+				?></li>
 <?
 }
 ?>
@@ -1051,6 +1061,13 @@ if (check_paranoia_here('requestsvoted_list')) {
 					<input type="text" size="60" name="UserReason" />
 				</td>
 			</tr>
+			<tr>
+				<td class="label">Restricted Forums (comma-delimited):</td>
+														<td>
+														    	<input type="text" size="60" name="RestrictedForums" value="<?=display_str($RestrictedForums)?>" />
+														</td>
+													</tr>
+
 <?	} ?>
 		</table><br />
 <?	if(check_perms('users_logout')) { ?>

@@ -4,7 +4,7 @@ enforce_login();
 
 //Include the header
 if($LoggedUser['RatioWatch']) {
-	error('Due to the high volume of paypal disputes, we do not accept donations from users on ratio watch. Sorry.');
+	error('Due to the high volume of payment disputes, we do not accept donations from users on ratio watch. Sorry.');
 }
 
 if(!$UserCount = $Cache->get_value('stats_user_count')){

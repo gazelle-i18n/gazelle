@@ -271,6 +271,10 @@ if (isset($_POST['resetpasskey'])) {
 $SQL.="WHERE m.ID='".db_string($UserID)."'";
 $DB->query($SQL);
 
+if ($ResetPassword) {
+	logout();
+}
+
 header('Location: user.php?action=edit&userid='.$UserID);
 
 ?>

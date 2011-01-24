@@ -83,7 +83,7 @@ $Debug->set_flag('start user handling');
 
 // Get permissions
 list($Classes, $ClassLevels) = $Cache->get_value('classes');
-if(!$Classes) {
+if(!$Classes || !$ClassLevels) {
 	$DB->query('SELECT ID, Name, Level FROM permissions ORDER BY Level');
 	$Classes = $DB->to_array('ID');
 	$ClassLevels = $DB->to_array('Level');
@@ -254,7 +254,9 @@ if(isset($LoginCookie)) {
 					(UserID, IP, StartTime) VALUES
 					('$LoggedUser[ID]', '$NewIP', '".sqltime()."')");
 
-			$DB->query("UPDATE users_main SET IP='$NewIP' WHERE ID='$LoggedUser[ID]'");
+			$DB->query("SELECT Code from geoip_country WHERE '".ip2long($_SERVER['REMOTE_ADDR'])."' BETWEEN StartIP AND EndIP");
+			list($ipcc) = $DB->next_record();
+			$DB->query("UPDATE users_main SET IP='$NewIP', ipcc='".$ipcc."' WHERE ID='$LoggedUser[ID]'");
 			$Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
 			$Cache->update_row(false, array('IP' => $_SERVER['REMOTE_ADDR']));
 			$Cache->commit_transaction(0);
@@ -478,6 +480,13 @@ function get_host($IP) {
 	++$ID;
 	return '<span id="host_'.$ID.'">Resolving host...<script type="text/javascript">ajax.get(\'tools.php?action=get_host&ip='.$IP.'\',function(host){$(\'#host_'.$ID.'\').raw().innerHTML=host;});</script></span>';
 }
+
+function get_cc($IP) {
+	static $ID = 0;
+	++$ID;
+	return '<span id="cc_'.$ID.'">Resolving CC...<script type="text/javascript">ajax.get(\'tools.php?action=get_cc&ip='.$IP.'\',function(cc){$(\'#cc_'.$ID.'\').raw().innerHTML=cc;});</script></span>';
+}
+			
 
 function logout() {
 	global $SessionID, $LoggedUser, $DB, $Cache;
@@ -991,6 +1000,18 @@ function delete_torrent($ID, $GroupID=0) {
 		$Cache->delete_value('notifications_new_'.$UserID);
 	}
 	$DB->query("DELETE FROM users_notify_torrents WHERE TorrentID='$ID'");
+
+
+	$DB->query("UPDATE reportsv2 SET
+		Status='Resolved',
+		LastChangeTime='".sqltime()."',
+		ModComment='Report already dealt with (Torrent deleted)'
+		WHERE TorrentID=".$ID);
+	$Reports = $DB->affected_rows();
+	if($Reports) {
+		$Cache->decrement('num_torrent_reportsv2', $Reports);
+	}
+
 	$DB->query("DELETE FROM torrents_files WHERE TorrentID='$ID'");
 	$DB->query("DELETE FROM torrents_bad_tags WHERE TorrentID = ".$ID);
 	$DB->query("DELETE FROM torrents_bad_folders WHERE TorrentID = ".$ID);
@@ -1726,9 +1747,8 @@ function disable_users($UserIDs, $AdminComment, $BanReason = 1) {
 	}
 	$DB->query("UPDATE users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 		SET m.Enabled='2',
-		m.can_leech='0',".($AdminComment ? "
-		i.AdminComment = CONCAT('".sqltime()." - ".$AdminComment."', i.AdminComment),
-		" : '')."
+		m.can_leech='0',
+		i.AdminComment = CONCAT('".sqltime()." - ".($AdminComment ? $AdminComment : 'Disabled by system')."', i.AdminComment),
 		i.BanDate='".sqltime()."',
 		i.BanReason='".$BanReason."',
 		i.RatioWatchDownload='0',

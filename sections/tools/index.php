@@ -44,6 +44,9 @@ switch ($_REQUEST['action']){
 	case 'get_host':
 		include('services/get_host.php');
 		break;
+	case 'get_cc':
+		include('services/get_cc.php');
+		break;
 	//Managers
 	case 'forum':
 		include('managers/forum_list.php');
@@ -75,6 +78,14 @@ switch ($_REQUEST['action']){
 
 	case 'recommend_alter':
 		include('managers/recommend_alter.php');
+		break;
+
+	case 'email_blacklist':
+		include('managers/eb.php');
+		break;
+
+	case 'eb_alter':
+		include('managers/eb_alter.php');
 		break;
 
 	case 'dnu':

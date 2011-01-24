@@ -211,20 +211,13 @@ function Grab(reportid) {
 }
 
 function MultiResolve() {
-	var d = document.getElementsByName('multi');
-	var k = 0;
-	var x = [];
-	for(var j = 0; j < d.length; j++) {
-		if(d[j].checked) {
-			x[k] = d[j].id;
-			k++;
+	var multi = document.getElementsByName('multi');
+	for (var j = 0; j < multi.length; j++) {
+		if (multi[j].checked) {
+			TakeResolve(multi[j].id.substring(5));
 		}
 	}
 
-	for (var i = 0; i < x.length; i++) {
-		var id = x[i].substring(5);
-		TakeResolve(id);
-	}
 }
 
 function UpdateResolve(reportid) {

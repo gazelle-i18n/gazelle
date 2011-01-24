@@ -31,7 +31,7 @@ show_header('News','bbcode');
 <?
 ?>
 		<div class="box">
-			<div class="head colhead_dark"><a href="blog.php">Latest blog posts</a></div>
+			<div class="head colhead_dark"><strong><a href="blog.php">Latest blog posts</a></strong></div>
 <?
 if(($Blog = $Cache->get_value('blog')) === false) {
 	$DB->query("SELECT

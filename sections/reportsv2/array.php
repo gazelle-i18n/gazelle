@@ -306,7 +306,7 @@ $Types = array(
 					'warn' => '0',
 					'delete' => '0',
 					'pm' => 'The [url=http://'.NONSSL_SITE_URL.'/rules.php?p=upload#2.3.2]Uploading Rules[/url] require all uploads to have meaningful directory names. Your torrent has been marked as eligible for trumping, which is now visible to all interested users, who may trump your torrent at any time.
-[b]You can fix this torrent yourself![/b]It\'s easy, and only takes a few minutes: Add or fix the folder/directory name(s), and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Folder Trump", indicate in the report comments that you have fixed the directory name(s), and provide a link (PL) to the new torrent.')
+[b]You can fix this torrent yourself![/b] It\'s easy, and only takes a few minutes: Add or fix the folder/directory name(s), and upload a new torrent to the site. Then, report (RP) the bad torrent for the reason "Folder Trump", indicate in the report comments that you have fixed the directory name(s), and provide a link (PL) to the new torrent.')
 			),
 			'wrong_format' => array(
 				'priority' => '705',

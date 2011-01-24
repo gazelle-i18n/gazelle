@@ -54,7 +54,7 @@ $HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
 	<link href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/global.css')?>" rel="stylesheet" type="text/css" />
 	<script src="<?=STATIC_SERVER?>functions/sizzle.js" type="text/javascript"></script>
 	<script src="<?=STATIC_SERVER?>functions/script_start.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/script_start.js')?>" type="text/javascript"></script>
-	<script src="<?=STATIC_SERVER?>functions/class_ajax.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/class_ajax.js')?>" type="text/javascript" async="async"></script>
+	<script src="<?=STATIC_SERVER?>functions/class_ajax.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/class_ajax.js')?>" type="text/javascript"></script>
 	<script type="text/javascript">//<![CDATA[
 		var authkey = "<?=$LoggedUser['AuthKey']?>";
 		var userid = <?=$LoggedUser['ID']?>;
@@ -69,7 +69,7 @@ if (empty($Script)) { continue; }
 	<script src="<?=STATIC_SERVER?>functions/<?=$Script?>.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/'.$Script.'.js')?>" type="text/javascript"></script>
 <? }
 if ($Mobile) { ?>
-	<script src="<?=STATIC_SERVER?>styles/mobile/style.js" type="text/javascript" async="async"></script>
+	<script src="<?=STATIC_SERVER?>styles/mobile/style.js" type="text/javascript"></script>
 <? } ?>
 </head>
 <body id="<?=$Document == 'collages' ? 'collage' : $Document?>" <?= ((!$Mobile && $LoggedUser['Rippy'] == 'On') ? 'onload="say()"' : '') ?>>
@@ -128,7 +128,7 @@ if($NewSubscriptions === FALSE) {
 	$Cache->cache_value('subscriptions_user_new_'.$LoggedUser['ID'], $NewSubscriptions, 0);
 }
 ?>
-			<li><a onmousedown="Stats('subscriptions');" href="userhistory.php?action=subscriptions"<?=($NewSubscriptions ? 'class="new-subscriptions"' : '')?>>Subscriptions</a></li>
+			<li><a onmousedown="Stats('subscriptions');" href="userhistory.php?action=subscriptions"<?=($NewSubscriptions ? ' class="new-subscriptions"' : '')?>>Subscriptions</a></li>
 			<li><a onmousedown="Stats('comments');" href="comments.php">Comments</a></li>
 			<li><a onmousedown="Stats('friends');" href="friends.php">Friends</a></li>
 		</ul>

@@ -480,7 +480,8 @@ if($Day != next_day() || $_GET['runday']){
 	$UserQuery = $DB->query("SELECT ID, torrent_pass FROM users_info AS i JOIN users_main AS m ON m.ID=i.UserID
 		WHERE i.RatioWatchEnds!='0000-00-00 00:00:00'
 		AND i.RatioWatchEnds<'$sqltime'
-		And m.Enabled='1'");
+		AND m.Enabled='1'
+		AND m.can_leech!='0'");
 	
 	$UserIDs = $DB->collect('ID');
 	if(count($UserIDs) > 0) {
