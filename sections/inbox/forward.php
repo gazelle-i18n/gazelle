@@ -5,7 +5,7 @@ $UserID = $LoggedUser['ID'];
 $ConvID = $_POST['convid'];
 $ReceiverID = $_POST['receiverid'];
 if(!is_number($ConvID) || !is_number($ReceiverID)) { error(404); }
-if(!check_perms('users_mod') || !isset($StaffIDs[$ReceiverID])) { error(403); }
+if(!check_perms('users_mod') && !isset($StaffIDs[$ReceiverID])) { error(403); }
 $DB->query("SELECT ConvID FROM pm_conversations_users WHERE UserID='$UserID' AND InInbox='1' AND (ForwardedTo=0 OR ForwardedTo=UserID) AND ConvID='$ConvID'");
 if($DB->record_count() == 0) { error(403); }
 

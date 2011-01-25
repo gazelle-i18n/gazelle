@@ -2,7 +2,7 @@
 enforce_login();
 include(SERVER_ROOT.'/sections/requests/functions.php');
 
-$RequestTax = 0.25;
+$RequestTax = 0.5;
 
 if(!isset($_REQUEST['action'])) {
 	include(SERVER_ROOT.'/sections/requests/requests.php');

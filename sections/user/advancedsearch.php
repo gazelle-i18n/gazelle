@@ -223,6 +223,26 @@ if(count($_GET)){
 			}
 		}
 
+		if (!empty($_GET['email_cnt'])) {
+			$Query = "SELECT UserID FROM users_history_emails GROUP BY UserID HAVING COUNT(DISTINCT Email) ";
+			if ($_GET['emails_opt'] === 'equal') {
+				$operator = '=';
+			}
+			if ($_GET['emails_opt'] === 'above') {
+				$operator = '>';
+			}
+			if ($_GET['emails_opt'] === 'below') {
+				$operator = '<';
+			}
+			$Query .= $operator." ".$_GET['email_cnt'];
+			$DB->query($Query);
+			$Users = implode(',', $DB->collect('UserID'));
+			if (!empty($Users)) {
+				$Where[] = "um1.ID IN (".$Users.")";
+			}
+		}
+
+
 		if(!empty($_GET['ip'])){
 			if(isset($_GET['ip_history'])){
 				$Distinct = 'DISTINCT ';
@@ -234,19 +254,7 @@ if(count($_GET)){
 		}
 
 		if (!empty($_GET['cc'])) {
-			$Conditions = "";
-			$DB->query("SELECT StartIP, EndIP FROM geoip_country WHERE Code = '".$_GET['cc']."'");
-			while (list($StartIP, $EndIP) = $DB->next_record()) {
-				if (strlen($Conditions) > 0) {
-					$Conditions .= " OR INET_ATON(um1.IP) BETWEEN ".$StartIP." AND ".$EndIP;
-				} else {
-					$Conditions = " (INET_ATON(um1.IP) BETWEEN ".$StartIP." AND ".$EndIP;
-				}
-			}
-			if (strlen($Conditions) > 0 ) {
-				$Conditions .= ")";
-				$Where[] = $Conditions;
-			}
+			$Where[]="um1.ipcc = '".$_GET['cc']."'";
 		}
 
 		if(!empty($_GET['tracker_ip'])){
@@ -621,8 +629,15 @@ show_header('User search');
 					<?	}?>
 					</select>
 				</td>
-				<td class="label nobr"></td>
-				<td></td>
+				<td class="label nobr"># Of Emails:</td>
+                                <td>
+                                        <select name="emails_opt">
+                                                <option value="equal"<? if($_GET['emails_opt']==='equal'){echo ' selected="selected"';}?>>Equal</option>
+                                                <option value="above"<? if($_GET['emails_opt']==='above'){echo ' selected="selected"';}?>>Above</option>
+                                                <option value="below"<? if($_GET['emails_opt']==='below'){echo ' selected="selected"';}?>>Below</option>
+                                        </select>
+                                        <input type="text" name="email_cnt" size="6" value="<?=display_str($_GET['email_cnt'])?>" />
+				</td>
 			</tr>
 			<tr>
 				<td colspan="6" class="center">

@@ -663,6 +663,35 @@ CREATE TABLE `sphinx_requests_delta` (
   KEY `LastVote` (`LastVote`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `staff_pm_conversations` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Subject` text,
+  `UserID` int(11) DEFAULT NULL,
+  `Status` enum('Open','Unanswered','Resolved') DEFAULT NULL,
+  `Level` int(11) DEFAULT NULL,
+  `AssignedToUser` int(11) DEFAULT NULL,
+  `Date` datetime DEFAULT NULL,
+  `Unread` tinyint(1) DEFAULT NULL,
+  `ResolverID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `staff_pm_messages` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `UserID` int(11) DEFAULT NULL,
+  `SentDate` datetime DEFAULT NULL,
+  `Message` text,
+  `ConvID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `staff_pm_responses` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Message` text,
+  `Name` text,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `stylesheets` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
@@ -1130,6 +1159,15 @@ CREATE TABLE `users_points` (
   PRIMARY KEY (`UserID`,`GroupID`),
   KEY `UserID` (`UserID`),
   KEY `GroupID` (`GroupID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `users_points_requests` (
+  `UserID` int(10) NOT NULL,
+  `RequestID` int(10) NOT NULL,
+  `Points` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`RequestID`),
+  KEY `UserID` (`UserID`),
+  KEY `RequestID` (`RequestID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `users_sessions` (

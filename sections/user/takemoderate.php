@@ -57,6 +57,7 @@ $DisablePM = (isset($_POST['DisablePM']))? 1 : 0;
 $DisableIRC = (isset($_POST['DisableIRC']))? 1 : 0;
 $DisableLeech = (isset($_POST['DisableLeech'])) ? 0 : 1;
 
+$RestrictedForums = db_string($_POST['RestrictedForums']);
 $EnableUser = (int)$_POST['UserStatus'];
 $ResetRatioWatch = (isset($_POST['ResetRatioWatch']))? 1 : 0;
 $ResetPasskey = (isset($_POST['ResetPasskey']))? 1 : 0;
@@ -159,7 +160,11 @@ if ($_POST['ResetIPHistory'] && check_perms('users_edit_reset_keys')) {
 
 if ($_POST['ResetEmailHistory'] && check_perms('users_edit_reset_keys')) {
 	$DB->query("DELETE FROM users_history_emails WHERE UserID='$UserID'");
-	$DB->query("INSERT INTO users_history_emails (UserID, Email, Time, IP) VALUES ('$UserID','$Username@".SITE_URL."','0000-00-00 00:00:00','".$Cur['IP']."')");
+	if ($_POST['ResetIPHistory']) {
+		$DB->query("INSERT INTO users_history_emails (UserID, Email, Time, IP) VALUES ('$UserID','$Username@".SITE_URL."','0000-00-00 00:00:00','127.0.0.1')");
+	} else {
+		$DB->query("INSERT INTO users_history_emails (UserID, Email, Time, IP) VALUES ('$UserID','$Username@".SITE_URL."','0000-00-00 00:00:00','".$Cur['IP']."')");
+	}
 	$DB->query("UPDATE users_main SET Email='$Username@".SITE_URL."' WHERE ID='$UserID'");
 	$EditSummary[]='Email history cleared';
 }
@@ -218,6 +223,9 @@ if ($Classes[$Class]['Level']!=$Cur['Class'] && (
 	$UpdateSet[]="PermissionID='$Class'";
 	$EditSummary[]="class changed to ".make_class_string($Class);
 	$LightUpdates['PermissionID']=$Class;
+	if ($Class == 6) {
+		$DB->query("UPDATE users_info SET RestrictedForums = CONCAT('30,', RestrictedForums) WHERE UserID = ".$UserID);
+	}
 }
 
 if ($Username!=$Cur['Username'] && check_perms('users_edit_usernames', $Cur['Class']-1)) {
@@ -314,6 +322,11 @@ if ($Warned == 1 && $Cur['Warned']=='0000-00-00 00:00:00' && check_perms('users_
 if ($SupportFor!=db_string($Cur['SupportFor']) && (check_perms('admin_manage_fls') || (check_perms('users_mod') && $UserID == $LoggedUser['ID']))) {
 	$UpdateSet[]="SupportFor='$SupportFor'";
 	$EditSummary[]="first-line support status changed to $SupportFor";
+}
+
+if ($RestrictedForums != db_string($Cur['RestrictedForums']) && check_perms('users_mod')) {
+	$UpdateSet[]="RestrictedForums='$RestrictedForums'";
+	$EditSummary[]="restricted forum(s): $RestrictedForums";
 }
 
 if ($DisableAvatar!=$Cur['DisableAvatar'] && check_perms('users_disable_any')) {

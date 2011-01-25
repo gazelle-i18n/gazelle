@@ -36,10 +36,13 @@ show_header('Forums');
 $Row = 'a';
 $LastCategoryID=0;
 $OpenTable = false;
+$DB->query("SELECT RestrictedForums FROM users_info WHERE UserID = ".$LoggedUser['ID']);
+list($RestrictedForums) = $DB->next_record();
+$RestrictedForums = explode(',', $RestrictedForums);
 
 foreach ($Forums as $Forum) {
 	list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastPostAuthorName, $LastTopicID, $LastTime, $SpecificRules, $LastTopic, $Locked, $Sticky) = array_values($Forum);
-	if ($MinRead>$LoggedUser['Class']) {
+	if ($MinRead>$LoggedUser['Class'] || array_search($ForumID, $RestrictedForums) !== FALSE) {
 		continue;
 	}
 	$Row = ($Row == 'a') ? 'b' : 'a';

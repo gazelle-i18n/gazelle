@@ -246,6 +246,8 @@ show_header('Uploading Rules');
 			</li>		
 			<li id="r2.1.24"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.24">2.1.24.</a> <strong>Downsampling of analog rips is allowed.</strong> Analog rips that have been downsampled may be uploaded (e.g. a 24/96 vinyl rip downsampled to 16/44). Any downsampled torrents must include the specific programs and methods used to downsample in addition to the lineage for the original rip or it will be deleted. <i>NOTE: downsampling of CDs is expressly forbidden.</i>
 			</li>
+			<li id="r2.1.25"><a href="#h2.1"><strong>&uarr;_</strong></a> <a href="#r2.1.25">2.1.25.</a> <strong>Pre-emphasis is allowed in lossless torrents only.</strong> Lossless FLAC torrents with pre-emphasis are allowed on the site. They are allowed to co-exist with lossless de-emphasised torrents. On the other hand, lossy formats may not have pre-emphasis and will be deleted if uploaded.
+			</li>
 		</ul>
 
 	</div>

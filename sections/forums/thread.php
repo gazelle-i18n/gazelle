@@ -42,6 +42,12 @@ $ThreadInfo = get_thread_info($ThreadID, true, true);
 $ForumID = $ThreadInfo['ForumID'];
 
 // Make sure they're allowed to look at the page
+if (!check_perms('site_moderate_forums')) {
+	$DB->query("SELECT RestrictedForums FROM users_info WHERE UserID = ".$LoggedUser['ID']);
+	list($RestrictedForums) = $DB->next_record();
+	$RestrictedForums = explode(',', $RestrictedForums);
+	if (array_search($ForumID, $RestrictedForums) !== FALSE) { error(403); }
+}
 if($Forums[$ForumID]['MinClassRead'] > $LoggedUser['Class']) { error(403); }
 
 //Post links utilize the catalogue & key params to prevent issues with custom posts per page

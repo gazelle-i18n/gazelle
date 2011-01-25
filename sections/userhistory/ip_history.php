@@ -107,7 +107,7 @@ foreach($Results as $Index => $Result) {
 	}
 ?>
 		<tr class="rowa">
-			<td><?=$IP?> (<?=geoip($IP)?>)<br /><?=get_host($IP)?> 
+			<td><?=$IP?> (<?=get_cc($IP)?>)<br /><?=get_host($IP)?> 
 			<?=($HasDupe ? 
 			'<a href="#" onclick="ShowIPs('.$Index.'); return false;">('.count($UserIDs).')</a>' 
 			: '(0)')?></td>

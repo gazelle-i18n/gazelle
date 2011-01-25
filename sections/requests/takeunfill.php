@@ -81,5 +81,7 @@ $Cache->delete_value('request_'.$RequestID);
 $SS->UpdateAttributes('requests', array('torrentid','fillerid'), array($RequestID => array(0,0)));
 update_sphinx_requests($RequestID);
 
+
+
 header('Location: requests.php?action=view&id='.$RequestID);
 ?>
