@@ -38,6 +38,9 @@ $ScriptStartTime=microtime(true); //To track how long a page takes to create
 
 ob_start(); //Start a buffer, mainly in case there is a mysql error
 
+bindtextdomain('gazelle', SERVER_ROOT.'/locale');
+textdomain('gazelle');
+setlocale(LC_ALL, LANGUAGE);
 
 require(SERVER_ROOT.'/classes/class_debug.php'); //Require the debug class
 require(SERVER_ROOT.'/classes/class_mysql.php'); //Require the database wrapper
