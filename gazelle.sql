@@ -672,6 +672,7 @@ CREATE TABLE `staff_pm_conversations` (
   `AssignedToUser` int(11) DEFAULT NULL,
   `Date` datetime DEFAULT NULL,
   `Unread` tinyint(1) DEFAULT NULL,
+  `ResolverID` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
