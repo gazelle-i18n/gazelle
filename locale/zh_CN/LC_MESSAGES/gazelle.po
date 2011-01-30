@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-30 23:00+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: design/privateheader.php:139
+msgid "Home"
+msgstr "首页"
+
+#: design/privateheader.php:140
+msgid "Torrents"
+msgstr "种子"
+
+#: design/privateheader.php:141
+msgid "Collages"
+msgstr "合集"
+
+#: design/privateheader.php:142
+msgid "Requests"
+msgstr "求档"
+
+#: design/privateheader.php:143
+msgid "Forums"
+msgstr "论坛"
+
+#: design/privateheader.php:144
+msgid "IRC"
+msgstr "IRC"
+
+#: design/privateheader.php:145
+msgid "Top 10"
+msgstr "前十排名"
+
+#: design/privateheader.php:146
+msgid "Rules"
+msgstr "规则"
+
+#: design/privateheader.php:147
+msgid "Wiki"
+msgstr "维基"
+
+#: design/privateheader.php:148
+msgid "Staff"
+msgstr "管理组"
