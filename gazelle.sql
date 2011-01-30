@@ -1050,6 +1050,7 @@ CREATE TABLE `users_info` (
   `LastReadNews` int(10) NOT NULL DEFAULT '0',
   `HideCountryChanges` enum('0','1') NOT NULL DEFAULT '0',
   `RestrictedForums` varchar(150) NOT NULL DEFAULT '',
+  `DisableRequests` enum('0','1') NOT NULL DEFAULT '0',
   UNIQUE KEY `UserID` (`UserID`),
   KEY `SupportFor` (`SupportFor`),
   KEY `DisableInvites` (`DisableInvites`),
